@@ -16,7 +16,7 @@ function App() {
     <Router>
       <Navbar/>
       <Routes>
-        <Route path="/home" element={<Home />} />
+        <Route path="/lucid_dev_backup" element={<Home />} />
         <Route path="/about" element={<About/>} />
         <Route path="/Service" element={<Service />} />
         <Route path="/signup" element={<Signup/>} />

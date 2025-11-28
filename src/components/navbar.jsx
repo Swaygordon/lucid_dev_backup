@@ -18,7 +18,7 @@ function Navbar() {
       <div className="navbar bg-white shadow-lg">
         {/* Left section */}
         <div className="navbar-start ml-12">
-          <Link to="/home" className="flex items-center">
+          <Link to="/lucid_dev_backup" className="flex items-center">
             <img
               src={Logo}
               alt="Lucid Logo"
@@ -57,12 +57,12 @@ function Navbar() {
                 className="dropdown-content menu bg-white rounded-box z-[1] w-52 p-2 shadow-sm"
               >
                 <li>
-                  <Link to="/" className="border-b-2 border-transparent hover:border-orange-600 hover:text-orange-600">
+                  <Link to="/lucid_dev_backup" className="border-b-2 border-transparent hover:border-orange-600 hover:text-orange-600">
                     Item 1
                   </Link>
                 </li>
                 <li>
-                  <Link to="/" className="border-b-2 border-transparent hover:border-orange-600 hover:text-orange-600">
+                  <Link to="/lucid_dev_backup" className="border-b-2 border-transparent hover:border-orange-600 hover:text-orange-600">
                     Item 2
                   </Link>
                 </li>
@@ -250,7 +250,7 @@ function Navbar() {
             </Link>
 
             <Link
-              to="/"
+              to="/lucid_dev_backup"
               onClick={handleLinkClick}
               className="flex items-center space-x-3 text-black hover:text-orange-600 hover:bg-orange-50 p-3 rounded-lg transition-colors"
             >
@@ -266,7 +266,7 @@ function Navbar() {
             </Link>
 
             <Link
-              to="/"
+              to="/lucid_dev_backup"
               onClick={handleLinkClick}
               className="flex items-center space-x-3 text-black hover:text-orange-600 hover:bg-orange-50 p-3 rounded-lg transition-colors"
             >
