@@ -2,7 +2,7 @@ import React from 'react';
 import Search from '../assets/search_options.png';
 import Review from '../assets/Ratings.png';
 import Book from '../assets/book.png';
-import InstantQuotes from '../assets/instant qoutes.png';
+import InstantQuotes from '../assets/instant qoutes.jpg';
 import Carousel from '../components/carousal_slider.jsx';
 
 
