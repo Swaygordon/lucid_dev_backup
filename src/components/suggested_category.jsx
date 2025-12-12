@@ -214,7 +214,7 @@ const BusinessCategorySection = ({
                 ${index === 0 ? 'md:rounded-bl-xl' : index === 2 ? 'md:rounded-br-xl' : ''}`}>
                 <figure>
                   <img 
-                    src={`/src/assets/${service.image}`} 
+                    src={service.image}
                     alt={service.title}
                     className="w-full h-48 object-cover"
                   />
