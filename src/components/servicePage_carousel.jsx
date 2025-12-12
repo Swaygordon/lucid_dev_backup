@@ -6,13 +6,13 @@ export default function ServicesCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const exploreServices = [
-    { image: 'carpentry.jpg', name: 'Carpentry', category1:'/category' },
-    { image: 'roommates-cleaning.jpg', name: 'Home Cleaning', category1:'/category' },
-    { image: 'manufacturing.jpg', name: 'Manufacturing', category1:'/category' },
-    { image: 'team.jpg', name: 'Team Services', category1:'/category' },
-    { image: 'electricianguy.jpg', name: 'Electrical Work', category1:'/category' },
-    { image: 'carmechanic.jpg', name: 'Auto Repair', category1:'/category' },
-    { image: 'construction.jpg', name: 'Construction', category1:'/category' }
+    { image: '/src/assets/carpentry.jpg', name: 'Carpentry', category1:'/category' },
+    { image: '/src/assets/roommates-cleaning.jpg', name: 'Home Cleaning', category1:'/category' },
+    { image: '/src/assets/manufacturing.jpg', name: 'Manufacturing', category1:'/category' },
+    { image: '/src/assets/team.jpg', name: 'Team Services', category1:'/category' },
+    { image: '/src/assets/electricianguy.jpg', name: 'Electrical Work', category1:'/category' },
+    { image: '/src/assets/carmechanic.jpg', name: 'Auto Repair', category1:'/category' },
+    { image: '/src/assets/construction.jpg', name: 'Construction', category1:'/category' }
   ];
 
   const getVisibleCards = () => {
@@ -42,12 +42,12 @@ export default function ServicesCarousel() {
 
   const getImageUrl = (filename) => {
     return `https://images.unsplash.com/photo-${
-      filename === 'carpentry.jpg' ? '1504253163759-c23fccaebb55' :
-      filename === 'roommates-cleaning.jpg' ? '1581578731548-c64695cc6952' :
-      filename === 'manufacturing.jpg' ? '1565043589221-1a6fd9ae45c7' :
-      filename === 'team.jpg' ? '1522071820081-009f0129c71c' :
-      filename === 'electricianguy.jpg' ? '1621905251918-48416bd8575a' :
-      filename === 'carmechanic.jpg' ? '1486262715619-e3fc9c15c3cd' :
+      filename === '/src/assets/carpentry.jpg' ? '1504253163759-c23fccaebb55' :
+      filename === '/src/assets/roommates-cleaning.jpg' ? '1581578731548-c64695cc6952' :
+      filename === '/src/assets/manufacturing.jpg' ? '1565043589221-1a6fd9ae45c7' :
+      filename === '/src/assets/team.jpg' ? '1522071820081-009f0129c71c' :
+      filename === '/src/assets/electricianguy.jpg' ? '1621905251918-48416bd8575a' :
+      filename === '/src/assets/carmechanic.jpg' ? '1486262715619-e3fc9c15c3cd' :
       '1503387762-592deb58ef4e'
     }?w=400&h=300&fit=crop`;
   };
@@ -81,7 +81,7 @@ export default function ServicesCarousel() {
                   <div className="card my-6 bg-white hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 group cursor-pointer">
                     <figure className="relative overflow-hidden h-48">
                       <img
-                        src={getImageUrl(service.image)}
+                        src={service.image}
                         alt={service.name}
                         className="w-full h-full object-cover rounded-2xl group-hover:scale-110 transition-transform duration-500"
                       />

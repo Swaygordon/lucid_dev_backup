@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
+import { ChevronLeft, ChevronRight, Sparkles, Unlock } from "lucide-react";
 import { Link } from "react-router-dom";
+import Collaborate from "../assets/collaborate.jpg";
+import efficient from "../assets/efficient.jpg";
+import futurework from "../assets/join_the_future.jpg";
+import hired from "../assets/hired.jpg";
+import unlock from "../assets/unlock.jpg";
 
 const slides = [
   {
@@ -9,8 +14,7 @@ const slides = [
     subtitle: "Streamline Your Staffing Efficiency",
     description:
       "Whether you have short-term projects or seasonal demands, our automated on-demand staffing platform enables you to effortlessly find workers within minutes.",
-    image:
-      "https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp",
+    image: efficient,
     buttonText: "Find Workers",
     gradient: "from-blue-600 via-blue-700 to-indigo-800",
     category1:"/Service",
@@ -21,8 +25,7 @@ const slides = [
     subtitle: "Get Hired Quickly and Securely",
     description:
       "Join our network of verified workers and start getting matched with available jobs near you in just a few clicks.",
-    image:
-      "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp",
+    image: hired,
     buttonText: "Join Now",
     gradient: "from-purple-600 via-purple-700 to-pink-700",
     category1:"/Service",
@@ -33,8 +36,7 @@ const slides = [
     subtitle: "Collaborate Seamlessly",
     description:
       "Build your dream team with our intuitive platform. Connect with skilled professionals and manage projects effortlessly.",
-    image:
-      "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp",
+    image: Collaborate,
     buttonText: "Get Started",
     gradient: "from-teal-600 via-cyan-700 to-blue-800",
     category1:"/Service",
@@ -45,8 +47,7 @@ const slides = [
     subtitle: "Unlock New Opportunities",
     description:
       "Discover flexible work opportunities that match your skills. Set your own schedule and grow your career on your terms.",
-    image:
-      "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp",
+    image: unlock,
     buttonText: "Explore Jobs",
     gradient: "from-orange-600 via-red-600 to-pink-700",
     category1:"/Service",
@@ -57,8 +58,7 @@ const slides = [
     subtitle: "Join the Future of Work",
     description:
       "Experience the next generation of workforce management. Smart matching, instant connections, and seamless collaboration.",
-    image:
-      "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp",
+    image: futurework,
     buttonText: "Learn More",
     gradient: "from-indigo-600 via-violet-700 to-purple-800",
     category1:"/Service",
