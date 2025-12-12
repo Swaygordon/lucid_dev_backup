@@ -8,6 +8,9 @@ import homerepair from "../assets/cleaners.jpg"
 import moving from "../assets/delivery.jpg"
 import autorepair from "../assets/carmechanic.jpg"
 import construction from "../assets/carpenterlady.jpg"
+import categoryCard1 from "../assets/glasses.jpg"
+import categoryCard2 from "../assets/painter.jpg"
+import categoryCard3 from "../assets/handy.jpg"
 import DownloadappImage from "../assets/app.jpg"
 import downloadBtn_1 from "../assets/download.png";
 import downloadBtn_2 from "../assets/web-189884714.jpg";
@@ -22,36 +25,37 @@ const Category = () => {
     {
       id: 1,
       title: "House Cleaning",
-      image:"/src/assets/glasses.jpg",
+      image:categoryCard1,
       category1: "/selected_service",
     },
     {
       id: 2,
       title: "Interior Painting",
-      image:"/src/assets/painter.jpg",
+      image:categoryCard2,
       category1: "/selected_service",
     },
     {
       id: 3,
       title: "Handy Man",
-      image:"/src/assets/handy.jpg",
+      image:categoryCard3,
       category1: "/selected_service",
     },
     {
       id: 4,
       title: "House Cleaning",
-      image:"/src/assets/glasses.jpg",
+      image:categoryCard1,
       category1: "/selected_service",
     },
     {
       id: 5,
       title: "Interior Painting",
-      image:"/src/assets/painter.jpg",
+      image:categoryCard2,
+      category1: "/selected_service",
     },
     {
       id: 6,
       title: "Handy Man",
-      image:"/src/assets/handy.jpg",
+      image:categoryCard3,
       category1: "/selected_service",
     },
   ];
