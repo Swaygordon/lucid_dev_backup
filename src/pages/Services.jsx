@@ -1,10 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import ServicesCarousel from '../components/servicePage_carousel.jsx';
 import { Link } from 'react-router-dom';
+import BackgroundImage0 from "../assets/head.jpg"
 import BackgroundImage1 from "../assets/143147.jpg"
 import BackgroundImage2 from "../assets/delivery.jpg"
 import BackgroundImage3 from "../assets/leftdown.jpg"
 import BackgroundImage4 from "../assets/carpentry.jpg"
+import homerepair from "../assets/cleaners.jpg"
+import moving from "../assets/delivery.jpg"
+import autorepair from "../assets/carmechanic.jpg"
+import construction from "../assets/carpenterlady.jpg"
+import galleryBanner1 from "../assets/left.jpg"      
+import galleryBanner2 from "../assets/lefttop.jpg"   
+import galleryBanner3 from "../assets/leftbottom.jpg"
+import galleryBanner4 from "../assets/leftdown.jpg"  
 import downloadBtn_1 from "../assets/download.png";
 import downloadBtn_2 from "../assets/web-189884714.jpg";
 import DownloadappImage from "../assets/app.jpg"
@@ -63,18 +72,18 @@ const Services = () => {
   };
 
   const businessServices = [
-    { cat: 'Home repairs', image: 'cleaners.jpg', title: 'House Cleaning', subtitle: 'See workers near you', icon: 'map.png' },
-    { cat: 'Home repairs', image: 'cleaners.jpg', title: 'Handy Man', subtitle: 'See workers near you', icon: 'map.png' },
-    { cat: 'Home repairs', image: 'cleaners.jpg', title: 'Interior painting', subtitle: 'See workers near you', icon: 'map.png' },
-    { cat: 'Moving', image: 'delivery.jpg', title: 'Packing Services', subtitle: 'See workers near you', icon: 'map.png' },
-    { cat: 'Moving', image: 'delivery.jpg', title: 'Furniture Moving', subtitle: 'See workers near you', icon: 'map.png' },
-    { cat: 'Moving', image: 'delivery.jpg', title: 'Storage Solutions', subtitle: 'See workers near you', icon: 'map.png' },
-    { cat: 'Auto repairs', image: 'carmechanic.jpg', title: 'Engine Repair', subtitle: 'See workers near you', icon: 'map.png' },
-    { cat: 'Auto repairs', image: 'carmechanic.jpg', title: 'Brake Service', subtitle: 'See workers near you', icon: 'map.png' },
-    { cat: 'Auto repairs', image: 'carmechanic.jpg', title: 'Oil Change', subtitle: 'See workers near you', icon: 'map.png' },
-    { cat: 'Construction', image: 'carpenterlady.jpg', title: 'Building Construction', subtitle: 'See workers near you', icon: 'map.png' },
-    { cat: 'Construction', image: 'carpenterlady.jpg', title: 'Renovation', subtitle: 'See workers near you', icon: 'map.png' },
-    { cat: 'Construction', image: 'carpenterlady.jpg', title: 'Roofing', subtitle: 'See workers near you', icon: 'map.png' },
+    { cat: 'Home repairs', image: homerepair, title: 'House Cleaning', subtitle: 'See workers near you', icon: 'map.png' },
+    { cat: 'Home repairs', image: homerepair, title: 'Handy Man', subtitle: 'See workers near you', icon: 'map.png' },
+    { cat: 'Home repairs', image: homerepair, title: 'Interior painting', subtitle: 'See workers near you', icon: 'map.png' },
+    { cat: 'Moving', image: moving, title: 'Packing Services', subtitle: 'See workers near you', icon: 'map.png' },
+    { cat: 'Moving', image: moving, title: 'Furniture Moving', subtitle: 'See workers near you', icon: 'map.png' },
+    { cat: 'Moving', image: moving, title: 'Storage Solutions', subtitle: 'See workers near you', icon: 'map.png' },
+    { cat: 'Auto repairs', image: autorepair, title: 'Engine Repair', subtitle: 'See workers near you', icon: 'map.png' },
+    { cat: 'Auto repairs', image: autorepair, title: 'Brake Service', subtitle: 'See workers near you', icon: 'map.png' },
+    { cat: 'Auto repairs', image: autorepair, title: 'Oil Change', subtitle: 'See workers near you', icon: 'map.png' },
+    { cat: 'Construction', image: construction, title: 'Building Construction', subtitle: 'See workers near you', icon: 'map.png' },
+    { cat: 'Construction', image: construction, title: 'Renovation', subtitle: 'See workers near you', icon: 'map.png' },
+    { cat: 'Construction', image: construction, title: 'Roofing', subtitle: 'See workers near you', icon: 'map.png' },
   ];
 
 
@@ -86,7 +95,7 @@ const Services = () => {
           {/* Main background with overlay and content */}
           <div 
             className="absolute top-0 left-0 w-full h-full bg-cover bg-center bg-no-repeat z-0"
-            style={{ backgroundImage: "url('/src/assets/head.jpg')" }}
+            style={{ backgroundImage: `url(${BackgroundImage0})` }}
           >
             {/* Overlay */}
             <div className="absolute inset-0 bg-black bg-opacity-20 z-[1]"></div>
@@ -119,10 +128,10 @@ const Services = () => {
           
           {/* Left image stack - on top of everything */}
           <div className="absolute top-0 left-0 w-[200px] h-full z-[3] hidden md:block">
-            <img src="/src/assets/left.jpg" alt="Left" className="absolute top-5 left-5 w-[200px] h-[280px] object-cover z-[4] rounded-sm" />
-            <img src="/src/assets/lefttop.jpg" alt="Left Top" className="absolute top-2.5 left-[170px] w-[150px] h-[90px] object-cover z-[5] rounded-sm shadow-lg drop-shadow-lg" />
-            <img src="/src/assets/leftbottom.jpg" alt="Left Bottom" className="absolute top-[230px] left-1.5 w-[130px] h-[90px] object-cover z-[9] rounded-sm translate-y-10 shadow-lg drop-shadow-lg" />
-            <img src="/src/assets/leftdown.jpg" alt="Left Down" className="absolute top-[310px] left-[170px] w-[150px] h-[90px] object-cover z-[6] rounded-sm shadow-lg drop-shadow-lg" />
+            <img src={galleryBanner1} alt="Left" className="absolute top-5 left-5 w-[200px] h-[280px] object-cover z-[4] rounded-sm" />
+            <img src={galleryBanner2} alt="Left Top" className="absolute top-2.5 left-[170px] w-[150px] h-[90px] object-cover z-[5] rounded-sm shadow-lg drop-shadow-lg" />
+            <img src={galleryBanner3} alt="Left Bottom" className="absolute top-[230px] left-1.5 w-[130px] h-[90px] object-cover z-[9] rounded-sm translate-y-10 shadow-lg drop-shadow-lg" />
+            <img src={galleryBanner4} alt="Left Down" className="absolute top-[310px] left-[170px] w-[150px] h-[90px] object-cover z-[6] rounded-sm shadow-lg drop-shadow-lg" />
           </div>
         </div>
       </header>

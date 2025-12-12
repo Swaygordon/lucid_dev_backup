@@ -1,18 +1,24 @@
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
-
+import Su_slide1 from '../assets/carpentry.jpg';         
+import Su_slide2 from '../assets/roommates-cleaning.jpg';
+import Su_slide3 from '../assets/manufacturing.jpg';     
+import Su_slide4 from '../assets/team.jpg';              
+import Su_slide5 from '../assets/electricianguy.jpg';    
+import Su_slide6 from '../assets/carmechanic.jpg';       
+import Su_slide7 from '../assets/construction.jpg';      
 export default function ServicesCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const exploreServices = [
-    { image: '/src/assets/carpentry.jpg', name: 'Carpentry', category1:'/category' },
-    { image: '/src/assets/roommates-cleaning.jpg', name: 'Home Cleaning', category1:'/category' },
-    { image: '/src/assets/manufacturing.jpg', name: 'Manufacturing', category1:'/category' },
-    { image: '/src/assets/team.jpg', name: 'Team Services', category1:'/category' },
-    { image: '/src/assets/electricianguy.jpg', name: 'Electrical Work', category1:'/category' },
-    { image: '/src/assets/carmechanic.jpg', name: 'Auto Repair', category1:'/category' },
-    { image: '/src/assets/construction.jpg', name: 'Construction', category1:'/category' }
+    { image: Su_slide1, name: 'Carpentry', category1:'/category' },
+    { image: Su_slide2, name: 'Home Cleaning', category1:'/category' },
+    { image: Su_slide3, name: 'Manufacturing', category1:'/category' },
+    { image: Su_slide4, name: 'Team Services', category1:'/category' },
+    { image: Su_slide5, name: 'Electrical Work', category1:'/category' },
+    { image: Su_slide6, name: 'Auto Repair', category1:'/category' },
+    { image: Su_slide7, name: 'Construction', category1:'/category' }
   ];
 
   const getVisibleCards = () => {
@@ -42,12 +48,12 @@ export default function ServicesCarousel() {
 
   const getImageUrl = (filename) => {
     return `https://images.unsplash.com/photo-${
-      filename === '/src/assets/carpentry.jpg' ? '1504253163759-c23fccaebb55' :
-      filename === '/src/assets/roommates-cleaning.jpg' ? '1581578731548-c64695cc6952' :
-      filename === '/src/assets/manufacturing.jpg' ? '1565043589221-1a6fd9ae45c7' :
-      filename === '/src/assets/team.jpg' ? '1522071820081-009f0129c71c' :
-      filename === '/src/assets/electricianguy.jpg' ? '1621905251918-48416bd8575a' :
-      filename === '/src/assets/carmechanic.jpg' ? '1486262715619-e3fc9c15c3cd' :
+      filename === Su_slide1 ? '1504253163759-c23fccaebb55' :
+      filename === Su_slide2 ? '1581578731548-c64695cc6952' :
+      filename === Su_slide3 ? '1565043589221-1a6fd9ae45c7' :
+      filename === Su_slide4 ? '1522071820081-009f0129c71c' :
+      filename === Su_slide5 ? '1621905251918-48416bd8575a' :
+      filename === Su_slide6 ? '1486262715619-e3fc9c15c3cd' :
       '1503387762-592deb58ef4e'
     }?w=400&h=300&fit=crop`;
   };

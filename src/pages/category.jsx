@@ -4,6 +4,10 @@ import BackgroundImage1 from "../assets/143147.jpg"
 import BackgroundImage2 from "../assets/delivery.jpg"
 import BackgroundImage3 from "../assets/leftdown.jpg"
 import BackgroundImage4 from "../assets/carpentry.jpg"
+import homerepair from "../assets/cleaners.jpg"
+import moving from "../assets/delivery.jpg"
+import autorepair from "../assets/carmechanic.jpg"
+import construction from "../assets/carpenterlady.jpg"
 import DownloadappImage from "../assets/app.jpg"
 import downloadBtn_1 from "../assets/download.png";
 import downloadBtn_2 from "../assets/web-189884714.jpg";
@@ -91,19 +95,19 @@ const Category = () => {
       };
     
       const businessServices = [
-        { cat: 'Home repairs', image: 'handy.jpg', title: 'House Cleaning', subtitle: 'See workers near you', icon: 'map.png' },
-        { cat: 'Home repairs', image: 'handy.jpg', title: 'Handy Man', subtitle: 'See workers near you', icon: 'map.png' },
-        { cat: 'Home repairs', image: 'handy.jpg', title: 'Interior painting', subtitle: 'See workers near you', icon: 'map.png' },
-        { cat: 'Moving', image: 'delivery.jpg', title: 'Packing Services', subtitle: 'See workers near you', icon: 'map.png' },
-        { cat: 'Moving', image: 'delivery.jpg', title: 'Furniture Moving', subtitle: 'See workers near you', icon: 'map.png' },
-        { cat: 'Moving', image: 'delivery.jpg', title: 'Storage Solutions', subtitle: 'See workers near you', icon: 'map.png' },
-        { cat: 'Auto repairs', image: 'carmechanic.jpg', title: 'Engine Repair', subtitle: 'See workers near you', icon: 'map.png' },
-        { cat: 'Auto repairs', image: 'carmechanic.jpg', title: 'Brake Service', subtitle: 'See workers near you', icon: 'map.png' },
-        { cat: 'Auto repairs', image: 'carmechanic.jpg', title: 'Oil Change', subtitle: 'See workers near you', icon: 'map.png' },
-        { cat: 'Construction', image: 'carpenterlady.jpg', title: 'Building Construction', subtitle: 'See workers near you', icon: 'map.png' },
-        { cat: 'Construction', image: 'carpenterlady.jpg', title: 'Renovation', subtitle: 'See workers near you', icon: 'map.png' },
-        { cat: 'Construction', image: 'carpenterlady.jpg', title: 'Roofing', subtitle: 'See workers near you', icon: 'map.png' },
-      ];
+    { cat: 'Home repairs', image: homerepair, title: 'House Cleaning', subtitle: 'See workers near you', icon: 'map.png' },
+    { cat: 'Home repairs', image: homerepair, title: 'Handy Man', subtitle: 'See workers near you', icon: 'map.png' },
+    { cat: 'Home repairs', image: homerepair, title: 'Interior painting', subtitle: 'See workers near you', icon: 'map.png' },
+    { cat: 'Moving', image: moving, title: 'Packing Services', subtitle: 'See workers near you', icon: 'map.png' },
+    { cat: 'Moving', image: moving, title: 'Furniture Moving', subtitle: 'See workers near you', icon: 'map.png' },
+    { cat: 'Moving', image: moving, title: 'Storage Solutions', subtitle: 'See workers near you', icon: 'map.png' },
+    { cat: 'Auto repairs', image: autorepair, title: 'Engine Repair', subtitle: 'See workers near you', icon: 'map.png' },
+    { cat: 'Auto repairs', image: autorepair, title: 'Brake Service', subtitle: 'See workers near you', icon: 'map.png' },
+    { cat: 'Auto repairs', image: autorepair, title: 'Oil Change', subtitle: 'See workers near you', icon: 'map.png' },
+    { cat: 'Construction', image: construction, title: 'Building Construction', subtitle: 'See workers near you', icon: 'map.png' },
+    { cat: 'Construction', image: construction, title: 'Renovation', subtitle: 'See workers near you', icon: 'map.png' },
+    { cat: 'Construction', image: construction, title: 'Roofing', subtitle: 'See workers near you', icon: 'map.png' },
+  ];
 
 
   return (
