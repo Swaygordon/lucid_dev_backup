@@ -333,7 +333,7 @@ export default function ChatMessagingPage() {
               if (window.history.length > 2) {
                 navigate(-1);
               } else {
-                navigate('/lucid_dev_backup');
+                navigate('/lucid_website_test');
               }
             }}
             className="p-2 hover:bg-gray-100 rounded-full transition-colors"

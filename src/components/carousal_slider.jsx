@@ -28,7 +28,7 @@ const slides = [
     image: hired,
     buttonText: "Join Now",
     gradient: "from-purple-600 via-purple-700 to-pink-700",
-    category1:"/Service",
+    category1:"/signup",
   },
   {
     id: 3,
@@ -39,7 +39,7 @@ const slides = [
     image: Collaborate,
     buttonText: "Get Started",
     gradient: "from-teal-600 via-cyan-700 to-blue-800",
-    category1:"/Service",
+    category1:"/signup",
   },
   {
     id: 4,
@@ -50,7 +50,7 @@ const slides = [
     image: unlock,
     buttonText: "Explore Jobs",
     gradient: "from-orange-600 via-red-600 to-pink-700",
-    category1:"/Service",
+    category1:"/signup",
   },
   {
     id: 5,
@@ -61,7 +61,7 @@ const slides = [
     image: futurework,
     buttonText: "Learn More",
     gradient: "from-indigo-600 via-violet-700 to-purple-800",
-    category1:"/Service",
+    category1:"/about",
   },
 ];
 
