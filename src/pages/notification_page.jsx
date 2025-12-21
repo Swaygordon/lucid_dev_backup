@@ -516,7 +516,7 @@ const NotificationsPage = () => {
     if (window.history.length > 2) {
       navigate(-1);
     } else {
-      navigate('/lucid_website_test');
+      navigate('/lucid_dev_backup');
     }
     showNotification('Going Back', 'info');
   },[showNotification], [navigate]);

@@ -534,7 +534,7 @@ const navigate = useNavigate();
         if (window.history.length > 2) {
           navigate(-1);
         } else {
-          navigate('/lucid_website_test');
+          navigate('/lucid_dev_backup');
         }
       }, 600);
     }, [showNotification, navigate]);

@@ -299,7 +299,7 @@ const BookingConfirmation = () => {
             <Button
               size="md"
               fullWidth
-              onClick={() => navigate('/lucid_website_test')}
+              onClick={() => navigate('/lucid_dev_backup')}
             >
               <Home className="w-5 h-5" />
               Back to Home
