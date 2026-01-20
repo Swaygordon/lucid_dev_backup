@@ -369,7 +369,7 @@ function Navbar() {
                     <div>
                       <p className="font-semibold text-gray-900">Gabriel</p>
                       <Link 
-                        to="/userProfile" 
+                        to="/providerProfile" 
                         onClick={handleLinkClick} 
                         className="text-sm text-blue-600 hover:text-orange-600 transition-colors"
                       >
