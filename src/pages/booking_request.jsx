@@ -7,7 +7,7 @@ import React, { useState,useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useNotification } from '../contexts/NotificationContext';
-
+import { useNavigateBack } from "../hooks/useNavigateBack.js";
 import { 
   ArrowLeft,
   Calendar,
@@ -37,17 +37,8 @@ const BookingRequest = () => {
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [uploadedImages, setUploadedImages] = useState([]);
-
-  const handleBackClick = useCallback(() => {
-      showNotification('Going Back', 'info');
-      setTimeout(() => {
-        if (window.history.length > 2) {
-          navigate(-1);
-        } else {
-          navigate('/generalProfile');
-        }
-      }, 600);
-    }, [showNotification, navigate]);
+  const handleBackClick = useNavigateBack('/generalProfile', 600);
+  
 
   // Form state
   const [formData, setFormData] = useState({
@@ -179,25 +170,97 @@ const BookingRequest = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validateStep(4)) return;
+  e.preventDefault();
+  if (!validateStep(4)) return;
 
-    setLoading(true);
-    
-    // Simulate API call
+  setLoading(true);
+  
+  try {
+    // Transform form data to match booking structure
+    const transformedBooking = {
+  id: Date.now(),
+
+  title:
+    formData.serviceType === 'Other (Specify)'
+      ? formData.customService
+      : formData.serviceType,
+
+  serviceType:
+    formData.serviceType === 'Other (Specify)'
+      ? formData.customService
+      : formData.serviceType,
+
+  status: 'pending',
+
+  date: formData.preferredDate,
+  time: formData.preferredTime,
+  alternateDate: formData.alternateDate || null,
+  alternateTime: formData.alternateTime || null,
+
+  price: 0, // provider sets later
+
+  description: formData.description,
+  duration: formData.estimatedDuration,
+  urgency: formData.urgency,
+
+  bookingDate: new Date().toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  }),
+
+  bookingReference: `BK${Date.now().toString().slice(-8)}`,
+
+  provider: {
+    name: provider.name,
+    profession: provider.profession,
+    phone: provider.phone || null,
+    email: provider.email || null,
+    rating: provider.rating || 4.8
+  },
+
+  client: {
+    name: formData.contactName,
+    phone: formData.contactPhone,
+    email: formData.contactEmail || null
+  },
+
+  location: {
+    address: formData.address,
+    area: formData.area,
+    city: formData.city,
+    landmark: formData.landmark || null,
+    postalCode: formData.postalCode || null
+  },
+
+  budget: {
+    min: formData.budgetMin ? parseInt(formData.budgetMin, 10) : null,
+    max: formData.budgetMax ? parseInt(formData.budgetMax, 10) : null
+  },
+
+  images: uploadedImages.map(img => img.preview),
+
+  additionalNotes: formData.additionalNotes || null
+};
+
+    // In real app: await api.createBooking(transformedBooking);
     await new Promise(resolve => setTimeout(resolve, 2000));
     
-    setLoading(false);
     showNotification('Booking request sent successfully!', 'success');
     
-    // Navigate to confirmation page
+    // Navigate with transformed data
     navigate('/booking_confirmation', { 
       state: { 
-        bookingData: formData,
+        bookingData: transformedBooking,
         provider 
       } 
     });
-  };
+  } catch (error) {
+    showNotification('Failed to submit booking', 'error');
+  } finally {
+    setLoading(false);
+  }
+};
 
   const steps = [
     { number: 1, title: 'Service Details', icon: FileText },
@@ -643,7 +706,7 @@ const BookingRequest = () => {
                         value={formData.additionalNotes}
                         onChange={handleChange}
                         rows="4"
-                        className="w-full px-4 py-3 bg-white border-2 border-gray-300 rounded-lg focus:border-blue-600 focus:outline-none"
+                        className="w-full px-4 py-3 text-gray-700 bg-white border-2 border-gray-300 rounded-lg focus:border-blue-600 focus:outline-none"
                         placeholder="Any other information the service provider should know..."
                       />
                     </div>

@@ -2,6 +2,7 @@ import React, { memo } from 'react';
 import { motion } from 'framer-motion';
 import { FaTruck, FaBroom, FaWrench, FaTshirt, FaPaintRoller, FaBoxes, FaScrewdriver, FaEllipsisH } from 'react-icons/fa';
 import { Search } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import Section1 from "./home_sections.jsx";
 import BackgroundImage from "../assets/background.png";
 import BackToTop from '../components/back_the_top_btn';
@@ -33,42 +34,49 @@ const staggerContainer = {
 };
 
 // Service Icon Component with animation
-const ServiceIcon = memo(({ icon: IconComponent, name, isMore = false, index }) => (
-  <motion.div 
-    className="flex flex-col items-center gap-2 flex-shrink-0"
-    variants={scaleIn}
-    initial="hidden"
-    whileInView="visible"
-    viewport={{ once: true }}
-    transition={{ duration: 0.4, delay: index * 0.05 }}
-    whileHover={{ scale: 1.05 }}
-  >
-    <div className="relative w-16 h-16">
-      <motion.div 
-        className={`absolute top-0 left-6 right-2 w-12 h-12 rounded-lg transition-colors duration-300 ${
-          isMore ? 'bg-blue-300' : 'bg-blue-300'
+const ServiceIcon = memo(
+  ({ icon: IconComponent, name, to, isMore = false, index }) => (
+    <motion.div
+      className="flex flex-col items-center gap-2 flex-shrink-0"
+      variants={scaleIn}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      transition={{ duration: 0.4, delay: index * 0.05 }}
+      whileHover={{ scale: 1.05 }}
+    >
+      <Link to={to} className="relative w-16 h-16">
+        <motion.div
+          className={`absolute top-0 left-6 right-2 w-12 h-12 rounded-lg ${
+            isMore ? 'bg-blue-300' : 'bg-blue-300'
+          }`}
+          initial={{ x: -10, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.3, delay: index * 0.05 }}
+        />
+
+        <motion.div
+          className={`absolute btn btn-square top-3 left-3 w-12 h-12 rounded-lg flex items-center justify-center ${
+            isMore ? 'bg-blue-700 hover:bg-blue-300' : 'bg-blue-700 hover:bg-blue-300'
+          }`}
+          whileHover={{ rotate: 5, scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <IconComponent size={20} className="text-white" />
+        </motion.div>
+      </Link>
+
+      <p
+        className={`text-center text-xs mt-1 whitespace-nowrap ${
+          isMore ? 'text-black' : 'text-blue-700'
         }`}
-        initial={{ x: -10, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{ duration: 0.3, delay: index * 0.05 }}
-      />
-      <motion.button 
-        className={`absolute btn btn-square top-3 left-3 w-12 h-12 rounded-lg flex items-center justify-center transition-colors duration-300 ${
-          isMore ? 'bg-blue-700 hover:bg-blue-300' : 'bg-blue-700 hover:bg-blue-300'
-        }`}
-        whileHover={{ rotate: 5, scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
       >
-        <IconComponent size={20} className="text-white" />
-      </motion.button>
-    </div>
-    <p className={`text-center text-xs mt-1 transition-colors duration-300 whitespace-nowrap ${
-      isMore ? 'text-black' : 'text-blue-700 lg:text-blue-700'
-    }`}>
-      {name}
-    </p>
-  </motion.div>
-));
+        {name}
+      </p>
+    </motion.div>
+  )
+);
+
 
 // Search Bar Component with animation
 const SearchBar = () => (
@@ -101,8 +109,8 @@ const SearchBar = () => (
 );
 
 // Service Icons Grid Component with animation
-const ServiceIconsGrid = memo(({ services, className = "" }) => (
-  <motion.div 
+const ServiceIconsGrid = memo(({ services = [], className = "" }) => (
+  <motion.div
     className={className}
     variants={staggerContainer}
     initial="hidden"
@@ -110,21 +118,35 @@ const ServiceIconsGrid = memo(({ services, className = "" }) => (
     viewport={{ once: true, margin: "-50px" }}
   >
     {services.map((service, index) => (
-      <ServiceIcon key={service.id} icon={service.icon} name={service.name} index={index} />
+      <ServiceIcon
+        key={service.id}
+        icon={service.icon}
+        name={service.name}
+        to={service.to}
+        index={index}
+      />
     ))}
-    <ServiceIcon icon={FaEllipsisH} name="More" isMore index={services.length} />
+
+    <ServiceIcon
+      icon={FaEllipsisH}
+      name="More"
+      isMore
+      to="/services"
+      index={services.length}
+    />
   </motion.div>
 ));
 
+
 function Home() {
   const serviceIcons = [
-    { id: 1, name: 'Moving', icon: FaTruck },
-    { id: 2, name: 'Cleaning', icon: FaBroom },
-    { id: 3, name: 'Repair', icon: FaWrench },
-    { id: 4, name: 'Painting', icon: FaPaintRoller },
-    { id: 5, name: 'Laundry', icon: FaTshirt },
-    { id: 6, name: 'Delivery', icon: FaBoxes },
-    { id: 7, name: 'Assembly', icon: FaScrewdriver },
+    { id: 1, to: "/selected_service", name: 'Moving', icon: FaTruck },
+    { id: 2, to: "/selected_service", name: 'Cleaning', icon: FaBroom },
+    { id: 3, to: "/selected_service", name: 'Repair', icon: FaWrench },
+    { id: 4, to: "/selected_service", name: 'Painting', icon: FaPaintRoller },
+    { id: 5, to: "/selected_service", name: 'Laundry', icon: FaTshirt },
+    { id: 6, to: "/selected_service", name: 'Delivery', icon: FaBoxes },
+    { id: 7, to: "/selected_service", name: 'Assembly', icon: FaScrewdriver },
   ];
 
   return (

@@ -14,7 +14,7 @@ import {
   User,
   Phone,
   Mail,
-  MessageSquare,
+  MessageCircle,
   Home,
   FileText,
   Download
@@ -30,12 +30,25 @@ const fadeIn = {
 const BookingConfirmation = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [countdown, setCountdown] = useState(5);
+  const [countdown, setCountdown] = useState(30);
   
   const { bookingData, provider } = location.state || {};
 
+  // Add payment info to booking flow
+const paymentInfo = {
+  amount: bookingData.price,
+  platformFee: (bookingData.price * 0.18).toFixed(2),
+  providerReceives: (bookingData.price * 0.82).toFixed(2)
+};
+
   // Generate booking reference
-  const bookingRef = `BK${Date.now().toString().slice(-8)}`;
+  const bookingRefRef = React.useRef(null);
+
+if (!bookingRefRef.current) {
+  bookingRefRef.current = `BK${Date.now().toString().slice(-8)}`;
+}
+
+const bookingRef = bookingRefRef.current;
 
   useEffect(() => {
     // Auto-redirect countdown
@@ -48,7 +61,7 @@ const BookingConfirmation = () => {
         }
         return prev - 1;
       });
-    }, 10000);
+    }, 1000);
 
     return () => clearInterval(timer);
   }, [navigate]);
@@ -280,7 +293,7 @@ const BookingConfirmation = () => {
               variant="outline"
               size="md"
               fullWidth
-              onClick={() => navigate('/tasks')}
+              onClick={() => navigate('/client_bookings')}
             >
               <FileText className="w-5 h-5" />
               View My Bookings
@@ -292,7 +305,7 @@ const BookingConfirmation = () => {
               fullWidth
               onClick={() => navigate('/messagePage')}
             >
-              <MessageSquare className="w-5 h-5" />
+              <MessageCircle className="w-5 h-5" />
               Message Provider
             </Button>
             

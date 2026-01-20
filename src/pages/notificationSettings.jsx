@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigateBack } from "../hooks/useNavigateBack.js";
 import { useNotification } from '../contexts/NotificationContext';
 import { 
   ArrowLeft,
@@ -25,19 +25,9 @@ const fadeIn = {
 };
 
 const NotificationSettings = () => {
-  const navigate = useNavigate();
-  const { showNotification } = useNotification();
   const [loading, setLoading] = useState(false);
-  const handleBackClick = useCallback(() => {
-      showNotification('Going Back', 'info');
-      setTimeout(() => {
-        if (window.history.length > 2) {
-          navigate(-1);
-        } else {
-          navigate('/dashboard');
-        }
-      }, 800);
-    }, [showNotification, navigate]);
+  const { showNotification } = useNotification();
+  const handleBackClick = useNavigateBack('/provider_dashboard', 400);
     
 
   const [settings, setSettings] = useState({

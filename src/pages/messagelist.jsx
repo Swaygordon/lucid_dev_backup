@@ -6,6 +6,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNotification } from '../contexts/NotificationContext';
+import { useNavigateBack } from "../hooks/useNavigateBack.js";
 import Profilepic from '../assets/profile.svg';
 
 // Animation variants
@@ -453,16 +454,7 @@ const MessagesListPage = () => {
     }, 300);
   }, [navigate, showNotification]);
 
-  const handleBack = useCallback(() => {
-    showNotification('Going Back', 'info');
-    setTimeout(() => {
-    if (window.history.length > 2) {
-      navigate(-1);
-    } else {
-      navigate('/lucid_dev_backup');
-    }
-    }, 800);
-  }, [navigate], [showNotification]);
+  const handleBackClick = useNavigateBack('/lucid_dev_backup', 400);
 
   const handleNewMessage = useCallback(() => {
     showNotification('New message feature coming soon!', 'info');
@@ -494,7 +486,7 @@ const MessagesListPage = () => {
         <div className="w-full mx-auto px-4 py-4">
           <div className="flex items-center justify-between mb-4">
             <motion.button
-              onClick={handleBack}
+              onClick={handleBackClick}
               className="p-2 hover:bg-gray-100 rounded-full transition-colors"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
@@ -522,7 +514,7 @@ const MessagesListPage = () => {
               placeholder="Search conversations..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 bg-gray-100 rounded-full text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
+              className="w-full pl-12 pr-4 py-3 bg-gray-100 rounded-full text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
             />
             {searchQuery && (
               <button

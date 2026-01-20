@@ -1,8 +1,8 @@
 // ============================================
 // UPDATED App.jsx WITH ALL NEW ROUTES
 // ============================================
-
 import React from 'react';
+import 'leaflet/dist/leaflet.css';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { NotificationProvider } from './contexts/NotificationContext';
 import Navbar from "./components/navbar";
@@ -18,14 +18,16 @@ import GeneralProfile from './pages/general_profilePage.jsx';
 import UserProfile from './pages/user_Profile.jsx';
 import ChatMessagingPage from './pages/messaging.jsx';
 import EditProfile from './pages/edit.jsx';
-import AccountOverview from './pages/account_overview.jsx';
+import ProviderAccountOverview from './pages/provider_account_overview.jsx';
+import ClientAccountOverview from './pages/client_account_overview.jsx';
 import UserInfo from './pages/user_info.jsx';
 import NotificationsPage from './pages/notification_page.jsx';
 import ProviderDashboard from './pages/provider_dashboard.jsx';
 import ClientDashboard from './pages/client_dashboard.jsx';
-import ClientBookings from './pages/client_task.jsx';
-import ProviderBookings from './pages/provider_tasks.jsx';
-import History from './pages/history.jsx';
+import ClientBookings from './pages/client_bookings.jsx';
+import ProviderBookings from './pages/provider_bookings.jsx';
+import ClientHistory from './pages/client_history.jsx';
+import ProviderHistory from './pages/provider_history.jsx';
 import NotificationSettings from './pages/notificationSettings.jsx';
 import EarningsPayments from './pages/earnings.jsx';
 import HelpSupport from './pages/help_support.jsx';
@@ -38,21 +40,23 @@ function Layout({ children }) {
   const hideNavAndFooter = [
     '/messagePage', 
     '/User_info', 
-    '/account', 
     '/notification',
     '/provider_dashboard',
     '/client_dashboard',
     '/provider_bookings',
-    '/history',
+    '/provider_history',
+    '/client_history',
     '/notification-settings',
     '/earnings',
     '/help',
     '/allmessages',
-    '/userProfile',
+    '/providerProfile',
     '/generalProfile',
     '/booking_confirmation',
     '/booking_request',
     '/client_bookings',
+    '/provider_account',
+     '/client_account',
   ];
   const shouldHideLayout = hideNavAndFooter.includes(location.pathname);
 
@@ -80,17 +84,19 @@ function App() {
             <Route path="/category" element={<Category/>}/>
             <Route path="/selected_service" element={<Selected_service/>}/>
             <Route path="/generalProfile" element={<GeneralProfile/>}/>
-            <Route path="/userProfile" element={<UserProfile/>}/>
+            <Route path="/providerProfile" element={<UserProfile/>}/>
             <Route path="/messagePage" element={<ChatMessagingPage/>}/>
             <Route path="/editprofile" element={<EditProfile/>}/>
-            <Route path="/account" element={<AccountOverview/>} />
+            <Route path="/provider_account" element={<ProviderAccountOverview/>} />
+            <Route path="/client_account" element={<ClientAccountOverview/>} />
             <Route path="/User_info" element={<UserInfo />} />
             <Route path="/notification" element={<NotificationsPage />} />
             <Route path="/provider_dashboard" element={<ProviderDashboard />} />
             <Route path="/client_dashboard" element={<ClientDashboard />} />
             <Route path="/client_bookings" element={<ClientBookings />} />
             <Route path="/provider_bookings" element={<ProviderBookings />} />
-            <Route path="/history" element={<History />} />
+            <Route path="/provider_history" element={<ProviderHistory />} />
+            <Route path="/client_history" element={<ClientHistory />} />
             <Route path="/notification-settings" element={<NotificationSettings />} />
             <Route path="/earnings" element={<EarningsPayments />} />
             <Route path="/help" element={<HelpSupport />} />

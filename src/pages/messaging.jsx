@@ -3,7 +3,7 @@ import {
   ArrowLeft, SendHorizontal, Phone, Video, MoreVertical, Paperclip, Smile, Camera, Mic,
   Copy, Edit2, Trash2, X, Image, FileText, Music, Film, Check, Volume2, VolumeX
 } from 'lucide-react';
-import { useNavigate } from "react-router-dom";
+import { useNavigateBack } from "../hooks/useNavigateBack.js";
 import BackToBottom from '../components/back_to_bottom_btn.jsx';
 import Profilepic from '../assets/profile.svg';
 
@@ -20,8 +20,7 @@ export default function ChatMessagingPage() {
     { id: 8, text: 'Hey', sender: 'user', time: 'Today, 9:05pm', type: 'text' },
   ]);
   const messagesContainerRef = useRef(null);
-  const navigate = useNavigate();
-
+  const handleBackClick = useNavigateBack('/lucid_dev_backup', 400);
   // UI state
   const [selectedMessage, setSelectedMessage] = useState(null); // id for message menu
   const [editingMessage, setEditingMessage] = useState(null);
@@ -328,14 +327,7 @@ export default function ChatMessagingPage() {
       <div className="bg-white shadow-sm px-4 py-4 flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <button
-            onClick={() => {
-              showNotification('Navigating back...');
-              if (window.history.length > 2) {
-                navigate(-1);
-              } else {
-                navigate('/lucid_dev_backup');
-              }
-            }}
+            onClick={handleBackClick}
             className="p-2 hover:bg-gray-100 rounded-full transition-colors"
           >
             <ArrowLeft className="w-6 h-6 text-gray-700" />

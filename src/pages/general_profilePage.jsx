@@ -2,6 +2,8 @@ import React, { useState, memo, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useNotification } from '../contexts/NotificationContext';
+import ReviewThread from '../components/shared/ReviewThread.jsx';
+
 import { 
   Star, 
   CheckCircle, 
@@ -60,6 +62,7 @@ const staggerContainer = {
   }
 };
 
+
 // ============================================
 // DATA CONSTANTS
 // ============================================
@@ -67,8 +70,8 @@ const PROFILE_DATA = {
   id: '1',
   name: "Gabriel A. Gordon-Mensah",
   role: "Web Developer",
-  rating: 4.8,
-  reviewCount: 127,
+  rating: 5,
+  reviewCount: 1,
   hiredCount: 156,
   employees: 14,
   experience: 8,
@@ -90,57 +93,16 @@ const PROFILE_DATA = {
 };
 
 const RATING_DISTRIBUTION = [
-  { stars: 5, percentage: 80 },
-  { stars: 4, percentage: 15 },
-  { stars: 3, percentage: 3 },
-  { stars: 2, percentage: 2 },
+  { stars: 5, percentage: 100 },
+  { stars: 4, percentage: 0 },
+  { stars: 3, percentage: 0 },
+  { stars: 2, percentage: 0 },
   { stars: 1, percentage: 0 },
 ];
 
-const REVIEWS = [
-  {
-    name: "John Mensah",
-    rating: 5,
-    date: "2025-12-15",
-    text: "Excellent work! Very professional and completed the project on time. The website looks amazing and works perfectly on all devices.",
-    jobType: "Website Development"
-  },
-  {
-    name: "Mary Osei",
-    rating: 5,
-    date: "2025-12-10",
-    text: "Great developer! Fixed my web application issues quickly and explained everything clearly. Highly recommended!",
-    jobType: "Bug Fixes"
-  },
-  {
-    name: "Kwame Asante",
-    rating: 4,
-    date: "2025-12-05",
-    text: "Good service, delivered quality work. Very knowledgeable about modern web technologies.",
-    jobType: "UI/UX Design"
-  },
-  {
-    name: "Sarah Johnson",
-    rating: 5,
-    date: "2025-11-28",
-    text: "Amazing experience! Gabriel is very talented and easy to work with. Will definitely hire again.",
-    jobType: "React Application"
-  },
-  {
-    name: "Peter Mensah",
-    rating: 4,
-    date: "2025-11-20",
-    text: "Professional and efficient. Completed the work within the deadline and communicated well throughout.",
-    jobType: "Website Redesign"
-  },
-  {
-    name: "Ama Frimpong",
-    rating: 5,
-    date: "2025-11-15",
-    text: "Outstanding developer! Created exactly what I wanted. Very satisfied with the results.",
-    jobType: "E-commerce Site"
-  }
-];
+
+
+
 
 const PROJECTS = [slide1, slide2, slide3, slide4];
 
@@ -329,6 +291,84 @@ const GeneralProfile = () => {
   const [showCallModal, setShowCallModal] = useState(null);
   const [notification, setNotification] = useState('');
   const [isFavorite, setIsFavorite] = useState(false);
+  const [replyTarget, setReplyTarget] = useState(null);
+const [replyText, setReplyText] = useState("");
+
+
+const insertReply = (items, parentId, reply) => {
+  return items.map(item => {
+    if (item.id === parentId) {
+      return { ...item, replies: [...item.replies, reply] };
+    }
+    if (item.replies?.length) {
+      return {
+        ...item,
+        replies: insertReply(item.replies, parentId, reply)
+      };
+    }
+    return item;
+  });
+};
+
+
+const [REVIEWS, setREVIEWS] = useState([
+  {
+    id: "REV-001",
+    parentId: null,
+    bookingId: "BK-REVIEW-001",
+    author: {
+      id: "CLIENT-301",
+      name: "Ama Boateng",
+      role: "client"
+    },
+    rating: 5,
+    reviewText: "Excellent service. Very professional and punctual.",
+    createdAt: "2025-02-09T18:40:00Z",
+    verified: true,
+    replies: [
+      {
+        id: "REP-001",
+        parentId: "REV-001",
+        author: {
+          id: "PROV-101",
+          name: "Gabriel A. Gordon-Mensah",
+          role: "provider"
+        },
+        reviewText: "Thank you so much, Ama. It was a pleasure working with you.",
+        createdAt: "2025-02-09T20:10:00Z",
+        replies: []
+      }
+    ]
+  }
+]);
+
+
+
+const handlePostReply = () => {
+  if (!replyTarget || !replyText.trim()) return;
+
+  const reply = {
+  id: crypto.randomUUID(),
+  parentId: replyTarget.id,
+  author: {
+    id: "PROV-101",
+    name: "Kwame Mensah",
+    role: "provider"
+  },
+  reviewText: replyText.trim(), // ✅ FIX HERE
+  createdAt: new Date().toISOString(),
+  replies: []
+};
+
+
+  setREVIEWS(prev =>
+    insertReply(prev, replyTarget.id, reply)
+  );
+
+  setReplyText("");
+  setReplyTarget(null);
+};
+
 
   const handleCall = (type = 'voice') => {
     setShowCallModal(type);
@@ -671,10 +711,50 @@ const GeneralProfile = () => {
 
                 {/* Individual Reviews */}
                 <div className="mt-8 space-y-6">
-                  {REVIEWS.map((review, index) => (
-                    <ReviewItem key={index} review={review} index={index} />
-                  ))}
-                </div>
+  {REVIEWS.map(review => (
+    <ReviewThread
+      key={review.id}
+      item={review}
+      onReply={setReplyTarget}
+    />
+  ))}
+</div>
+
+{replyTarget && (
+  <div className="mt-6 bg-gray-50 p-4 rounded-lg border">
+    <p className="text-sm text-gray-600 mb-2">
+      Replying to <strong>{replyTarget.author.name}</strong>:
+<span className="italic text-gray-500 ml-1">
+  “{replyTarget.reviewText.slice(0, 40)}…”
+</span>
+
+    </p>
+
+    <textarea
+      value={replyText}
+      onChange={(e) => setReplyText(e.target.value)}
+      className="w-full bg-white text-gray-900 border rounded-lg p-3 focus:border-2 focus:border-blue-600 focus:outline-none"
+      rows={3}
+      placeholder="Write your reply..."
+    />
+
+    <div className="flex justify-end mt-3 gap-3">
+      <button
+        onClick={() => setReplyTarget(null)}
+        className="px-6 py-2 bg-white border-2 border-red-600 text-red-600 rounded-lg hover:bg-red-50 transition-colors font-semibold flex items-center gap-2"
+                      >
+                      Cancel
+                      </button>
+      <button
+        onClick={handlePostReply}
+        className="bg-blue-600 text-white px-4 py-2 rounded-lg"
+      >
+        Post Reply
+      </button>
+    </div>
+  </div>
+)}
+
               </motion.div>
             )}
           </AnimatePresence>

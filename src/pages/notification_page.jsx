@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useRef, useEffect, memo, useCallback } from 'react';
 import { ArrowLeft, Settings, Bell, CreditCard, MessageSquare, UserCheck, AlertCircle, CheckCircle, Trash2, Bookmark, Eye, EyeOff } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate } from "react-router-dom";
+import { useNavigateBack } from "../hooks/useNavigateBack.js";
 import { useNotification } from '../contexts/NotificationContext';
 import emptyNotificationsImage from '../assets/No Messages.png';
 import { NotificationBadge } from '../components/ui/NotificationBadge.jsx';
@@ -287,7 +287,7 @@ const FilterButton = memo(({ filter, isActive, badgeCount, onClick }) => (
 
 // Main Notifications Page
 const NotificationsPage = () => {
-  const navigate = useNavigate();
+  const handleBackClick = useNavigateBack('/lucid_dev_backup', 400);
   const { showNotification } = useNotification();
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [confirmDelete, setConfirmDelete] = useState(null);
@@ -512,14 +512,6 @@ const NotificationsPage = () => {
     showNotification('All notifications cleared', 'success');
   }, [showNotification]);
 
-  const handleBack = useCallback(() => {
-    if (window.history.length > 2) {
-      navigate(-1);
-    } else {
-      navigate('/lucid_dev_backup');
-    }
-    showNotification('Going Back', 'info');
-  },[showNotification], [navigate]);
 
   const hasNotifications = Object.keys(filteredNotifications).length > 0;
 
@@ -560,7 +552,7 @@ const NotificationsPage = () => {
         <div className="w-full mx-auto px-10 py-4">
           <div className="flex items-center justify-between mb-4">
             <motion.button
-              onClick={handleBack}
+              onClick={handleBackClick}
               className="p-2 hover:bg-gray-100 rounded-full transition-colors"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}

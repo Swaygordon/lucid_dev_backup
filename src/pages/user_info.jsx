@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigateBack } from "../hooks/useNavigateBack.js";
 import { useNotification } from '../contexts/NotificationContext';
 import { 
   ArrowLeft, 
@@ -27,20 +27,10 @@ const fadeIn = {
 };
 
 const UserInfo = () => {
-  const navigate = useNavigate();
   const { showNotification } = useNotification();
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('personal');
-  const handleBackClick = useCallback(() => {
-    showNotification('Going Back', 'success');
-    setTimeout(() => {
-      if (window.history.length > 2) {
-        navigate(-1);
-      } else {
-        navigate('/dashboard');
-      }
-    }, 800);
-  }, [showNotification, navigate]);
+  const handleBackClick = useNavigateBack('/lucid_website_test', 400);
 
   // Form states
   const [personalInfo, setPersonalInfo] = useState({
@@ -83,18 +73,34 @@ const UserInfo = () => {
   const handleSavePersonalInfo = async () => {
     setLoading(true);
     // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    setLoading(false);
+    setLoading(true);
+     try {
+    // simulate save (replace with API call later)
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
     showNotification('Personal information updated successfully!', 'success');
+  } catch (error) {
+    showNotification('Failed to update personal information', 'error');
+  } finally {
+    setLoading(false);
+  }
   };
 
   const handleSaveLocationInfo = async () => {
     setLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    setLoading(false);
+     try {
+    // simulate save (replace with API call later)
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
     showNotification('Location information updated successfully!', 'success');
+  } catch (error) {
+    showNotification('Failed to update location information', 'error');
+  } finally {
+    setLoading(false);
+  }
   };
 
+  
 
   const handleChangePassword = async () => {
     if (passwordInfo.newPassword !== passwordInfo.confirmPassword) {
@@ -106,10 +112,16 @@ const UserInfo = () => {
       return;
     }
     setLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    setLoading(false);
+     try {
+    // simulate save (replace with API call later)
+    await new Promise(resolve => setTimeout(resolve, 2000));
     setPasswordInfo({ currentPassword: '', newPassword: '', confirmPassword: '' });
     showNotification('Password changed successfully!', 'success');
+  } catch (error) {
+    showNotification('Failed to change profile', 'error');
+  } finally {
+    setLoading(false);
+  }
   };
 
   const handleDeactivateAccount = () => {
@@ -248,7 +260,7 @@ const UserInfo = () => {
                         name="gender"
                         value={personalInfo.gender}
                         onChange={handlePersonalInfoChange}
-                        className="w-full px-4 py-3 border-2 rounded-lg border-gray-300 focus:border-blue-600 focus:outline-none"
+                        className="w-full px-4 py-3 text-gray-700 bg-white border-2 rounded-lg border-gray-300 focus:border-blue-600 focus:outline-none"
                       >
                         <option value="male">Male</option>
                         <option value="female">Female</option>

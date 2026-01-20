@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { useNavigateBack } from "../hooks/useNavigateBack.js";
 import { useNotification } from '../contexts/NotificationContext';
 import { 
   ArrowLeft,
@@ -39,16 +40,7 @@ const HelpSupport = () => {
     message: ''
   });
   const [loading, setLoading] = useState(false);
-  const handleBackClick = useCallback(() => {
-    showNotification('Going Back', 'info');
-    setTimeout(() => {
-      if (window.history.length > 2) {
-        navigate(-1);
-      } else {
-        navigate('/dashboard');
-      }
-    }, 800);
-  }, [showNotification, navigate]);
+  const handleBackClick = useNavigateBack('/provider_dashboard', 600);
 
   const categories = [
     { id: 'getting-started', name: 'Getting Started', icon: BookOpen },

@@ -1,5 +1,7 @@
 import React, { useState, useCallback, memo } from 'react';
 import { useNavigate } from "react-router-dom";
+import { useNavigateBack } from "../hooks/useNavigateBack.js";
+import { useNotification } from '../contexts/NotificationContext';
 import { 
   CirclePlus, CheckCircle, Users, User, Clock, X, SquarePlus, Minus, Plus, 
   ChevronDown, ChevronUp, MapPin, Award, Languages, Camera, Trash2
@@ -8,69 +10,9 @@ import ImageUploadModal from "../components/ImageUploadModal.jsx";
 import { useImageUpload } from "../hooks/useImageUpload.js";
 import { motion } from "framer-motion";
 import profileImg from "../assets/profile.svg";
+import { Button, Input } from '../components/ui';
 
-// ============================================
-// NOTIFICATION CONTEXT (Same as before)
-// ============================================
-const NotificationContext = React.createContext();
 
-const useNotification = () => {
-  const context = React.useContext(NotificationContext);
-  if (!context) throw new Error('useNotification must be used within NotificationProvider');
-  return context;
-};
-
-const NotificationProvider = ({ children }) => {
-  const [notifications, setNotifications] = useState([]);
-
-  const showNotification = useCallback((message, type = 'info', duration = 2000) => {
-    const id = Date.now();
-    setNotifications(prev => [...prev, { id, message, type }]);
-    
-    if (duration) {
-      setTimeout(() => {
-        setNotifications(prev => prev.filter(n => n.id !== id));
-      }, duration);
-    }
-  }, []);
-
-  const removeNotification = useCallback((id) => {
-    setNotifications(prev => prev.filter(n => n.id !== id));
-  }, []);
-
-  return (
-    <NotificationContext.Provider value={{ showNotification }}>
-      {children}
-      <ToastContainer notifications={notifications} onRemove={removeNotification} />
-    </NotificationContext.Provider>
-  );
-};
-
-const ToastContainer = ({ notifications, onRemove }) => (
-  <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 flex flex-col gap-2">
-    {notifications.map(n => (
-      <Toast key={n.id} {...n} onClose={() => onRemove(n.id)} />
-    ))}
-  </div>
-);
-
-const Toast = ({ message, type, onClose }) => {
-  const styles = {
-    success: 'bg-green-600',
-    error: 'bg-red-600',
-    warning: 'bg-yellow-600',
-    info: 'bg-blue-600',
-  };
-
-  return (
-    <div className={`${styles[type]} text-white px-6 py-3 rounded-lg shadow-xl flex items-center gap-3 min-w-[300px]`}>
-      <span className="flex-1">{message}</span>
-      <button onClick={onClose} className="hover:bg-white/20 rounded p-1 transition-colors">
-        <X className="w-4 h-4" />
-      </button>
-    </div>
-  );
-};
 
 // ============================================
 // CUSTOM HOOKS
@@ -220,9 +162,8 @@ const ProfileAvatar = memo(({ hasImage }) => (
 const InputField = memo(({ label, ...props }) => (
   <div className="flex flex-col">
     <label className="mb-2 font-medium text-gray-700">{label}</label>
-    <input
+    <Input
       type="text"
-      className="px-3 py-2.5 border-2 border-gray-300 rounded-md text-sm bg-white text-gray-900 transition-all focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
       {...props}
     />
   </div>
@@ -284,11 +225,10 @@ const DayCard = memo(({ selected, label, description, onClick }) => (
 const TimeInput = memo(({ label, value, onChange }) => (
   <div className="flex-1">
     <label className="block text-sm font-medium text-gray-700 mb-2">{label}</label>
-    <input
+    <Input
       type="time"
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg text-sm bg-white text-gray-900 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all"
     />
   </div>
 ));
@@ -498,19 +438,36 @@ const WorkingHoursSection = memo(({ profile, onDaySelect, onTimeChange, onCustom
 // MAIN COMPONENT
 // ============================================
 const EditProfile = () => {
+  const [loading, setLoading] = useState(false);
   const { showNotification } = useNotification();
   const formMethods = useProfileForm();
   const navigate = useNavigate();
   const upload = useImageUpload();
-  const handleSave = useCallback(() => {
-    showNotification('Profile saved successfully!', 'success');
-    setTimeout(() => navigate(-1), 800);
-  }, [showNotification, navigate]);
+  
 
   const handleCancel = useCallback(() => {
     showNotification('Changes cancelled', 'info');
     setTimeout(() => navigate(-1), 800);
   }, [showNotification, navigate]);
+
+  const handleSave = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+
+  try {
+    // simulate save (replace with API call later)
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
+    showNotification('Profile saved successfully!', 'success');
+
+    navigate('/provider_dashboard');
+  } catch (error) {
+    showNotification('Failed to save profile', 'error');
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="px-5 py-5 bg-gray-50 min-h-screen pb-32">
@@ -743,18 +700,9 @@ const EditProfile = () => {
 
           {/* Action Buttons */}
           <div className="flex gap-4 justify-center mt-8 pt-8 border-t border-gray-200">
-            <button
-              onClick={handleCancel}
-              className="bg-white text-blue-600 border-2 border-blue-600 px-12 py-3 rounded-md text-base font-semibold transition-all hover:bg-blue-50 hover:shadow-lg min-w-[150px]"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleSave}
-              className="bg-blue-600 text-white px-12 py-3 rounded-md text-base font-semibold transition-all hover:bg-blue-700 hover:shadow-lg min-w-[150px]"
-            >
-              Save Changes
-            </button>
+            <Button fullWidth variant='danger' size="md" onClick={handleCancel}> Cancel</Button>
+            
+            <Button fullWidth size="md" onClick={handleSave} loading={loading}>Save</Button>
           </div>
         </div>
       </div>
@@ -777,10 +725,4 @@ const EditProfile = () => {
   );
 };
 
-export default function App() {
-  return (
-    <NotificationProvider>
-      <EditProfile />
-    </NotificationProvider>
-  );
-}
+export default EditProfile;

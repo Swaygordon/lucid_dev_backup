@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { useNavigateBack } from "../hooks/useNavigateBack.js";
 import EarningsChart from '../components/earnings_chart.jsx';
 import { 
   ArrowLeft,
@@ -32,25 +33,11 @@ const fadeIn = {
 };
 
 const EarningsPayments = () => {
-  const navigate = useNavigate();
+  const handleBackClick = useNavigateBack('/provider_dashboard', 600);
   const [selectedPeriod, setSelectedPeriod] = useState('month');
   const [showAddPayment, setShowAddPayment] = useState(false);
   
-  const showNotification = (msg, type = 'info') => {
-    console.log(`${type}: ${msg}`);
-  };
   
-  const handleBackClick = useCallback(() => {
-    showNotification('Going Back', 'info');
-    setTimeout(() => {
-      if (window.history.length > 2) {
-        navigate(-1);
-      } else {
-        navigate('/dashboard');
-      }
-    }, 800);
-  }, [navigate]);
-
   // UPDATED: Enhanced data structure matching chart requirements
   const earningsData = useMemo(() => ({
     thisWeek: 1250,
@@ -178,8 +165,6 @@ const EarningsPayments = () => {
   const weekChange = ((earningsData.thisWeek - earningsData.lastWeek) / earningsData.lastWeek * 100).toFixed(1);
   const monthChange = ((earningsData.thisMonth - earningsData.lastMonth) / earningsData.lastMonth * 100).toFixed(1);
   const yearChange = ((earningsData.thisYear - earningsData.lastYear) / earningsData.lastYear * 100).toFixed(1);
-  
-  const yearlyGoalProgress = ((earningsData.thisYear / earningsData.goals.yearly) * 100).toFixed(0);
 
   const StatCard = ({ icon: Icon, title, amount, change, trend, subtitle }) => (
     <motion.div
@@ -360,35 +345,6 @@ const EarningsPayments = () => {
             trend="neutral"
             subtitle="Ready to withdraw"
           />
-        </motion.div>
-
-        {/* NEW: Goal Progress Section */}
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={fadeIn}
-          className="grid md:grid-cols-2 gap-6 mb-8"
-        >
-
-          <div className="bg-white rounded-xl p-6 shadow-md">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <Briefcase className="w-5 h-5 text-green-600" />
-                <h3 className="text-lg font-bold text-gray-900">This Year</h3>
-              </div>
-              <span className="text-2xl font-bold text-green-600">+{yearChange}%</span>
-            </div>
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <span className="text-gray-600">Total Earnings</span>
-                <span className="font-bold text-gray-900">GH₵{earningsData.thisYear.toLocaleString()}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Jobs Completed</span>
-                <span className="font-bold text-gray-900">{earningsData.totalJobs.thisYear}</span>
-              </div>
-            </div>
-          </div>
         </motion.div>
 
         {/* NEW: Earnings Chart */}

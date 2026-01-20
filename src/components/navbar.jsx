@@ -41,12 +41,12 @@ const slideIn = {
   visible: { 
     x: 0, 
     opacity: 1,
-    transition: { duration: 0.3, ease: "easeOut" }
+    transition: { duration: 0.2, ease: "easeOut" }
   },
   exit: { 
     x: -300, 
     opacity: 0,
-    transition: { duration: 0.2, ease: "easeIn" }
+    transition: { duration: 0.1, ease: "easeIn" }
   }
 };
 
@@ -54,11 +54,11 @@ const overlayVariants = {
   hidden: { opacity: 0 },
   visible: { 
     opacity: 1,
-    transition: { duration: 0.2 }
+    transition: { duration: 0.1 }
   },
   exit: { 
     opacity: 0,
-    transition: { duration: 0.2 }
+    transition: { duration: 0.1 }
   }
 };
 
@@ -114,7 +114,7 @@ function Navbar() {
   ];
 
   const userMenuLinks = [
-    { to: "/userProfile", label: "My Profile" },
+    { to: "/providerProfile", label: "My Profile" },
     { to: "/provider_dashboard", label: "Account" },
     { to: "/allmessages", label: "Messages", badge: messageCount },
     { to: "/notification", label: "Notifications", badge: notificationCount },
@@ -128,29 +128,24 @@ function Navbar() {
 
   return (
     <>
-      <motion.nav 
+      < nav 
         className="navbar bg-white h-20 shadow-lg sticky top-0 z-30"
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.5 }}
       >
         {/* Logo */}
-        <motion.div 
+        < div 
           className="navbar-start ml-4 md:ml-12"
           initial="hidden"
           animate="visible"
           variants={fadeInUp}
         >
-          <Link to="/lucid_website_test" className="flex items-center">
-            <motion.img
+          <Link to="/lucid_dev_backup" className="flex items-center">
+            < img
               src={Logo}
               alt="Lucid Logo"
               className="h-5 w-20 object-cover"
-              whileHover={{ rotate: 360, scale: 1.1 }}
-              transition={{ duration: 0.6 }}
             />
           </Link>
-        </motion.div>
+        </ div>
 
         {/* Desktop Navigation */}
         <div className="navbar-end mr-4">
@@ -262,7 +257,7 @@ function Navbar() {
                       <span>{link.label}</span>
                       <NotificationBadge 
                         count={link.badge} 
-                        className="relative top-0 right-0 w-4 h-4" 
+                        className="relative top-0 right-0 w-4 h-4 p-2" 
                       />
                     </Link>
                   </motion.li>
@@ -324,7 +319,7 @@ function Navbar() {
             </svg>
           </motion.button>
         </div>
-      </motion.nav>
+      </ nav>
 
       {/* Overlay */}
       <AnimatePresence>

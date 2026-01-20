@@ -22,15 +22,15 @@ const Signin = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    navigate('/userProfile');
+    navigate('/lucid_dev_backup');
   };
 
   const handleGoogleSignin = () => {
-    navigate('/userProfile');
+    navigate('/lucid_dev_backup');
   };
 
   const handleFacebookSignin = () => {
-    navigate('/userProfile');
+    navigate('/lucid_dev_backup');
   };
 
   const PasswordToggle = () => (
@@ -95,7 +95,7 @@ const Signin = () => {
                         value="client"
                         checked={formData.role === 'client'}
                         onChange={handleChange}
-                        className="accent-blue-600 w-4 h-4"
+                        className="bg-white accent-blue-600 w-4 h-4"
                       />
                       <span className='text-black font-medium'>Client</span>
                     </label>
@@ -106,7 +106,7 @@ const Signin = () => {
                         value="service_provider"
                         checked={formData.role === 'service_provider'}
                         onChange={handleChange}
-                        className="accent-blue-600 w-4 h-4"
+                        className="bg-white accent-blue-600 w-4 h-4"
                       />
                       <span className='text-black font-medium'>Service Provider</span>
                     </label>

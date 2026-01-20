@@ -14,7 +14,7 @@ export const useNotification = () => {
 export const NotificationProvider = ({ children }) => {
   const [notifications, setNotifications] = useState([]);
 
-  const showNotification = (message, type = 'info', duration = 3000) => {
+  const showNotification = (message, type = 'info', duration = 1300) => {
     const id = Date.now();
     setNotifications(prev => [...prev, { id, message, type }]);
     
@@ -68,7 +68,7 @@ const Toast = ({ message, type, onClose }) => {
   };
 
   return (
-    <div className={`${styles[type]} text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3 min-w-[300px]`}>
+    <div className={`${styles[type]} text-white px-6 py-3 rounded-lg border-white border-2 shadow-lg flex items-center gap-3 min-w-[300px]`}>
       {icons[type]}
       <span className="flex-1">{message}</span>
       <button onClick={onClose} className="hover:bg-white/20 rounded p-1">

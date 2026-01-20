@@ -32,7 +32,7 @@ const Signup = () => {
     setTimeout(() => {
       setLoading(false);
       showNotification('Account created successfully!', 'success');
-      navigate('/account');
+      navigate('/lucid_dev_backup');
     }, 2000);
   };
 

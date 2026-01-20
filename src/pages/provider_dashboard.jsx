@@ -1,7 +1,13 @@
-import React, { useState, useMemo, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useMemo } from 'react';
+import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import { useNavigateBack } from "../hooks/useNavigateBack.js";
+import { useNotification } from '../contexts/NotificationContext';
+import { Avatar } from '../components/ui/Avatar.jsx';
+import EarningsDashboard from '../components/earningsDashboard.jsx';
+import BookingDetailsModal from '../components/shared/BookingDetailsModal.jsx';
 import EarningsChart from '../components/earnings_chart.jsx';
+import { getBookingsByProvider, calculateBookingStats, getActionRequiredBookings } from '../data/mockDataUtils';
 import {
   ArrowLeft, 
   TrendingUp, 
@@ -29,9 +35,6 @@ import {
   Navigation,
   User
 } from 'lucide-react';
-import { Avatar } from '../components/ui/Avatar.jsx';
-import { Link } from 'react-router-dom'; 
-import { useNotification } from '../contexts/NotificationContext';
 
 // Animation Variants
 const containerVariants = {
@@ -133,6 +136,12 @@ const ActivityItem = ({ icon: Icon, title, description, time, status, to }) => {
 
 // Upcoming Booking Card
 const BookingCard = ({ booking, onViewDetails }) => {
+  const clientName = booking.client?.name ?? 'Client';
+  const locationLabel = [
+    booking.location?.area,
+    booking.location?.city
+  ].filter(Boolean).join(', ');
+
   return (
     <motion.div
       variants={itemVariants}
@@ -141,31 +150,36 @@ const BookingCard = ({ booking, onViewDetails }) => {
     >
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
-          <Avatar name={booking.client} size="md" />
+          <Avatar name={clientName} size="md" />
           <div>
-            <h4 className="font-semibold text-gray-900">{booking.client}</h4>
-            <p className="text-sm text-gray-600">{booking.service}</p>
+            <h4 className="font-semibold text-gray-900">{clientName}</h4>
+            <p className="text-sm text-gray-600">{booking.title}</p>
           </div>
         </div>
-        <span className="px-3 py-1 bg-blue-50 text-blue-700 text-xs font-semibold rounded-full">
+
+        <span className="px-3 py-1 bg-blue-50 text-blue-700 text-xs font-semibold rounded-full capitalize">
           {booking.status}
         </span>
       </div>
-      
+
       <div className="space-y-2 text-sm">
         <div className="flex items-center gap-2 text-gray-600">
           <Calendar className="w-4 h-4" />
           <span>{booking.date} at {booking.time}</span>
         </div>
+
         <div className="flex items-center gap-2 text-gray-600">
           <MapPin className="w-4 h-4" />
-          <span>{booking.location}</span>
+          <span>{locationLabel}</span>
         </div>
       </div>
-      
+
       <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
-        <span className="text-lg font-bold text-gray-900">GH₵{booking.price}</span>
-        <button 
+        <span className="text-lg font-bold text-gray-900">
+          GH₵{booking.price}
+        </span>
+
+        <button
           onClick={() => onViewDetails(booking)}
           className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-semibold"
         >
@@ -176,263 +190,8 @@ const BookingCard = ({ booking, onViewDetails }) => {
   );
 };
 
+
 // Task Details Modal
-const BookingDetailsModal = ({ booking, onClose }) => {
-  const { showNotification } = useNotification();
-  
-  if (!booking) return null;
-
-  const getStatusConfig = (status) => {
-    const configs = {
-      Pending: { bg: 'bg-yellow-100', text: 'text-yellow-700', icon: Clock, label: 'Pending' },
-      Confirmed: { bg: 'bg-blue-100', text: 'text-blue-700', icon: CheckCircle, label: 'Confirmed' },
-      Completed: { bg: 'bg-green-100', text: 'text-green-700', icon: CheckCircle, label: 'Completed' },
-      Cancelled: { bg: 'bg-red-100', text: 'text-red-700', icon: AlertCircle, label: 'Cancelled' }
-    };
-    return configs[booking.status] || configs.Pending;
-  };
-
-  const getUrgencyConfig = (urgency) => {
-    const configs = {
-      normal: { bg: 'bg-blue-100', text: 'text-blue-700', label: 'Normal' },
-      urgent: { bg: 'bg-orange-100', text: 'text-orange-700', label: 'Urgent' },
-      emergency: { bg: 'bg-red-100', text: 'text-red-700', label: 'Emergency' }
-    };
-    return configs[urgency] || configs.normal;
-  };
-
-  const handleAcceptBooking = () => {
-    showNotification('Booking accepted successfully!', 'success');
-    onClose();
-  };
-
-  const handleDeclineBooking = () => {
-    showNotification('Booking declined', 'info');
-    onClose();
-  };
-
-  const statusConfig = getStatusConfig(booking.status);
-  const urgencyConfig = getUrgencyConfig(booking.urgency);
-  const StatusIcon = statusConfig.icon;
-
-  return (
-    <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
-        onClick={onClose}
-      >
-        <motion.div
-          initial={{ scale: 0.9, y: 50 }}
-          animate={{ scale: 1, y: 0 }}
-          exit={{ scale: 0.9, y: 50 }}
-          className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
-          onClick={(e) => e.stopPropagation()}
-        >
-          {/* Modal Header */}
-          <div className="sticky top-0 bg-white border-b border-gray-200 p-6 flex items-center justify-between z-10">
-            <div className="flex-1">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">{booking.service}</h2>
-              <div className="flex items-center gap-3">
-                <span className={`px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1 ${statusConfig.bg} ${statusConfig.text}`}>
-                  <StatusIcon className="w-3 h-3" />
-                  {statusConfig.label}
-                </span>
-                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${urgencyConfig.bg} ${urgencyConfig.text}`}>
-                  {urgencyConfig.label}
-                </span>
-              </div>
-            </div>
-            <button
-              onClick={onClose}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-            >
-              <X className="w-6 h-6 text-gray-600" />
-            </button>
-          </div>
-
-          {/* Modal Content */}
-          <div className="p-6 space-y-6">
-            {/* Client Information */}
-            <div>
-              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <User className="w-5 h-5 text-blue-600" />
-                Client Information
-              </h3>
-              <div className="grid md:grid-cols-2 gap-4 bg-gray-50 rounded-lg p-4">
-                <div>
-                  <p className="text-sm text-gray-600 mb-1">Name</p>
-                  <p className="font-semibold text-gray-900">{booking.client}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600 mb-1">Phone</p>
-                  <a href={`tel:${booking.contactPhone}`} className="font-semibold text-blue-600 hover:underline flex items-center gap-1">
-                    <Phone className="w-4 h-4" />
-                    {booking.contactPhone}
-                  </a>
-                </div>
-                {booking.contactEmail && (
-                  <div>
-                    <p className="text-sm text-gray-600 mb-1">Email</p>
-                    <a href={`mailto:${booking.contactEmail}`} className="font-semibold text-blue-600 hover:underline flex items-center gap-1">
-                      <Mail className="w-4 h-4" />
-                      {booking.contactEmail}
-                    </a>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Job Details */}
-            <div>
-              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <FileText className="w-5 h-5 text-blue-600" />
-                Job Details
-              </h3>
-              <div className="space-y-4">
-                <div>
-                  <p className="text-sm text-gray-600 mb-1">Description</p>
-                  <p className="text-gray-900 bg-gray-50 rounded-lg p-3">{booking.description}</p>
-                </div>
-                
-                <div className="grid md:grid-cols-3 gap-4">
-                  <div>
-                    <p className="text-sm text-gray-600 mb-1">Estimated Duration</p>
-                    <p className="font-semibold text-gray-900">{booking.duration}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600 mb-1">Budget Range</p>
-                    <p className="font-semibold text-gray-900">
-                      GH₵{booking.budgetMin} - GH₵{booking.budgetMax}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600 mb-1">Quoted Price</p>
-                    <p className="font-semibold text-green-600 text-lg">GH₵{booking.price}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Schedule */}
-            <div>
-              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <Calendar className="w-5 h-5 text-blue-600" />
-                Schedule
-              </h3>
-              <div className="grid md:grid-cols-2 gap-4 bg-gray-50 rounded-lg p-4">
-                <div>
-                  <p className="text-sm text-gray-600 mb-1">Preferred Date & Time</p>
-                  <p className="font-semibold text-gray-900">{booking.date} at {booking.time}</p>
-                </div>
-                {booking.alternateDate && (
-                  <div>
-                    <p className="text-sm text-gray-600 mb-1">Alternate Date & Time</p>
-                    <p className="font-semibold text-gray-900">{booking.alternateDate} at {booking.alternateTime}</p>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Location */}
-            <div>
-              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <MapPin className="w-5 h-5 text-blue-600" />
-                Location
-              </h3>
-              <div className="bg-gray-50 rounded-lg p-4 space-y-3">
-                <div>
-                  <p className="text-sm text-gray-600 mb-1">Address</p>
-                  <p className="font-semibold text-gray-900">{booking.address}</p>
-                </div>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm text-gray-600 mb-1">Area</p>
-                    <p className="font-semibold text-gray-900">{booking.location}</p>
-                  </div>
-                  {booking.landmark && (
-                    <div>
-                      <p className="text-sm text-gray-600 mb-1">Landmark</p>
-                      <p className="font-semibold text-gray-900">{booking.landmark}</p>
-                    </div>
-                  )}
-                </div>
-                <a
-                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(booking.address + ', ' + booking.location)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold"
-                >
-                  <Navigation className="w-4 h-4" />
-                  Open in Google Maps
-                </a>
-              </div>
-            </div>
-
-            {/* Additional Notes */}
-            {booking.additionalNotes && (
-              <div>
-                <h3 className="text-lg font-bold text-gray-900 mb-4">Additional Notes</h3>
-                <p className="text-gray-900 bg-yellow-50 rounded-lg p-4 border-l-4 border-yellow-400">
-                  {booking.additionalNotes}
-                </p>
-              </div>
-            )}
-          </div>
-
-          {/* Modal Footer - Action Buttons */}
-          <div className="sticky bottom-0 bg-white border-t border-gray-200 p-6">
-            {booking.status === 'Pending' && (
-              <div className="flex gap-4">
-                <button
-                  onClick={handleAcceptBooking}
-                  className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold"
-                >
-                  <ThumbsUp className="w-5 h-5" />
-                  Accept Booking
-                </button>
-                <button
-                  onClick={handleDeclineBooking}
-                  className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-semibold"
-                >
-                  <ThumbsDown className="w-5 h-5" />
-                  Decline
-                </button>
-              </div>
-            )}
-            {booking.status === 'Confirmed' && (
-              <div className="flex gap-4">
-                <Link to="/messagePage" className="flex-1">
-                  <button className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold">
-                    <MessageSquare className="w-5 h-5" />
-                    Message Client
-                  </button>
-                </Link>
-                <button
-                  className="flex-1 flex items-center justify-center gap-2 px-6 py-3 border-2 border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-semibold"
-                  onClick={() => showNotification('Mark as complete feature coming soon', 'info')}
-                >
-                  <CheckCircle className="w-5 h-5" />
-                  Mark Complete
-                </button>
-              </div>
-            )}
-            {booking.status === 'Completed' && (
-              <div className="text-center">
-                <div className="flex items-center justify-center gap-2 text-green-600 mb-2">
-                  <CheckCircle className="w-6 h-6" />
-                  <span className="font-semibold text-lg">Job Completed</span>
-                </div>
-              </div>
-            )}
-          </div>
-        </motion.div>
-      </motion.div>
-    </AnimatePresence>
-  );
-};
 
 // Quick Action Button
 const QuickAction = ({ icon: Icon, label, to, badgeCount }) => {
@@ -463,30 +222,87 @@ const QuickAction = ({ icon: Icon, label, to, badgeCount }) => {
 // Main Dashboard Component
 const ProviderDashboard = () => {
   const [timeframe, setTimeframe] = useState('week');
-  const [selectedBooking, setSelectedBooking] = useState(null);
-  const navigate = useNavigate();
-  const { showNotification } = useNotification();
-  const handleBackClick = useCallback(() => {
-      showNotification('Going Back', 'info');
-      setTimeout(() => {
-        if (window.history.length > 2) {
-          navigate(-1);
-        } else {
-          navigate('/lucid_dev_backup');
-        }
-      }, 600);
-    }, [showNotification, navigate]);
-
+  const handleBackClick = useNavigateBack('/lucid_dev_backup', 200);
+const [showCancelModal, setShowCancelModal] = useState(false);
+  const [bookingToCancel, setBookingToCancel] = useState(null);
     const [notificationCount, setNotificationCount] = useState(5);
     const [unreadMessages, setUnreadMessages] = useState(3);
+    const [unreadBookings, setUnreadbookings] = useState(5);
+
+    const [selectedBooking, setSelectedBooking] = useState(null);
+  const { showNotification } = useNotification();
+
+  const handleAccept = (booking) => {
+    console.log('Accepting booking:', booking.id);
+    showNotification('Booking accepted successfully!', 'success');
+    setSelectedBooking(null);
+    // TODO: Add API call here
+  };
+
+  const handleDecline = (booking) => {
+    console.log('Declining booking:', booking.id);
+    showNotification('Booking declined', 'info');
+    setSelectedBooking(null);
+    // TODO: Add API call here
+  };
+
+  const handleMarkComplete = (booking) => {
+    console.log('Marking booking complete:', booking.id);
+    showNotification('Job marked as complete!', 'success');
+    setSelectedBooking(null);
+    // TODO: Add API call here
+  };
   
-  // Mock data with full booking details
-  const stats = useMemo(() => [
-    { icon: Briefcase, title: 'Total Jobs', value: '47', change: '+12%', trend: 'up', color: 'blue' },
-    { icon: DollarSign, title: 'Earnings', value: 'GH₵8,420', change: '+8%', trend: 'up', color: 'green' },
-    { icon: Star, title: 'Rating', value: '4.8', change: '+0.2', trend: 'up', color: 'orange' },
-    { icon: Users, title: 'Clients', value: '34', change: '+5', trend: 'up', color: 'purple' }
-  ], []);
+ const allBookings = useMemo(() => {
+  return getBookingsByProvider('PRV001'); // Your actual provider ID
+}, []);
+
+const bookingStats = useMemo(() => {
+  return calculateBookingStats(allBookings);
+}, [allBookings]);
+
+const activeBookings = useMemo(() => {
+  return allBookings.filter(b => 
+    ['pending', 'confirmed', 'in-progress'].includes(b.status)
+  );
+}, [allBookings]);
+
+
+
+const stats = useMemo(() => [
+  { 
+    icon: Briefcase, 
+    title: 'Total Jobs', 
+    value: bookingStats.total.toString(), 
+    change: '+12%', 
+    trend: 'up', 
+    color: 'blue' 
+  },
+  { 
+    icon: DollarSign, 
+    title: 'Earnings', 
+    value: `GH₵${bookingStats.totalEarnings}`, 
+    change: '+8%', 
+    trend: 'up', 
+    color: 'green' 
+  },
+  { 
+    icon: Star, 
+    title: 'Rating', 
+    value: bookingStats.avgRating, 
+    change: '+0.2', 
+    trend: 'up', 
+    color: 'orange' 
+  },
+  { 
+    icon: Users, 
+    title: 'Clients', 
+    value: '34', 
+    change: '+5', 
+    trend: 'up', 
+    color: 'purple' 
+  }
+], [bookingStats]);
 
   const recentActivities = useMemo(() => [
     {
@@ -523,75 +339,15 @@ const ProviderDashboard = () => {
     }
   ], []);
 
-  const upcomingBookings = useMemo(() => [
-    {
-      id: 1,
-      client: 'John Mensah',
-      service: 'Plumbing Repair',
-      date: 'Dec 20, 2025',
-      time: '10:00 AM',
-      location: 'Spintex, Accra',
-      price: '250',
-      status: 'Confirmed',
-      description: 'Fix leaking kitchen sink that has been dripping for 2 weeks.',
-      duration: '2-3 hours',
-      urgency: 'normal',
-      contactPhone: '+233 24 123 4567',
-      contactEmail: 'john.mensah@email.com',
-      address: '123 Main Street, House 45',
-      landmark: 'Near Total Gas Station',
-      budgetMin: 200,
-      budgetMax: 300,
-      alternateDate: 'Dec 21, 2025',
-      alternateTime: '2:00 PM',
-      additionalNotes: 'Please bring all necessary tools.'
-    },
-    {
-      id: 2,
-      client: 'Grace Osei',
-      service: 'Electrical Installation',
-      date: 'Dec 21, 2025',
-      time: '2:00 PM',
-      location: 'North Ridge, Accra',
-      price: '450',
-      status: 'Confirmed',
-      description: 'Install new ceiling fan and lights in living room and bedroom',
-      duration: '4-5 hours',
-      urgency: 'normal',
-      contactPhone: '+233 20 987 6543',
-      contactEmail: 'grace.osei@email.com',
-      address: '456 Oak Avenue, Apartment 2B',
-      landmark: 'Behind Ridge Hospital',
-      budgetMin: 400,
-      budgetMax: 500,
-      additionalNotes: 'Fan and lights already purchased.'
-    },
-    {
-      id: 3,
-      client: 'Kwame Asante',
-      service: 'Carpentry Work',
-      date: 'Dec 22, 2025',
-      time: '9:00 AM',
-      location: 'Madina, Accra',
-      price: '380',
-      status: 'Pending',
-      description: 'Build custom bookshelf with 5 shelves',
-      duration: '1 day',
-      urgency: 'normal',
-      contactPhone: '+233 27 555 1234',
-      contactEmail: 'kwame.asante@email.com',
-      address: '789 Elm Street',
-      landmark: 'Near Madina Market',
-      budgetMin: 350,
-      budgetMax: 400,
-      additionalNotes: 'Wood specifications: Oak, dark finish.'
-    }
-  ], []);
+ const bookings = useMemo(() => {
+  return activeBookings.slice(0, 3); // Show first 3 active bookings
+}, [activeBookings]);
+
 
   const quickActions = [
-    { icon: Calendar, label: 'Schedule', to: "/provider_bookings" },
+    { icon: Calendar, label: 'Schedule', to: "/provider_bookings", badgeCount: unreadBookings },
     {  icon: MessageSquare, label: 'Messages', to: "/allmessages", badgeCount: unreadMessages },
-    { icon: User, label: 'Account', to: "/account" },
+    { icon: User, label: 'Account', to: "/provider_account" },
     { icon: Activity, label: 'Analytics', to: "/earnings" }
   ];
 
@@ -624,13 +380,13 @@ const ProviderDashboard = () => {
                             >
                               <Bell className="w-5 h-5 text-gray-700" />
               {notificationCount > 0 && (
-                <span className="absolute -top-1 -right-1 min-w-5 h-5 bg-red-600 rounded-full flex items-center justify-center text-xs text-white font-bold px-1">
+                <span className="absolute -top-1 -right-1 min-w-5 h-5 bg-red-600 rounded-full flex items-center justify-center text-xs text-white font-bold px-1 border-2 border-white">
                   {notificationCount > 99 ? '99+' : notificationCount}
                 </span>
               )}
                             </motion.button>
                             </Link>
-              <Link to="/userEdit">
+              <Link to="/userProfile">
                 <Avatar name='Gabriel Gordon-Mensah' size='md'/>
               </Link>
             </div>
@@ -661,7 +417,7 @@ const ProviderDashboard = () => {
               </select>
             </motion.div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {stats.map((stat, index) => (
                 <StatCard key={index} {...stat} />
               ))}
@@ -693,7 +449,7 @@ const ProviderDashboard = () => {
               </motion.div>
               
               <div className="space-y-4">
-                {upcomingBookings.map((booking) => (
+                {bookings.map((booking) => (
                   <BookingCard 
                     key={booking.id} 
                     booking={booking}
@@ -742,28 +498,19 @@ const ProviderDashboard = () => {
           </div>
 
           {/* Earnings Chart Preview */}
-          <motion.section variants={itemVariants}>
-            <div className="bg-white rounded-xl shadow-md p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">Earnings Overview</h2>
-                <Link to="/earnings">
-                  <button className="px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg font-semibold transition-colors">
-                    View Report
-                  </button>
-                </Link>
-              </div>
-              
-               <EarningsChart />
-            </div>
-          </motion.section>
+           <EarningsChart />
         </motion.div>
       </main>
 
-      {/* Booking Details Modal */}
+      {/* Details Modal */}
       {selectedBooking && (
-        <BookingDetailsModal 
-          booking={selectedBooking} 
-          onClose={() => setSelectedBooking(null)} 
+        <BookingDetailsModal
+          booking={selectedBooking}
+          onClose={() => setSelectedBooking(null)}
+          userType="provider"
+          onAccept={handleAccept}
+          onDecline={handleDecline}
+          onMarkComplete={handleMarkComplete}
         />
       )}
     </div>
