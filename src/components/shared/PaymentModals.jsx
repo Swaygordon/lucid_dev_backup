@@ -7,6 +7,13 @@ import {
 } from 'lucide-react';
 
 // ============================================
+// PAYMENT MODALS — ALL REQUIRE BACKEND INTEGRATION
+// ─────────────────────────────────────────────
+// QuotePriceModal   → POST /bookings/:id/quotes         (provider accepts + sets price)
+// AdjustPriceModal  → POST /bookings/:id/price-adjustment (mid-job price change)
+// PaymentModal      → POST /payments                     (client pays — Paystack/Hubtel)
+// PriceAdjustmentBanner → PATCH /bookings/:id/price-adjustment (client approve/reject)
+// ============================================
 // 1. PROVIDER: QUOTE PRICE MODAL
 // Shows when provider clicks "Accept Booking"
 // ============================================
@@ -43,6 +50,11 @@ export const QuotePriceModal = ({
 
     setIsSubmitting(true);
     try {
+      // [API] POST /bookings/:id/quotes
+      //   Body: { quotedPrice, breakdown: {laborCost, materialsCost, additionalFees}, notes }
+      //   → { booking: updatedBooking }
+      // Backend must: update bookings.status = 'confirmed', set bookings.agreedPrice = quotedPrice,
+      // store breakdown in a booking_quotes table, and notify client via push notification.
       await onSubmitQuote({
         bookingId: booking.id,
         quotedPrice: total,
@@ -276,6 +288,11 @@ export const AdjustPriceModal = ({
 
     setIsSubmitting(true);
     try {
+      // [API] POST /bookings/:id/price-adjustment
+      //   Body: { originalPrice, newPrice, reason }
+      //   → { booking: updatedBooking }
+      // Backend must: insert into booking_price_adjustments table with status='pending',
+      // set bookings.priceAdjustment.status = 'pending', and push-notify the client to approve/reject.
       await onSubmitAdjustment({
         bookingId: booking.id,
         originalPrice: currentPrice,
@@ -426,6 +443,8 @@ export const PaymentModal = ({
 
   // ✅ CORRECTED: Platform fee is deducted from provider, not added to client
   const baseAmount = parseFloat(confirmedPrice) || 0;
+  // [API] The 0.18 rate should come from backend config: GET /config → { platformFeeRate: 0.18 }
+  // This prevents the rate from being hardcoded in two places (here and ReceiptModal).
   const platformFee = (baseAmount * 0.18).toFixed(2); // 18% deducted from provider
   const providerReceives = (baseAmount - parseFloat(platformFee)).toFixed(2);
   const totalAmount = baseAmount.toFixed(2); // Client pays the full agreed price
@@ -448,7 +467,15 @@ export const PaymentModal = ({
 
     setIsProcessing(true);
     try {
-      // This is where you'd integrate with your payment gateway
+      // [API] POST /payments
+      //   Body: { bookingId, amount, paymentMethod, phoneNumber? }
+      //   → { reference: string, status: 'pending' | 'success' }
+      // Backend initiates a Paystack/Hubtel charge request, returns a payment reference.
+      // For mobile money: backend calls MTN/Vodafone/AirtelTigo API and waits for webhook.
+      // After payment webhook confirms success, backend must:
+      //   UPDATE bookings SET status='completed', paymentStatus='paid', paymentData={...}
+      //   Disburse providerReceives to provider's linked payout account.
+      //   Send receipt email to both parties.
       await onProcessPayment({
         bookingId: booking.id,
         amount: parseFloat(confirmedPrice),
@@ -789,12 +816,16 @@ export const PriceAdjustmentBanner = ({
 
         {!isRequestor && (
           <div className="flex gap-3 pt-2">
+            {/* [API] onApprove → PATCH /bookings/:id/price-adjustment { action: 'approved' }
+                 Backend must: set bookings.agreedPrice = adjustment.newPrice, status = 'approved' */}
             <button
               onClick={() => onApprove(booking)}
               className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-semibold text-sm"
             >
               Approve New Price
             </button>
+            {/* [API] onReject → PATCH /bookings/:id/price-adjustment { action: 'rejected' }
+                 Backend must: revert booking to original price, notify provider */}
             <button
               onClick={() => onReject(booking)}
               className="flex-1 px-4 py-2 bg-white border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-semibold text-sm"

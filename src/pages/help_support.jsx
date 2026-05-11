@@ -20,9 +20,7 @@ import {
   AlertCircle,
   CheckCircle
 } from 'lucide-react';
-import { Button } from '../components/ui/Button';
-import { Card } from '../components/ui/Card';
-import { Input } from '../components/ui/Input';
+import { Button, Card, Input } from '../components/ui';
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
@@ -40,8 +38,12 @@ const HelpSupport = () => {
     message: ''
   });
   const [loading, setLoading] = useState(false);
-  const handleBackClick = useNavigateBack('/provider_dashboard', 600);
+  const handleBackClick = useNavigateBack('/lucid/', 600);
 
+  // [MOCK] If FAQs are managed via CMS or admin panel, replace these with:
+  //   GET /faqs/categories → [{ id, name }]
+  //   GET /faqs?categoryId={id} → [{ id, question, answer, category }]
+  // FAQ search below is client-side; for large sets use: GET /faqs/search?q={query}
   const categories = [
     { id: 'getting-started', name: 'Getting Started', icon: BookOpen },
     { id: 'bookings', name: 'Bookings', icon: FileText },
@@ -54,7 +56,7 @@ const HelpSupport = () => {
     {
       category: 'getting-started',
       question: 'How do I start accepting bookings?',
-      answer: 'To start accepting bookings, complete your profile with all required information including your skills, hourly rate, and availability. Once approved, your profile will be visible to clients in your area.'
+      answer: 'To start accepting bookings, complete your profile with all required information including your skills, pricing, and availability. Once approved, your profile will be visible to clients in your area.'
     },
     {
       category: 'getting-started',
@@ -121,6 +123,11 @@ const HelpSupport = () => {
   const handleContactSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    // [API] POST /support/tickets
+    //   Body: { subject, category, message, userId: currentUser.id }
+    //   → { ticketId: string, estimatedResponseTime: '24 hours' }
+    // Replace the setTimeout below with a real API call.
+    // Backend should also send a confirmation email to the user and alert the support team.
     await new Promise(resolve => setTimeout(resolve, 1500));
     setLoading(false);
     showNotification('Your message has been sent! We\'ll respond within 24 hours.', 'success');
@@ -197,9 +204,12 @@ const HelpSupport = () => {
           variants={fadeIn}
           className="grid md:grid-cols-3 gap-6 mb-8"
         >
+          {/* [WS] Live Chat: integrate a WebSocket-based chat or a third-party widget
+               (Crisp, Intercom, Tawk.to). The "Start Chat" button should open the widget
+               or navigate to /support-chat?userId={id} for an in-app chat room. */}
           <Card hoverable className="text-center">
-            <div className="p-4 bg-blue-50 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-              <MessageCircle className="w-8 h-8 text-blue-600" />
+            <div className="p-4 bg-primary/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+              <MessageCircle className="w-8 h-8 text-primary" />
             </div>
             <h3 className="text-lg font-bold text-gray-900 mb-2">Live Chat</h3>
             <p className="text-gray-600 text-sm mb-4">Get instant help from our support team</p>
@@ -255,7 +265,7 @@ const HelpSupport = () => {
                   return (
                     <button
                       key={cat.id}
-                      className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors text-sm font-medium flex items-center gap-2"
+                      className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-primary/10 hover:text-primary transition-colors text-sm font-medium flex items-center gap-2"
                     >
                       <Icon className="w-4 h-4" />
                       {cat.name}
@@ -283,9 +293,9 @@ const HelpSupport = () => {
             <Card>
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Resources</h2>
               <div className="grid md:grid-cols-2 gap-4">
-                <button className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg hover:bg-blue-50 transition-colors text-left">
-                  <div className="p-3 bg-blue-100 rounded-lg">
-                    <BookOpen className="w-6 h-6 text-blue-600" />
+                <button className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg hover:bg-primary/10 transition-colors text-left">
+                  <div className="p-3 bg-primary/20 rounded-lg">
+                    <BookOpen className="w-6 h-6 text-primary" />
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-900">User Guide</h4>
@@ -359,6 +369,8 @@ const HelpSupport = () => {
             </Card>
 
             {/* Status Banner */}
+            {/* [API] GET /system/status → { status: 'operational'|'degraded'|'outage', message, avgResponseTime }
+                 Poll every 60s or subscribe to a status page (e.g. statuspage.io). Currently hardcoded. */}
             <Card className="bg-green-50 border-2 border-green-200 mt-6">
               <div className="flex items-start gap-3">
                 <CheckCircle className="w-6 h-6 text-green-600 flex-shrink-0 mt-0.5" />

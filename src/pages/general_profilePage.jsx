@@ -2,19 +2,18 @@ import React, { useState, memo, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useNotification } from '../contexts/NotificationContext';
-import ReviewThread from '../components/shared/ReviewThread.jsx';
+import { ReviewThread } from '../components/shared';
 
-import { 
-  Star, 
-  CheckCircle, 
-  Users, 
-  User, 
-  Clock, 
-  MessageCircle, 
-  Phone, 
-  ChevronUp, 
-  ChevronDown, 
-  BriefcaseBusiness, 
+import {
+  Star,
+  CheckCircle,
+  Users,
+  User,
+  Clock,
+  MessageCircle,
+  Phone,
+  ChevronDown,
+  BriefcaseBusiness,
   MapPin,
   Calendar,
   Share2,
@@ -23,12 +22,8 @@ import {
   TrendingUp,
   ArrowLeft
 } from 'lucide-react';
-import { Button } from '../components/ui/Button';
-import slide1 from "../assets/2150721533.jpg";
-import slide2 from "../assets/delivery.jpg";
-import slide3 from "../assets/handy.jpg";
-import slide4 from "../assets/2150721533.jpg";
-import profileImg from "../assets/profile.svg";
+import { Button } from '../components/ui';
+import { MOCK_PROVIDER, PAYMENT_LABELS, formatTime } from '../data/mockProvider';
 
 // Lazy load heavy components
 const ProjectCarousel = lazy(() => import("../components/project_Carousel.jsx"));
@@ -63,36 +58,8 @@ const staggerContainer = {
 };
 
 
-// ============================================
-// DATA CONSTANTS
-// ============================================
-const PROFILE_DATA = {
-  id: '1',
-  name: "Gabriel A. Gordon-Mensah",
-  role: "Web Developer",
-  rating: 5,
-  reviewCount: 1,
-  hiredCount: 156,
-  employees: 14,
-  experience: 8,
-  hourlyRate: 80,
-  location: 'Achimota, Accra',
-  bio: "Professional web developer with over 8 years of experience building responsive web applications using React, Vue, and JavaScript/TypeScript. I create accessible, high-performance interfaces with clean code. Specialized in frontend development, UI/UX design, and modern JavaScript frameworks.",
-  skills: ["UI/UX Design", "React Development", "TypeScript", "JavaScript", "Vue.js", "Responsive Design"],
-  certifications: [
-    "Certified React Developer",
-    "AWS Cloud Practitioner",
-    "Google UX Design Certificate"
-  ],
-  languages: ["English", "Twi", "Ga"],
-  paymentMethods: "Cash, Mobile Money, Bank transfer",
-  workingHours: {
-    weekdays: "9am - 5pm",
-    weekends: "N/A"
-  }
-};
-
-const RATING_DISTRIBUTION = [
+// Rating distribution — stays as mock simulation until backend implements reviews table
+const MOCK_RATING_DISTRIBUTION = [
   { stars: 5, percentage: 100 },
   { stars: 4, percentage: 0 },
   { stars: 3, percentage: 0 },
@@ -101,50 +68,38 @@ const RATING_DISTRIBUTION = [
 ];
 
 
-
-
-
-const PROJECTS = [slide1, slide2, slide3, slide4];
-
 // ============================================
 // MEMOIZED COMPONENTS
 // ============================================
 
 // Hero Section
-const HeroSection = memo(() => (
-  <motion.div 
-    className="bg-gradient-to-br from-blue-600 min-h-60 max-h-80 to-blue-400 py-16"
+const HeroSection = memo(({ heroUrl }) => (
+  <motion.div
+    className="relative overflow-hidden"
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
     transition={{ duration: 0.6 }}
+    style={{ minHeight: 240 }}
   >
-    <div className="max-w-7xl mx-auto px-4">
-      <motion.div 
-        className="flex items-center space-x-4 text-white"
-        variants={fadeInUp}
-        initial="hidden"
-        animate="visible"
-        transition={{ duration: 0.6 }}
-      />
-    </div>
+    {heroUrl ? (
+      <img src={heroUrl} alt="Profile banner" className="w-full h-full object-cover" style={{ minHeight: 240 }} />
+    ) : (
+      <div className="w-full bg-gradient-to-br from-blue-600 to-blue-400" style={{ minHeight: 240 }} />
+    )}
   </motion.div>
 ));
 
 // Profile Avatar
-const ProfileAvatar = memo(({ hasImage }) => (
-  <motion.div 
+const ProfileAvatar = memo(({ avatarUrl }) => (
+  <motion.div
     className="relative -top-14 left-2 transform -translate-x-1/2 z-30"
     initial={{ scale: 0, rotate: -180 }}
     animate={{ scale: 1, rotate: 0 }}
     transition={{ duration: 0.5, type: "spring" }}
   >
     <div className="w-24 h-24 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full border-4 border-blue-600 bg-gray-200 flex items-center justify-center overflow-hidden shadow-lg">
-      {hasImage ? (
-        <img
-          src={profileImg}
-          alt="profile picture"
-          className="w-full h-full object-cover"
-        />
+      {avatarUrl ? (
+        <img src={avatarUrl} alt="profile picture" className="w-full h-full object-cover" />
       ) : (
         <User size={48} className="text-gray-400" />
       )}
@@ -155,7 +110,7 @@ const ProfileAvatar = memo(({ hasImage }) => (
 // Skill Badge
 const SkillBadge = memo(({ skill, index }) => (
   <motion.span
-    className="px-4 py-2 bg-blue-50 text-blue-700 rounded-lg text-sm font-medium"
+    className="px-4 py-2 bg-primary/10 text-primary rounded-lg text-sm font-medium"
     initial={{ opacity: 0, scale: 0.8 }}
     animate={{ opacity: 1, scale: 1 }}
     transition={{ delay: index * 0.1 }}
@@ -184,9 +139,46 @@ const InfoCard = memo(({ title, children, icon: Icon, delay = 0 }) => (
   </motion.div>
 ));
 
+// Working Hours Display — reads the same shape the edit page saves
+const DAY_LABELS = {
+  sunday: 'Sunday', monday: 'Monday', tuesday: 'Tuesday',
+  wednesday: 'Wednesday', thursday: 'Thursday', friday: 'Friday', saturday: 'Saturday',
+};
+
+const WorkingHoursDisplay = memo(({ selectedDays, weekdaysTime, weekendTime, customDays }) => {
+  const rows = [];
+
+  if (selectedDays.weekdays) {
+    rows.push({ label: 'Mon – Fri', start: weekdaysTime.start, end: weekdaysTime.end });
+  }
+  if (selectedDays.weekend) {
+    rows.push({ label: 'Sat – Sun', start: weekendTime.start, end: weekendTime.end });
+  }
+  if (selectedDays.custom) {
+    Object.entries(customDays)
+      .filter(([, d]) => d.selected)
+      .forEach(([day, d]) => rows.push({ label: DAY_LABELS[day], start: d.start, end: d.end }));
+  }
+
+  if (rows.length === 0) {
+    return <p className="text-gray-500 text-sm">Not specified</p>;
+  }
+
+  return (
+    <div className="space-y-2">
+      {rows.map(({ label, start, end }) => (
+        <div key={label} className="flex items-center justify-between text-gray-700">
+          <span className="font-medium">{label}</span>
+          <span className="text-sm">{formatTime(start)} – {formatTime(end)}</span>
+        </div>
+      ))}
+    </div>
+  );
+});
+
 // Info Item
 const InfoItem = memo(({ icon: Icon, text }) => (
-  <motion.div 
+  <motion.div
     className="flex items-center space-x-3"
     whileHover={{ x: 5 }}
     transition={{ duration: 0.2 }}
@@ -287,12 +279,16 @@ const GeneralProfile = () => {
   const navigate = useNavigate();
   const { showNotification } = useNotification();
   const { id } = useParams();
+
+  const PROFILE_DATA = MOCK_PROVIDER;
+  const RATING_DISTRIBUTION = MOCK_RATING_DISTRIBUTION;
+
   const [reviewsOpen, setReviewsOpen] = useState(false);
   const [showCallModal, setShowCallModal] = useState(null);
   const [notification, setNotification] = useState('');
   const [isFavorite, setIsFavorite] = useState(false);
   const [replyTarget, setReplyTarget] = useState(null);
-const [replyText, setReplyText] = useState("");
+  const [replyText, setReplyText] = useState("");
 
 
 const insertReply = (items, parentId, reply) => {
@@ -311,6 +307,7 @@ const insertReply = (items, parentId, reply) => {
 };
 
 
+// [MOCK] Replace with GET /users/:id/reviews?page={n} — paginated list of reviews with nested replies
 const [REVIEWS, setREVIEWS] = useState([
   {
     id: "REV-001",
@@ -344,6 +341,7 @@ const [REVIEWS, setREVIEWS] = useState([
 
 
 
+// [API] POST /reviews/:reviewId/replies — {authorId, reviewText} → {id, createdAt, ...reply}
 const handlePostReply = () => {
   if (!replyTarget || !replyText.trim()) return;
 
@@ -351,8 +349,8 @@ const handlePostReply = () => {
   id: crypto.randomUUID(),
   parentId: replyTarget.id,
   author: {
-    id: "PROV-101",
-    name: "Kwame Mensah",
+    id: id ?? "PROV-101",
+    name: PROFILE_DATA.name || "Provider",
     role: "provider"
   },
   reviewText: replyText.trim(), // ✅ FIX HERE
@@ -370,6 +368,7 @@ const handlePostReply = () => {
 };
 
 
+  // [WS] Initiate WebRTC/WebSocket voice call session — requires signalling server handshake
   const handleCall = (type = 'voice') => {
     setShowCallModal(type);
   };
@@ -379,19 +378,23 @@ const handlePostReply = () => {
     setShowCallModal(null);
   };
 
+  // [API] POST /bookings/request — {clientId, providerId, serviceDetails} → {bookingId, status}
   const handleRequestBooking = () => {
-    navigate('/booking_request');
+    navigate('/lucid/bookings/new');
   };
 
+  // [WS] Opens real-time chat channel — requires GET /conversations/:id or POST /conversations
   const handleMessage = () => {
     showNotification('Opening chat...', 'info');
-    navigate('/messagePage');
+    navigate('/lucid/messages');
   };
 
+  // [API] No endpoint needed for clipboard copy; profile URL is public
   const handleShare = () => {
     showNotification('Profile link copied to clipboard!');
   };
 
+  // [API] POST /users/:id/favorites — {providerId} → {saved: true} / DELETE for removal
   const toggleFavorite = () => {
     setIsFavorite(!isFavorite);
     showNotification(isFavorite ? 'Removed from favorites' : 'Added to favorites');
@@ -432,7 +435,7 @@ const handlePostReply = () => {
       </motion.header>
 
       {/* Hero Section */}
-      <HeroSection />
+      <HeroSection heroUrl={PROFILE_DATA.heroUrl} />
 
       {/* Profile Card */}
       <div className="max-w-7xl mx-auto px-4 -mt-14">
@@ -443,7 +446,7 @@ const handlePostReply = () => {
           transition={{ duration: 0.6 }}
         >
           {/* Profile Avatar */}
-          <ProfileAvatar hasImage={false} />
+          <ProfileAvatar avatarUrl={PROFILE_DATA.avatarUrl} />
 
           {/* Profile Info */}
           <motion.div
@@ -460,7 +463,7 @@ const handlePostReply = () => {
 
             <div className="flex items-center space-x-2">
                           <BriefcaseBusiness className="mb-2 w-6 h-6 text-blue-600" />
-                        <span className="text-lg text-gray-700 mb-3">{PROFILE_DATA.role}</span>
+                        <span className="text-lg text-gray-700 mb-3">{PROFILE_DATA.occupation}</span>
                         </div>
 
            <div className="flex items-center space-x-4 mb-4 flex-wrap gap-2">
@@ -475,11 +478,7 @@ const handlePostReply = () => {
                          </div>
                        </div>
 
-            <div className="text-3xl font-bold text-blue-600 mb-4">
-              GH₵{PROFILE_DATA.hourlyRate}/hour
-            </div>
-
-            <p className="text-gray-700 mb-4">{PROFILE_DATA.bio}</p>
+            <p className="text-gray-700 mb-4">{PROFILE_DATA.description}</p>
 
             <div className="flex flex-wrap gap-3">
               {PROFILE_DATA.skills.map((skill, index) => (
@@ -517,7 +516,7 @@ const handlePostReply = () => {
           <InfoCard title="" delay={0.2}>
             <div className="text-center">
               <TrendingUp className="w-8 h-8 text-blue-600 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-gray-900">98%</div>
+              <div className="text-2xl font-bold text-gray-900">98%</div>{/* [DB] Computed from bookings table; consider caching */}
               <div className="text-sm text-gray-600">Success Rate</div>
             </div>
           </InfoCard>
@@ -537,23 +536,27 @@ const handlePostReply = () => {
               <InfoItem icon={Users} text={`Hired ${PROFILE_DATA.hiredCount} Times`} />
               <InfoItem icon={CheckCircle} text="User has been verified" />
               <InfoItem icon={Users} text={`${PROFILE_DATA.employees} employees`} />
-              <InfoItem icon={Clock} text={`${PROFILE_DATA.experience} years experience`} />
+              <InfoItem icon={Clock} text={`${PROFILE_DATA.workExperience} years experience`} />
             </div>
           </InfoCard>
 
           {/* Payment Methods */}
           <InfoCard title="Payment Methods" delay={0.1}>
-            <p className="text-gray-700">
-              This user accepts {PROFILE_DATA.paymentMethods}
-            </p>
+            <div className="space-y-1">
+              {PROFILE_DATA.paymentMethods.map((m, i) => (
+                <p key={i} className="text-gray-700">{PAYMENT_LABELS[m] || m}</p>
+              ))}
+            </div>
           </InfoCard>
 
           {/* Working Hours */}
           <InfoCard title="Working Hours" icon={Clock} delay={0.2}>
-            <div className="space-y-2 text-gray-700">
-              <p>Weekdays: {PROFILE_DATA.workingHours.weekdays}</p>
-              <p>Weekends: {PROFILE_DATA.workingHours.weekends}</p>
-            </div>
+            <WorkingHoursDisplay
+              selectedDays={PROFILE_DATA.selectedDays}
+              weekdaysTime={PROFILE_DATA.weekdaysTime}
+              weekendTime={PROFILE_DATA.weekendTime}
+              customDays={PROFILE_DATA.customDays}
+            />
           </InfoCard>
         </motion.div>
 
@@ -635,7 +638,7 @@ const handlePostReply = () => {
           transition={{ duration: 0.6 }}
         >
           <Suspense fallback={<LoadingSkeleton />}>
-            <ProjectCarousel projects={PROJECTS} />
+            <ProjectCarousel projects={PROFILE_DATA.portfolioUrls} />
           </Suspense>
         </motion.div>
 

@@ -174,59 +174,67 @@ const MoreButton = memo(({ isMobile = false }) => (
   <div className="flex flex-col items-center gap-2 snap-center">
     <div className={`relative ${isMobile ? 'w-16 h-16' : 'w-14 h-14'} flex items-center justify-center`}>
       <div className={`absolute top-0 ${isMobile ? 'left-6' : 'left-5'} right-2 w-12 h-12 bg-blue-300 rounded-lg`} />
-      <motion.button
-        className={`${isMobile ? 'absolute btn btn-square top-3 left-3' : 'relative top-2 left-1'} w-12 h-12 bg-blue-700 rounded-lg hover:bg-blue-300 flex items-center justify-center transition-all duration-300`}
-        whileHover={{ scale: 1.1, rotate: 5 }}
-        whileTap={{ scale: 0.95 }}
-      >
-        <FaEllipsisH size={20} className="text-white" />
-      </motion.button>
+      <Link to="/lucid/services/all">
+        <motion.div
+          className={`${isMobile ? 'absolute btn btn-square top-3 left-3' : 'relative top-2 left-1'} w-12 h-12 bg-blue-700 rounded-lg hover:bg-blue-300 flex items-center justify-center transition-all duration-300 cursor-pointer`}
+          whileHover={{ scale: 1.1, rotate: 5 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <FaEllipsisH size={20} className="text-white" />
+        </motion.div>
+      </Link>
     </div>
     <p className={`text-center ${isMobile ? 'text-xs mt-2' : 'text-sm mt-3'} text-black`}>More</p>
   </div>
 ));
 
 // Memoized Service Card Component
-const ServiceCard = memo(({ service, index }) => (
-  <motion.div
-    variants={scaleIn}
-    initial="hidden"
-    whileInView="visible"
-    viewport={{ once: true }}
-    transition={{ delay: index * 0.1 }}
-  >
-    <Link to="/category">
-      <motion.div
-        className={`card bg-white transition-all duration-300 rounded-none overflow-hidden 
-          ${index === 0 ? 'md:rounded-bl-xl' : index === 2 ? 'md:rounded-br-xl' : ''}`}
-        whileHover={{
-          y: -8,
-          boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)"
-        }}
-      >
-        <figure>
-          <motion.img
-            src={service.image}
-            alt={service.title}
-            className="w-full h-48 object-cover"
-            loading="lazy"
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.3 }}
-          />
-        </figure>
-        <div className="card-body p-4">
-          <h4 className="card-title text-lg font-semibold text-black">
-            {service.title}
-          </h4>
-          <div className="flex items-center gap-2 text-sm text-black">
-            <MapPin className="w-4 h-4 text-blue-600" />
-            <span>{service.subtitle}</span>
+const ServiceCard = memo(({ service, index }) => {
+  const to = service.catSlug && service.slug
+    ? `/lucid/services/${service.catSlug}/${service.slug}`
+    : '/lucid/services/all';
+
+  return (
+    <motion.div
+      variants={scaleIn}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.1 }}
+    >
+      <Link to={to}>
+        <motion.div
+          className={`card bg-white transition-all duration-300 rounded-none overflow-hidden
+            ${index === 0 ? 'md:rounded-bl-xl' : index === 2 ? 'md:rounded-br-xl' : ''}`}
+          whileHover={{
+            y: -8,
+            boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)"
+          }}
+        >
+          <figure>
+            <motion.img
+              src={service.image}
+              alt={service.title}
+              className="w-full h-48 object-cover"
+              loading="lazy"
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.3 }}
+            />
+          </figure>
+          <div className="card-body p-4">
+            <h4 className="card-title text-lg font-semibold text-black">
+              {service.title}
+            </h4>
+            <div className="flex items-center gap-2 text-sm text-black">
+              <MapPin className="w-4 h-4 text-blue-600" />
+              <span>{service.subtitle}</span>
+            </div>
           </div>
-        </div>
-      </motion.div>
-    </Link>
-  </motion.div>
-));
+        </motion.div>
+      </Link>
+    </motion.div>
+  );
+});
 
 const BusinessCategorySection = ({
   serviceIcons,
@@ -299,7 +307,7 @@ const BusinessCategorySection = ({
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.5 }}
           >
-            <Link to="/category">
+            <Link to={`/lucid/services/${currentBusinessCard.slug ?? ''}`}>
               <motion.div
                 className="card relative w-full mb-8 overflow-hidden rounded-t-xl rounded-b-none"
                 whileHover={{

@@ -2,12 +2,11 @@ import React, { useState, useCallback, memo } from 'react';
 import { useNavigate } from "react-router-dom";
 import { useNavigateBack } from "../hooks/useNavigateBack.js";
 import { useNotification } from '../contexts/NotificationContext';
-import { 
-  CirclePlus, CheckCircle, Users, User, Clock, X, SquarePlus, Minus, Plus, 
-  ChevronDown, ChevronUp, MapPin, Award, Languages, Camera, Trash2
+import {
+  CheckCircle, Users, User, Clock, SquarePlus, Minus, Plus,
+  ChevronDown, ChevronUp, MapPin, Award, Languages, Camera, Trash2, ImageIcon, X
 } from 'lucide-react';
-import ImageUploadModal from "../components/ImageUploadModal.jsx";
-import { useImageUpload } from "../hooks/useImageUpload.js";
+import { ImageUploadModal } from "../components/shared";
 import { motion } from "framer-motion";
 import profileImg from "../assets/profile.svg";
 import { Button, Input } from '../components/ui';
@@ -18,20 +17,19 @@ import { Button, Input } from '../components/ui';
 // CUSTOM HOOKS
 // ============================================
 const useProfileForm = () => {
+  // [MOCK] Pre-fill from GET /users/:id/profile — replace useState defaults with fetched data on mount
   const [profile, setProfile] = useState({
-    firstName: 'Gabriel',
-    lastName: 'Gordon-Mensah',
-    otherName: 'Asankomah',
-    occupation: 'Web Developer',
-    location: 'Achimota, Accra', // NEW
-    pricingType: 'set',
-    amount: 80,
-    description: 'Professional web developer with over 8 years of experience...',
-    skills: ['UI/UX Design', 'React Development', 'TypeScript'],
-    certifications: ['Certified React Developer', 'AWS Cloud Practitioner'], // NEW
-    languages: ['English', 'Twi', 'Ga'], // NEW
+    firstName: 'Cyprian',
+    lastName: 'Amponsah',
+    otherName: '',
+    occupation: 'Electrician',
+    location: 'Achimota, Accra',
+    description: 'Professional electrician with over 8 years of experience installing and maintaining electrical systems. I specialise in residential and commercial wiring, troubleshooting, and safety compliance.',
+    skills: ['Electrical Installation', 'Circuit Troubleshooting', 'Safety Compliance'],
+    certifications: ['Certified Electrician', 'OSHA Safety Trainer'],
+    languages: ['English', 'Twi', 'Ga'],
     workExperience: 8,
-    paymentMethod: 'mobile',
+    paymentMethods: ['mobile', 'bank'],
     employees: 14,
     selectedDays: { weekdays: true, weekend: false, custom: false },
     showCustomDays: false,
@@ -112,6 +110,15 @@ const useProfileForm = () => {
     setProfile(prev => ({ ...prev, showCustomDays: !prev.showCustomDays }));
   }, []);
 
+  const handlePaymentToggle = useCallback((method) => {
+    setProfile(prev => ({
+      ...prev,
+      paymentMethods: prev.paymentMethods.includes(method)
+        ? prev.paymentMethods.filter(m => m !== method)
+        : [...prev.paymentMethods, method],
+    }));
+  }, []);
+
   return {
     profile,
     handleInputChange,
@@ -120,7 +127,8 @@ const useProfileForm = () => {
     handleTimeChange,
     handleCustomDayChange,
     handleDaySelection,
-    toggleCustomDays
+    toggleCustomDays,
+    handlePaymentToggle,
   };
 };
 
@@ -442,8 +450,26 @@ const EditProfile = () => {
   const { showNotification } = useNotification();
   const formMethods = useProfileForm();
   const navigate = useNavigate();
-  const upload = useImageUpload();
-  
+
+  // Image simulation state
+  const [avatarUrl, setAvatarUrl] = useState(profileImg); // mock: has picture set
+  const [heroUrl, setHeroUrl] = useState(null);           // null = default gradient
+  const [uploadTarget, setUploadTarget] = useState(null); // 'avatar' | 'hero' | 'portfolio'
+
+  const openUpload = (target) => setUploadTarget(target);
+  const closeUpload = () => setUploadTarget(null);
+
+  // Simulate an upload — in production replace with real Storage URL
+  const handleUpload = () => {
+    if (uploadTarget === 'avatar') {
+      setAvatarUrl(profileImg); // already set; real impl would use returned URL
+    } else if (uploadTarget === 'hero') {
+      // Simulate a banner being set with a placeholder image
+      setHeroUrl('https://images.unsplash.com/photo-1504148455328-c376907d081c?w=1200&auto=format');
+    }
+    closeUpload();
+    showNotification('Image updated', 'success');
+  };
 
   const handleCancel = useCallback(() => {
     showNotification('Changes cancelled', 'info');
@@ -451,49 +477,96 @@ const EditProfile = () => {
   }, [showNotification, navigate]);
 
   const handleSave = async (e) => {
-  e.preventDefault();
-  setLoading(true);
-
-  try {
-    // simulate save (replace with API call later)
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
-    showNotification('Profile saved successfully!', 'success');
-
-    navigate('/provider_dashboard');
-  } catch (error) {
-    showNotification('Failed to save profile', 'error');
-  } finally {
-    setLoading(false);
-  }
-};
-
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      showNotification('Profile saved successfully!', 'success');
+      navigate('/lucid/dashboard');
+    } catch {
+      showNotification('Failed to save profile', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="px-5 py-5 bg-gray-50 min-h-screen pb-32">
+    <div className="bg-gray-50 min-h-screen pb-32">
       <style>{`
-        @keyframes fade-in {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
+        @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
         .animate-fade-in { animation: fade-in 0.5s ease-out; }
         .hover\\:scale-102:hover { transform: scale(1.02); }
       `}</style>
 
-      {/* Profile Picture */}
-      <div className="flex justify-center items-center w-full mb-10 pt-5">
-        <div className="flex flex-col items-center text-center w-full">
-          <h3 className="text-gray-900 mb-4 text-base font-semibold">Profile Picture</h3>
-          {/* Profile Avatar */}
-          <div onClick={upload.openModal}><ProfileAvatar hasImage={false} /></div>
-          <button onClick={upload.openModal} className="bg-blue-600 text-white px-5 py-2.5 rounded-md text-sm transition-all hover:bg-blue-700 hover:shadow-lg w-full max-w-[150px]">
-            Change picture
+      {/* ── Hero Background Section ── */}
+      <div className="relative w-full h-44 md:h-56 overflow-hidden">
+        {heroUrl ? (
+          <img src={heroUrl} alt="Profile banner" className="w-full h-full object-cover" />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-blue-600 to-blue-400" />
+        )}
+        {/* Overlay controls */}
+        <div className="absolute inset-0 bg-black/30 flex items-center justify-center gap-3">
+          <button
+            onClick={() => openUpload('hero')}
+            className="flex items-center gap-2 bg-white/90 hover:bg-white text-gray-800 text-sm font-medium px-4 py-2 rounded-lg shadow transition-colors"
+          >
+            <ImageIcon size={16} />
+            {heroUrl ? 'Change banner' : 'Add banner'}
           </button>
+          {heroUrl && (
+            <button
+              onClick={() => setHeroUrl(null)}
+              className="flex items-center gap-2 bg-red-600/90 hover:bg-red-600 text-white text-sm font-medium px-4 py-2 rounded-lg shadow transition-colors"
+            >
+              <X size={16} />
+              Remove
+            </button>
+          )}
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto">
+      {/* ── Profile Picture ── */}
+      <div className="flex justify-center -mt-14 mb-6 relative z-10">
+        <div className="flex flex-col items-center gap-3">
+          <div className="relative group">
+            <div className="w-24 h-24 md:w-28 md:h-28 rounded-full border-4 border-white shadow-lg overflow-hidden bg-gray-200 flex items-center justify-center">
+              {avatarUrl ? (
+                <img src={avatarUrl} alt="Profile" className="w-full h-full object-cover" />
+              ) : (
+                <User size={48} className="text-gray-400" />
+              )}
+            </div>
+            {/* Hover overlay */}
+            <div
+              onClick={() => openUpload('avatar')}
+              className="absolute inset-0 rounded-full bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center cursor-pointer transition-opacity"
+            >
+              <Camera size={22} className="text-white" />
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={() => openUpload('avatar')}
+              className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium px-4 py-2 rounded-lg shadow transition-colors"
+            >
+              Change picture
+            </button>
+            {avatarUrl && (
+              <button
+                onClick={() => setAvatarUrl(null)}
+                className="bg-white hover:bg-red-50 border border-red-300 text-red-600 text-xs font-medium px-4 py-2 rounded-lg shadow transition-colors"
+              >
+                Remove
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-5">
         <div className="flex flex-col gap-6">
+
           {/* Basic Info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <InputField
@@ -521,60 +594,21 @@ const EditProfile = () => {
             />
           </div>
 
-          {/* NEW: Location Field */}
           <div className="animate-fade-in">
             <div className="flex items-center gap-2 mb-2">
               <MapPin className="w-5 h-5 text-blue-600" />
               <label className="font-medium text-gray-700">Location</label>
             </div>
             <InputField
-              
               value={formMethods.profile.location}
               onChange={(e) => formMethods.handleInputChange('location', e.target.value)}
               placeholder="e.g., Achimota, Accra"
-              
             />
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mt-5">
             {/* LEFT COLUMN */}
             <div className="space-y-8">
-              {/* Pricing */}
-              <div>
-                <h3 className="text-gray-900 mb-4 text-lg font-bold">Pricing</h3>
-                <div className="flex flex-col gap-3 mb-5">
-                  <label className="flex items-center gap-2 cursor-pointer py-2">
-                    <input
-                      type="radio"
-                      checked={formMethods.profile.pricingType === 'set'}
-                      onChange={() => formMethods.handleInputChange('pricingType', 'set')}
-                      className="accent-blue-600 w-4 h-4"
-                    />
-                    <span className="text-black">Set pricing rate</span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer py-2">
-                    <input
-                      type="radio"
-                      checked={formMethods.profile.pricingType === 'contact'}
-                      onChange={() => formMethods.handleInputChange('pricingType', 'contact')}
-                      className="accent-blue-600 w-4 h-4"
-                    />
-                    <span className="text-black">Contact for price</span>
-                  </label>
-                </div>
-
-                {formMethods.profile.pricingType === 'set' && (
-                  <div>
-                    <label className="block mb-2 font-medium text-gray-900">Amount (GHC/hour)</label>
-                    <CounterInput
-                      label=""
-                      value={formMethods.profile.amount}
-                      onChange={(val) => formMethods.handleInputChange('amount', val)}
-                      min={0}
-                    />
-                  </div>
-                )}
-              </div>
 
               {/* Description */}
               <div>
@@ -591,7 +625,7 @@ const EditProfile = () => {
               {/* Overview */}
               <div>
                 <h3 className="text-gray-900 mb-4 text-lg font-bold">Overview</h3>
-                
+
                 <div className="mb-5 pb-4 border-b border-gray-200">
                   <div className="flex justify-between items-center mb-2 font-medium text-gray-900">
                     <span>Verification Status</span>
@@ -623,33 +657,29 @@ const EditProfile = () => {
 
               {/* Payment Methods */}
               <div>
-                <h3 className="text-gray-900 mb-4 text-base font-semibold">Payment Methods</h3>
-                <div className="flex flex-col gap-4">
-                  <label className="flex items-center gap-2 cursor-pointer py-2">
-                    <input
-                      type="radio"
-                      checked={formMethods.profile.paymentMethod === 'mobile'}
-                      onChange={() => formMethods.handleInputChange('paymentMethod', 'mobile')}
-                      className="accent-blue-600 w-4 h-4"
-                    />
-                    <span className="text-gray-900">Mobile Money</span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer py-2">
-                    <input
-                      type="radio"
-                      checked={formMethods.profile.paymentMethod === 'bank'}
-                      onChange={() => formMethods.handleInputChange('paymentMethod', 'bank')}
-                      className="accent-blue-600 w-4 h-4"
-                    />
-                    <span className="text-gray-900">Bank Transfer</span>
-                  </label>
+                <h3 className="text-gray-900 mb-1 text-base font-semibold">Payment Methods</h3>
+                <p className="text-gray-500 text-sm mb-4">Select all that apply</p>
+                <div className="flex flex-col gap-3">
+                  {[
+                    { key: 'mobile', label: 'Mobile Money' },
+                    { key: 'bank',   label: 'Bank Transfer' },
+                  ].map(({ key, label }) => (
+                    <label key={key} className="flex items-center gap-3 cursor-pointer py-2">
+                      <input
+                        type="checkbox"
+                        checked={formMethods.profile.paymentMethods.includes(key)}
+                        onChange={() => formMethods.handlePaymentToggle(key)}
+                        className="accent-blue-600 w-4 h-4"
+                      />
+                      <span className="text-gray-900">{label}</span>
+                    </label>
+                  ))}
                 </div>
               </div>
             </div>
 
             {/* RIGHT COLUMN */}
             <div className="space-y-8">
-              {/* Skills/Tags */}
               <ArrayInputSection
                 title="Skills & Tags"
                 items={formMethods.profile.skills}
@@ -658,7 +688,6 @@ const EditProfile = () => {
                 placeholder="Add a skill (e.g., React Development)"
               />
 
-              {/* NEW: Certifications */}
               <ArrayInputSection
                 title="Certifications"
                 items={formMethods.profile.certifications}
@@ -668,7 +697,6 @@ const EditProfile = () => {
                 placeholder="Add a certification"
               />
 
-              {/* NEW: Languages */}
               <ArrayInputSection
                 title="Languages"
                 items={formMethods.profile.languages}
@@ -678,12 +706,15 @@ const EditProfile = () => {
                 placeholder="Add a language"
               />
 
-              {/* Projects */}
+              {/* Portfolio Projects */}
               <div>
                 <h3 className="text-gray-900 mb-2 text-base font-semibold">Portfolio Projects</h3>
-                <p className="text-gray-600 text-sm mb-4">Upload or delete pictures of previous work done</p>
-                <div onClick={upload.openModal} className="border-2 border-dashed border-gray-300 rounded-lg p-10 bg-gray-50 hover:border-blue-600 transition-colors flex justify-center cursor-pointer">
-                  <SquarePlus onClick={upload.openModal} size={38} className="text-gray-400 hover:text-blue-600 transition-colors" />
+                <p className="text-gray-600 text-sm mb-4">Upload pictures of previous work done</p>
+                <div
+                  onClick={() => openUpload('portfolio')}
+                  className="border-2 border-dashed border-gray-300 rounded-lg p-10 bg-white hover:border-blue-600 transition-colors flex justify-center cursor-pointer"
+                >
+                  <SquarePlus size={38} className="text-gray-400 hover:text-blue-600 transition-colors" />
                 </div>
               </div>
             </div>
@@ -700,26 +731,23 @@ const EditProfile = () => {
 
           {/* Action Buttons */}
           <div className="flex gap-4 justify-center mt-8 pt-8 border-t border-gray-200">
-            <Button fullWidth variant='danger' size="md" onClick={handleCancel}> Cancel</Button>
-            
+            <Button fullWidth variant='danger' size="md" onClick={handleCancel}>Cancel</Button>
             <Button fullWidth size="md" onClick={handleSave} loading={loading}>Save</Button>
           </div>
         </div>
       </div>
+
       {/* Image Upload Modal */}
-          <ImageUploadModal
-            open={upload.open}
-            onClose={upload.closeModal}
-            dragActive={upload.dragActive}
-            onDrag={upload.onDrag}
-            onDrop={upload.onDrop}
-            onFileChange={upload.onFileChange}
-            selectedFile={upload.selectedFile}
-            isUploading={upload.isUploading}
-            uploadProgress={upload.uploadProgress}
-            onSave={upload.onSave}
-            title="Upload Banner Image"
-          />
+      <ImageUploadModal
+        isOpen={uploadTarget !== null}
+        onClose={closeUpload}
+        onUpload={handleUpload}
+        title={
+          uploadTarget === 'avatar'    ? 'Change Profile Picture' :
+          uploadTarget === 'hero'      ? 'Change Banner Image' :
+          'Upload Portfolio Image'
+        }
+      />
     </div>
     
   );

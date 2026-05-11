@@ -2,8 +2,8 @@ import React, { useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useNotification } from '../contexts/NotificationContext';
-import { 
-  ArrowLeft, 
+import {
+  ArrowLeft,
   Calendar,
   Clock,
   CheckCircle,
@@ -27,8 +27,7 @@ import {
   ThumbsDown,
   Navigation
 } from 'lucide-react';
-import { Button } from '../components/ui/Button';
-import { Card } from '../components/ui/Card';
+import { Button, Card } from '../components/ui';
 import { Link } from "react-router-dom";
 
 const fadeIn = {
@@ -54,7 +53,8 @@ const ProviderBookings = () => {
     }, 600);
   }, [showNotification, navigate]);
 
-  // Mock task data with full details
+  // [MOCK] Replace with GET /bookings?providerId={currentProviderId} — returns paginated booking list
+  // [API] Move filter/sort to query params; backend paginates: GET /bookings?providerId={id}&status={filter}&sort=date&page={n}&limit={n}
   const tasks = useMemo(() => [
     {
       id: 1,
@@ -81,7 +81,7 @@ const ProviderBookings = () => {
       alternateTime: '2:00 PM',
       estimatedDuration: '2-3 hours',
       additionalNotes: 'Please bring all necessary tools. I will be available all day.',
-      images: [] // Would contain uploaded images
+      images: [] // [API] GET /bookings/:id/attachments — {} → {attachments: [{id, url, createdAt}]}
     },
     {
       id: 2,
@@ -206,6 +206,7 @@ const ProviderBookings = () => {
     }
   ], []);
 
+  // [API] Move status counts to API response metadata: GET /bookings?providerId={id}&countByStatus=true → {counts: {pending, confirmed, ...}}
   const filterButtons = [
     { id: 'all', label: 'All Tasks', count: tasks.length },
     { id: 'pending', label: 'Pending', count: tasks.filter(t => t.status === 'pending').length },
@@ -214,6 +215,7 @@ const ProviderBookings = () => {
     { id: 'cancelled', label: 'Cancelled', count: tasks.filter(t => t.status === 'cancelled').length }
   ];
 
+  // [API] Move filter/search logic to query params instead of client-side JS filtering
   const filteredTasks = useMemo(() => {
     return tasks.filter(task => {
       const matchesFilter = activeFilter === 'all' || task.status === activeFilter;
@@ -263,12 +265,14 @@ const ProviderBookings = () => {
     return configs[urgency] || configs.normal;
   };
 
+  // [API] PATCH /bookings/:id/status — {status: 'confirmed'} → {bookingId, status}
   const handleAcceptTask = (taskId) => {
     showNotification('Task accepted successfully!', 'success');
     setSelectedTask(null);
     // Update task status in backend
   };
 
+  // [API] PATCH /bookings/:id/status — {status: 'declined'} → {bookingId, status}
   const handleDeclineTask = (taskId) => {
     showNotification('Task declined', 'info');
     setSelectedTask(null);
@@ -339,8 +343,9 @@ const ProviderBookings = () => {
                   <span className="text-sm font-semibold">{task.rating}.0</span>
                 </div>
               )}
-              <Button 
-                size="sm" 
+              {/* [MOCK] Replace with GET /bookings/:id on click to fetch full task detail */}
+              <Button
+                size="sm"
                 variant="outline"
                 onClick={() => setSelectedTask(task)}
               >
@@ -348,7 +353,8 @@ const ProviderBookings = () => {
                 Details
               </Button>
               {task.status !== 'cancelled' && (
-                <Link to='/messagePage'>
+                // [API] GET /conversations?bookingId={id} → {conversationId} before navigating to message page
+                <Link to='/lucid/messages'>
                   <Button size="sm">
                     <MessageCircle className="w-4 h-4" />
                     Chat
@@ -363,6 +369,7 @@ const ProviderBookings = () => {
   };
 
   // Task Details Modal
+  // [MOCK] Replace modal data source with GET /bookings/:id → full booking object
   const TaskDetailsModal = ({ task, onClose }) => {
     if (!task) return null;
 
@@ -411,6 +418,7 @@ const ProviderBookings = () => {
             {/* Modal Content */}
             <div className="p-6 space-y-6">
               {/* Client Information */}
+              {/* [DB] Client contact details should come from GET /users/:clientId, not stored on every booking record */}
               <div>
                 <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
                   <User className="w-5 h-5 text-blue-600" />
@@ -451,7 +459,7 @@ const ProviderBookings = () => {
                     <p className="text-sm text-gray-600 mb-1">Description</p>
                     <p className="text-gray-900 bg-gray-50 rounded-lg p-3">{task.description}</p>
                   </div>
-                  
+
                   <div className="grid md:grid-cols-3 gap-4">
                     <div>
                       <p className="text-sm text-gray-600 mb-1">Estimated Duration</p>
@@ -549,6 +557,7 @@ const ProviderBookings = () => {
                     <ImageIcon className="w-5 h-5 text-blue-600" />
                     Attached Images
                   </h3>
+                  {/* [API] GET /bookings/:id/attachments — {} → {attachments: [{id, url, createdAt}]} */}
                   <div className="grid grid-cols-3 gap-4">
                     {task.images.map((img, index) => (
                       <img
@@ -567,6 +576,7 @@ const ProviderBookings = () => {
             <div className="sticky bottom-0 bg-white border-t border-gray-200 p-6">
               {task.status === 'pending' && (
                 <div className="flex gap-4">
+                  {/* [API] PATCH /bookings/:id/status — {status: 'confirmed'} → {bookingId, status} */}
                   <Button
                     onClick={() => handleAcceptTask(task.id)}
                     size="md"
@@ -575,6 +585,7 @@ const ProviderBookings = () => {
                     <ThumbsUp className="w-5 h-5" />
                     Accept Booking
                   </Button>
+                  {/* [API] PATCH /bookings/:id/status — {status: 'declined'} → {bookingId, status} */}
                   <Button
                     onClick={() => handleDeclineTask(task.id)}
                     variant="danger"
@@ -588,7 +599,10 @@ const ProviderBookings = () => {
               )}
               {task.status === 'in-progress' && (
                 <div className="flex gap-4">
-                  <Link to="/messagePage" className="flex-1">
+                  {/* [API] POST /bookings/:id/attachments — multipart/form-data → {attachmentUrls[]} for uploading completion evidence */}
+                  {/* [API] PATCH /bookings/:id/actions/request-completion — {notes, evidenceAttachmentIds[]} → {requestId, status: 'pending'} */}
+                  {/* [API] GET /conversations?bookingId={id} → {conversationId} before navigating to message page */}
+                  <Link to="/lucid/messages" className="flex-1">
                     <Button size="md" fullWidth>
                       <MessageCircle className="w-5 h-5" />
                       Message Client
@@ -602,6 +616,7 @@ const ProviderBookings = () => {
                     <CheckCircle className="w-6 h-6" />
                     <span className="font-semibold text-lg">Job Completed</span>
                   </div>
+                  {/* [DB] rating sourced from GET /reviews?bookingId={id} → {rating, reviewText, clientId} */}
                   {task.rating && (
                     <div className="flex items-center justify-center gap-1">
                       <span className="text-gray-600">Client Rating:</span>
@@ -629,7 +644,7 @@ const ProviderBookings = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <motion.header 
+      <motion.header
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         className="bg-white shadow-sm sticky top-0 z-30"
@@ -659,6 +674,7 @@ const ProviderBookings = () => {
           className="mb-8 space-y-4"
         >
           {/* Search Bar */}
+          {/* [API] Pass search query as param: GET /bookings?providerId={id}&q={searchQuery} */}
           <div className="relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
             <input
@@ -723,9 +739,9 @@ const ProviderBookings = () => {
 
       {/* Task Details Modal */}
       {selectedTask && (
-        <TaskDetailsModal 
-          task={selectedTask} 
-          onClose={() => setSelectedTask(null)} 
+        <TaskDetailsModal
+          task={selectedTask}
+          onClose={() => setSelectedTask(null)}
         />
       )}
     </div>

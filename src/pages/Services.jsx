@@ -1,338 +1,250 @@
-import React, { memo } from 'react';
-import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { Search, Hammer, House, Zap, Truck, Trash2, PaintRoller, Wrench, Settings, Cake } from 'lucide-react';
+import React, { memo, useState, useMemo } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Search, Zap, Sparkles, Truck, Droplets, Car, Scissors, Shirt, PaintRoller, ChevronRight } from 'lucide-react';
 import ServicesCarousel from '../components/servicePage_carousel.jsx';
 import BackToTop from '../components/back_the_top_btn.jsx';
 import BusinessCategorySection from '../components/suggested_category.jsx';
 import { DownloadSection } from '../components/download_ad.jsx';
+import { ALL_CATEGORIES, getCategoryBySlug } from '../data/categories.js';
+import { Hammer, Truck as TruckIcon, Car as CarIcon, HardHat } from 'lucide-react';
 
-// Images
-import BackgroundImage0 from "../assets/head.jpg";
-import BackgroundImage1 from "../assets/143147.jpg";
-import BackgroundImage2 from "../assets/delivery.jpg";
-import BackgroundImage3 from "../assets/leftdown.jpg";
-import BackgroundImage4 from "../assets/carpentry.jpg";
-import homerepair from "../assets/cleaners.jpg";
-import moving from "../assets/delivery.jpg";
-import autorepair from "../assets/carmechanic.jpg";
-import construction from "../assets/carpenterlady.jpg";
-import galleryBanner1 from "../assets/left.jpg";
-import galleryBanner2 from "../assets/lefttop.jpg";
-import galleryBanner3 from "../assets/leftbottom.jpg";
-import galleryBanner4 from "../assets/leftdown.jpg";
+// Popular services — 8 most-searched in Ghana
+const POPULAR_SERVICES = [
+  { icon: Zap,         name: 'Electrician',    slug: 'home-repairs/electrical-repairs' },
+  { icon: Sparkles,    name: 'House Cleaning', slug: 'cleaning/house-cleaning' },
+  { icon: Truck,       name: 'Moving',         slug: 'moving/furniture-moving' },
+  { icon: Droplets,    name: 'Plumber',        slug: 'home-repairs/plumbing' },
+  { icon: Car,         name: 'Auto Repair',    slug: 'auto-repairs/engine-repair' },
+  { icon: Scissors,    name: 'Hair Braiding',  slug: 'beauty/hair-braiding' },
+  { icon: Shirt,       name: 'Tailoring',      slug: 'beauty/tailoring' },
+  { icon: PaintRoller, name: 'House Painting', slug: 'home-repairs/painting' },
+];
 
-// Animation variants
-const fadeInUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0 }
-};
+// 4 featured categories for the BusinessCategorySection tab bar
+const SERVICE_ICONS = [
+  { id: 1, icon: Hammer,   name: 'Home Repairs', slug: 'home-repairs' },
+  { id: 2, icon: TruckIcon, name: 'Moving',       slug: 'moving' },
+  { id: 3, icon: CarIcon,   name: 'Auto Repairs', slug: 'auto-repairs' },
+  { id: 4, icon: HardHat,   name: 'Construction', slug: 'construction' },
+];
 
-const fadeIn = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1 }
-};
+// Build hero-card data from ALL_CATEGORIES
+const BUSINESS_CARDS = Object.fromEntries(
+  SERVICE_ICONS.map(({ name, slug }) => {
+    const cat = getCategoryBySlug(slug);
+    return [name, {
+      cat:                name,
+      slug,
+      mainCardBackground: cat?.image,
+      cardIcon:           cat?.icon,
+      heading:            cat?.description ?? name,
+      seeAll:             `See all ${name.toLowerCase()} services`,
+    }];
+  })
+);
 
-const scaleIn = {
-  hidden: { opacity: 0, scale: 0.9 },
-  visible: { opacity: 1, scale: 1 }
-};
+// Build sub-service cards (3 per category) from ALL_CATEGORIES
+const BUSINESS_SERVICES = SERVICE_ICONS.flatMap(({ name, slug }) => {
+  const cat = getCategoryBySlug(slug);
+  return (cat?.services ?? []).slice(0, 3).map(svc => ({
+    cat:      name,
+    catSlug:  slug,
+    slug:     svc.slug,
+    image:    svc.image,
+    title:    svc.name,
+    subtitle: 'See workers near you',
+  }));
+});
 
-const slideInLeft = {
-  hidden: { opacity: 0, x: -50 },
-  visible: { opacity: 1, x: 0 }
-};
+// Build collage image pool: all category images + all service images
+const _collagePool = [
+  ...ALL_CATEGORIES.map(cat => ({ src: cat.image, label: cat.name })),
+  ...ALL_CATEGORIES.flatMap(cat => cat.services.map(s => ({ src: s.image, label: s.name }))),
+];
+const COLLAGE_ROW1 = _collagePool.slice(0, 16);
+const COLLAGE_ROW2 = _collagePool.slice(16, 32);
+const COLLAGE_ROW3 = _collagePool.slice(32, 48);
 
-const slideInRight = {
-  hidden: { opacity: 0, x: 50 },
-  visible: { opacity: 1, x: 0 }
-};
-
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1
-    }
-  }
-};
-
-
-
-// Memoized Components
-const ServiceCard = memo(({ service, index }) => {
-  const IconComponent = service.icon;
+const ServiceCard = memo(({ service }) => {
+  const Icon = service.icon;
   return (
-    <motion.div
-      variants={scaleIn}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.4, delay: index * 0.05 }}
-    >
-      <Link to="/category">
-        <motion.div 
-          className="bg-white border-2 border-blue-700 rounded-xl p-10 md:py-10 md:px-5 flex flex-col items-center justify-center transition-all duration-300 cursor-pointer max-w-60 min-h-28 max-h-36 group"
-          whileHover={{ 
-            y: -8, 
-            boxShadow: "0 20px 25px -5px rgba(29, 78, 216, 0.2)",
-            borderColor: "rgb(37, 99, 235)"
-          }}
-          whileTap={{ scale: 0.98 }}
-        >
-          <motion.div 
-            className="mb-6 flex items-center justify-center"
-            whileHover={{ scale: 1.2, rotate: 5 }}
-            transition={{ duration: 0.3 }}
-          >
-            <IconComponent size={30} className="text-blue-700" />
-          </motion.div>
-          <span className="text-blue-700 text-xl font-normal text-center leading-relaxed transition-colors duration-300 group-hover:text-blue-600">
-            {service.name}
-          </span>
-        </motion.div>
-      </Link>
-    </motion.div>
+    <Link to={`/lucid/services/${service.slug}`}>
+      <div className="bg-white border border-gray-200 rounded-2xl p-6 flex flex-col items-center gap-3 hover:border-blue-500 hover:shadow-md transition-all duration-200 cursor-pointer group">
+        <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center group-hover:bg-blue-100 transition-colors">
+          <Icon size={24} className="text-blue-700" />
+        </div>
+        <span className="text-gray-800 text-sm font-medium text-center leading-snug">
+          {service.name}
+        </span>
+      </div>
+    </Link>
   );
 });
 
-const GalleryImage = memo(({ src, alt, className, delay = 0 }) => (
-  <motion.img
-    src={src}
-    alt={alt}
-    className={className}
-    initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
-    animate={{ opacity: 1, scale: 1, rotate: 0 }}
-    transition={{ duration: 0.6, delay }}
-    whileHover={{ scale: 1.05, rotate: 2 }}
-    loading="lazy"
-  />
-));
+// All services flattened from every category, for the carousels
+const ALL_SERVICES_POOL = ALL_CATEGORIES.flatMap(cat =>
+  cat.services.map(svc => ({
+    name:  svc.name,
+    image: svc.image,
+    slug:  `/lucid/services/${cat.slug}/${svc.slug}`,
+  }))
+);
 
-// Data Constants
-const SERVICES = [
-  { icon: Zap, name: 'Electrician' },
-  { icon: Cake, name: 'Cleaners' },
-  { icon: Truck, name: 'Moving' },
-  { icon: Trash2, name: 'Trash Collector' },
-  { icon: PaintRoller, name: 'Painting' },
-  { icon: Wrench, name: 'Plumber' },
-  { icon: Settings, name: 'Mechanic' },
-  { icon: Cake, name: 'Event setup' }
-];
-
-const SERVICE_ICONS = [
-  { id: 1, icon: House, name: 'Home repairs' },
-  { id: 2, icon: Truck, name: 'Moving' },
-  { id: 3, icon: Settings, name: 'Auto repairs' },
-  { id: 4, icon: Hammer, name: 'Construction' }
-];
-
-const BUSINESS_CARDS = {
-  'Home repairs': {
-    cat: 'Home repairs',
-    mainCardBackground: BackgroundImage1,
-    cardIcon: House,
-    heading: 'Maintenance and painting business',
-    seeAll: 'See all maintenance'
-  },
-  'Moving': {
-    cat: 'Moving',
-    mainCardBackground: BackgroundImage2,
-    cardIcon: Truck,
-    heading: 'Moving and relocation services',
-    seeAll: 'See all moving services'
-  },
-  'Auto repairs': {
-    cat: 'Auto repairs',
-    mainCardBackground: BackgroundImage3,
-    cardIcon: Settings,
-    heading: 'Professional auto repair services',
-    seeAll: 'See all auto services'
-  },
-  'Construction': {
-    cat: 'Construction',
-    mainCardBackground: BackgroundImage4,
-    cardIcon: Hammer,
-    heading: 'Construction and renovation',
-    seeAll: 'See all construction services'
+const shuffle = (arr) => {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
   }
+  return a;
 };
 
-const BUSINESS_SERVICES = [
-  { cat: 'Home repairs', image: homerepair, title: 'House Cleaning', subtitle: 'See workers near you', icon: 'map.png' },
-  { cat: 'Home repairs', image: homerepair, title: 'Handy Man', subtitle: 'See workers near you', icon: 'map.png' },
-  { cat: 'Home repairs', image: homerepair, title: 'Interior painting', subtitle: 'See workers near you', icon: 'map.png' },
-  { cat: 'Moving', image: moving, title: 'Packing Services', subtitle: 'See workers near you', icon: 'map.png' },
-  { cat: 'Moving', image: moving, title: 'Furniture Moving', subtitle: 'See workers near you', icon: 'map.png' },
-  { cat: 'Moving', image: moving, title: 'Storage Solutions', subtitle: 'See workers near you', icon: 'map.png' },
-  { cat: 'Auto repairs', image: autorepair, title: 'Engine Repair', subtitle: 'See workers near you', icon: 'map.png' },
-  { cat: 'Auto repairs', image: autorepair, title: 'Brake Service', subtitle: 'See workers near you', icon: 'map.png' },
-  { cat: 'Auto repairs', image: autorepair, title: 'Oil Change', subtitle: 'See workers near you', icon: 'map.png' },
-  { cat: 'Construction', image: construction, title: 'Building Construction', subtitle: 'See workers near you', icon: 'map.png' },
-  { cat: 'Construction', image: construction, title: 'Renovation', subtitle: 'See workers near you', icon: 'map.png' },
-  { cat: 'Construction', image: construction, title: 'Roofing', subtitle: 'See workers near you', icon: 'map.png' }
-];
-
 const Services = () => {
+  const [query, setQuery] = useState('');
+  const navigate = useNavigate();
+
+  // Shuffle once per mount and split into two distinct groups of 5
+  const [carousel1, carousel2] = useMemo(() => {
+    const pool = shuffle(ALL_SERVICES_POOL);
+    return [pool.slice(0, 5), pool.slice(5, 10)];
+  }, []);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (query.trim()) {
+      navigate(`/lucid/services/all?q=${encodeURIComponent(query.trim())}`);
+    }
+  };
+
   return (
-    <div className="w-full min-h-screen relative">
-      {/* Header Section */}
-      <header className="w-full relative overflow-visible">
-        <div className="relative w-full h-[50vh] overflow-visible">
-          {/* Main background with overlay */}
-          <motion.div
-            className="absolute top-0 left-0 w-full h-full bg-cover bg-center bg-no-repeat z-0"
-            style={{ backgroundImage: `url(${BackgroundImage0})` }}
-            initial={{ scale: 1.1 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 1 }}
-          >
-            {/* Overlay */}
-            <motion.div 
-              className="absolute inset-0 bg-black bg-opacity-20 z-[1]"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6 }}
-            />
+    <div className="w-full min-h-screen bg-gray-50">
 
-            {/* Main title and search */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center md:justify-center pt-0 md:pt-8 z-[2]">
-              <motion.h1
-                className="text-orange-500 text-4xl md:text-5xl lg:text-6xl font-bold text-center mb-8 md:mb-8 whitespace-normal md:whitespace-nowrap px-5"
-                initial={{ opacity: 0, y: -30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-              >
-                Lucid is here for you
-              </motion.h1>
+      {/* ── Hero ── */}
+      <header className="relative overflow-hidden" style={{ minHeight: 460 }}>
+        <style>{`
+          @keyframes marquee-left {
+            0%   { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+          }
+          @keyframes marquee-right {
+            0%   { transform: translateX(-50%); }
+            100% { transform: translateX(0); }
+          }
+          .marquee-left  { animation: marquee-left  linear infinite; }
+          .marquee-right { animation: marquee-right linear infinite; }
+        `}</style>
 
-              {/* Search Bar */}
-              <motion.div
-                className="w-[95%] md:w-[80%] max-w-[672px] flex flex-col items-center"
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
+        {/* Collage rows */}
+        <div className="absolute inset-0 flex flex-col gap-1.5">
+          {[
+            { row: COLLAGE_ROW1, dir: 'marquee-left',  duration: '38s' },
+            { row: COLLAGE_ROW2, dir: 'marquee-right', duration: '28s' },
+            { row: COLLAGE_ROW3, dir: 'marquee-left',  duration: '44s' },
+          ].map(({ row, dir, duration }, ri) => (
+            <div key={ri} className="overflow-hidden flex-1">
+              <div
+                className={`${dir} flex gap-1.5 h-full`}
+                style={{ animationDuration: duration, width: 'max-content' }}
               >
-                <motion.div 
-                  className="flex w-full max-w-[672px] rounded-full overflow-hidden bg-white border-2 border-blue-700 shadow-lg"
-                  whileHover={{ scale: 1.02, boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)" }}
-                >
-                  <input
-                    type="text"
-                    placeholder="What service do you need?"
-                    className="flex-grow border-none outline-none px-6 py-3 bg-white text-black text-base placeholder:text-gray-500"
-                  />
-                  <motion.button 
-                    className="bg-blue-600 px-6 py-3 border-none cursor-pointer flex items-center justify-center transition-colors hover:bg-blue-700 rounded-r-full"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <Search className="w-6 h-6 text-white" />
-                  </motion.button>
-                </motion.div>
-              </motion.div>
+                {[...row, ...row].map((img, i) => (
+                  <div key={i} className="flex-shrink-0 w-44 md:w-56 h-full overflow-hidden">
+                    <img
+                      src={img.src}
+                      alt={img.label}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
-          </motion.div>
+          ))}
+        </div>
 
-          {/* Left image stack */}
-          <div className="absolute top-0 left-0 w-[200px] h-full z-[3] hidden md:block">
-            <GalleryImage 
-              src={galleryBanner1} 
-              alt="Left" 
-              className="absolute top-5 left-5 w-[200px] h-[280px] object-cover z-[4] rounded-sm"
-              delay={0.3}
+        {/* Dark overlay */}
+        <div className="absolute inset-0 bg-blue-950/65" />
+
+        {/* Content */}
+        <div className="relative z-10 flex flex-col items-center justify-center text-center px-5 py-20" style={{ minHeight: 460 }}>
+          <h1 className="text-white text-3xl md:text-5xl font-bold mb-3">
+            Lucid is here for you
+          </h1>
+          <p className="text-blue-200 text-base md:text-lg mb-8">
+            Find trusted professionals for any job across Ghana
+          </p>
+          <form onSubmit={handleSearch} className="max-w-xl w-full mx-auto flex rounded-xl overflow-hidden shadow-lg">
+            <input
+              type="text"
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+              placeholder="What service do you need?"
+              className="flex-1 px-5 py-3 text-gray-900 outline-none text-base bg-white"
             />
-            <GalleryImage 
-              src={galleryBanner2} 
-              alt="Left Top" 
-              className="absolute top-2.5 left-[170px] w-[150px] h-[90px] object-cover z-[5] rounded-sm shadow-lg"
-              delay={0.5}
-            />
-            <GalleryImage 
-              src={galleryBanner3} 
-              alt="Left Bottom" 
-              className="absolute top-[230px] left-1.5 w-[130px] h-[90px] object-cover z-[9] rounded-sm translate-y-10 shadow-lg"
-              delay={0.7}
-            />
-            <GalleryImage 
-              src={galleryBanner4} 
-              alt="Left Down" 
-              className="absolute top-[310px] left-[170px] w-[150px] h-[90px] object-cover z-[6] rounded-sm shadow-lg"
-              delay={0.9}
-            />
-          </div>
+            <button
+              type="submit"
+              className="bg-white px-5 py-3 text-blue-700 hover:text-blue-900 transition-colors flex items-center justify-center"
+            >
+              <Search size={20} />
+            </button>
+          </form>
         </div>
       </header>
 
-      {/* Popular Services Section */}
-      <section className="bg-white py-20 relative z-0">
-        <motion.div 
-          className="max-w-[1200px] mx-auto px-5 mb-12 text-left"
-          variants={fadeInUp}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          <h2 className="text-3xl md:text-4xl font-bold">
-            <span className="text-black">Popular services</span>
-            <span className="text-blue-700"> near you</span>
+      {/* ── Popular Services ── */}
+      <section className="max-w-6xl mx-auto px-5 py-14">
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
+            Popular services <span className="text-blue-600">near you</span>
           </h2>
-        </motion.div>
+          <Link
+            to="/lucid/services/all"
+            className="text-blue-600 hover:text-blue-700 font-medium text-sm flex items-center gap-1"
+          >
+            View all <ChevronRight size={16} />
+          </Link>
+        </div>
 
-        <motion.div
-          className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 md:gap-8 max-w-[1200px] mx-auto px-5"
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-        >
-          {SERVICES.map((service, index) => (
-            <ServiceCard key={index} service={service} index={index} />
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
+          {POPULAR_SERVICES.map((svc, i) => (
+            <ServiceCard key={i} service={svc} />
           ))}
-        </motion.div>
+        </div>
+      </section>
 
-        {/* Services Carousel */}
-        <motion.div 
-          className="mt-20"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          <ServicesCarousel />
-        </motion.div>
+      {/* ── Carousel 1 ── */}
+      <div className="bg-white">
+        <ServicesCarousel services={carousel1} />
+      </div>
 
-        {/* Download Section */}
+      {/* ── Download ── */}
       <DownloadSection />
 
-        {/* Second Services Carousel */}
-        <motion.div 
-          className="mt-20"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          <ServicesCarousel />
-        </motion.div>
+      {/* ── Carousel 2 ── */}
+      <div className="bg-white">
+        <ServicesCarousel services={carousel2} />
+      </div>
 
-        {/* Business Category Section */}
-        <motion.div 
-          className="w-full"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+      {/* ── Featured Category Section ── */}
+      <section className="bg-white pb-16">
+        <BusinessCategorySection
+          serviceIcons={SERVICE_ICONS}
+          businessCards={BUSINESS_CARDS}
+          businessServices={BUSINESS_SERVICES}
+        />
+      </section>
+
+      {/* ── All Categories CTA ── */}
+      <section className="bg-blue-700 py-14 px-5 text-center">
+        <h2 className="text-white text-2xl md:text-3xl font-bold mb-3">
+          Browse all service categories
+        </h2>
+        <p className="text-blue-200 mb-7">10 categories · 50+ services across Ghana</p>
+        <Link
+          to="/lucid/services/all"
+          className="inline-block bg-white text-blue-700 font-bold px-8 py-3 rounded-full hover:bg-blue-50 transition-colors shadow"
         >
-          <BusinessCategorySection
-            serviceIcons={SERVICE_ICONS}
-            businessCards={BUSINESS_CARDS}
-            businessServices={BUSINESS_SERVICES}
-          />
-        </motion.div>
+          See all categories
+        </Link>
       </section>
 
       <BackToTop />

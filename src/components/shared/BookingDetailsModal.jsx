@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import LeaveReviewModal from './ReviewModal.jsx';
+import { ReviewModal } from './ReviewModal.jsx';
 import { QuotePriceModal, AdjustPriceModal, PaymentModal, PriceAdjustmentBanner } from './PaymentModals.jsx';
 
-import { 
+import {
   X, Star, Clock, CheckCircle, AlertCircle, User, Phone, Mail,
   FileText, Calendar, MapPin, Navigation, MessageCircle,
   ThumbsUp, ThumbsDown, Edit2, Trash2, Play, AlertTriangle,
@@ -12,9 +12,9 @@ import {
 } from 'lucide-react';
 
 
-const BookingDetailsModal = ({ 
-  booking, 
-  onClose, 
+const BookingDetailsModalComponent = ({
+  booking,
+  onClose,
   userType = 'provider',
   onAccept,
   onDecline,
@@ -51,6 +51,9 @@ const BookingDetailsModal = ({
 
   if (!booking) return null;
 
+  // [MOCK] booking prop comes from parent component's local state
+  // [API] In production the parent should fetch GET /bookings/:id to populate this prop before opening the modal
+
   // Normalized helpers
   const provider = booking.provider || {};
   const client = booking.client || {};
@@ -59,7 +62,7 @@ const BookingDetailsModal = ({
   const normalizedStatus = booking.status?.toLowerCase();
   const hasPriceAdjustment = booking.priceAdjustment?.status === 'pending' || booking.priceAdjustment?.status === 'approved';
 
-  
+
 
   // Contact info based on user type
   const contactLabel = userType === 'provider' ? 'Client' : 'Service Provider';
@@ -110,6 +113,7 @@ const BookingDetailsModal = ({
   };
 
   // NEW: Handler for submitting quote
+  // [API] PATCH /bookings/:id/status — {status: 'confirmed', quotedPrice, breakdown, notes}
   const handleQuoteSubmit = async (quoteData) => {
     await onSubmitQuote?.(quoteData);
     setShowQuotePriceModal(false);
@@ -117,10 +121,12 @@ const BookingDetailsModal = ({
   };
 
   // NEW: Handler for price adjustment approval
+  // [API] PATCH /bookings/:id/price-adjustment — {action: 'approve'} updates bookings.agreedPrice
   const handleApprovePriceAdjustment = async (booking) => {
     await onApprovePriceAdjustment?.(booking);
   };
 
+  // [API] PATCH /bookings/:id/price-adjustment — {action: 'reject'} reverts priceAdjustment.status
   const handleRejectPriceAdjustment = async (booking) => {
     await onRejectPriceAdjustment?.(booking);
   };
@@ -131,10 +137,12 @@ const BookingDetailsModal = ({
   };
 
   // NEW: Handler for successful payment
+  // [API] POST /payments — {bookingId, amount, method, phoneNumber} → {reference, status}
+  // [API] PATCH /bookings/:id/status — {status: 'completed'} called after payment confirmed
   const handlePaymentSuccess = async (paymentData) => {
     await onProcessPayment?.(paymentData);
     setShowPaymentModal(false);
-    
+
     // Now mark as complete
     await onMarkComplete?.(booking);
     onClose();
@@ -142,6 +150,7 @@ const BookingDetailsModal = ({
 
 
   // NEW: Handle completion request submission
+  // [API] POST /bookings/:id/completion-request — {requestedBy, notes, timestamp}
   const handleSubmitCompletionRequest = async () => {
     if (!completionNotes.trim()) {
       alert('Please provide completion notes');
@@ -166,6 +175,7 @@ const BookingDetailsModal = ({
   };
 
   // Handle cancellation request submission
+  // [API] POST /bookings/:id/cancel — {reason, requestedBy: 'client'|'provider'}
   const handleSubmitCancellationRequest = async () => {
     if (!cancellationReason.trim()) {
       alert('Please provide a reason for cancellation');
@@ -232,7 +242,7 @@ const BookingDetailsModal = ({
             <div>
               <p className="font-semibold text-purple-900">Work in Progress</p>
               <p className="text-sm text-purple-800">
-                {userType === 'provider' 
+                {userType === 'provider'
                   ? "Mark as complete when finished. To cancel, you'll need client approval."
                   : "The provider is currently working on your request. To cancel, you'll need provider approval."
                 }
@@ -263,7 +273,7 @@ const BookingDetailsModal = ({
                 {isCompletionRequestor ? 'Completion Request Sent' : 'Completion Request Received'}
               </p>
               <p className="text-sm text-green-800 mt-1">
-                {isCompletionRequestor 
+                {isCompletionRequestor
                   ? `You marked this job as complete. Awaiting ${contactLabel.toLowerCase()} confirmation.`
                   : `${requestorName} has marked this job as complete and is requesting your confirmation.`
                 }
@@ -281,12 +291,14 @@ const BookingDetailsModal = ({
 
           {canApproveCompletion && (
             <div className="flex gap-3 pt-2">
+              {/* [API] PATCH /bookings/:id/status — {status: 'completed'} on approve */}
               <button
                 onClick={() => onApproveCompletion?.(booking)}
                 className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-semibold text-sm"
               >
                 Confirm Completion
               </button>
+              {/* [API] PATCH /bookings/:id/completion-request — {action: 'reject'} keeps status as in-progress */}
               <button
                 onClick={() => onRejectCompletion?.(booking)}
                 className="flex-1 px-4 py-2 bg-white border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-semibold text-sm"
@@ -317,7 +329,7 @@ const BookingDetailsModal = ({
                 {isRequestor ? 'Cancellation Request Sent' : 'Cancellation Request Received'}
               </p>
               <p className="text-sm text-orange-800 mt-1">
-                {isRequestor 
+                {isRequestor
                   ? `You requested to cancel this booking. Awaiting ${contactLabel.toLowerCase()} approval.`
                   : `${requestorName} has requested to cancel this booking.`
                 }
@@ -335,12 +347,14 @@ const BookingDetailsModal = ({
 
           {canApproveCancellation && (
             <div className="flex gap-3 pt-2">
+              {/* [API] PATCH /bookings/:id/status — {status: 'cancelled', reason} on approve */}
               <button
                 onClick={() => onApproveCancellation?.(booking)}
                 className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-semibold text-sm"
               >
                 Approve Cancellation
               </button>
+              {/* [API] PATCH /bookings/:id/cancellation-request — {action: 'reject'} keeps current status */}
               <button
                 onClick={() => onRejectCancellation?.(booking)}
                 className="flex-1 px-4 py-2 bg-white border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-semibold text-sm"
@@ -407,6 +421,7 @@ const BookingDetailsModal = ({
             <StatusBanner />
 
             {/* NEW: Price Adjustment Banner */}
+            {/* [API] PATCH /bookings/:id/status — {status, reason?} for any status transition shown here */}
             <PriceAdjustmentBanner
               booking={booking}
               userType={userType}
@@ -566,6 +581,7 @@ const BookingDetailsModal = ({
             )}
 
             {/* Attached Images */}
+            {/* [API] GET /bookings/:id/attachments — returns [{id, url, type, uploadedAt}] */}
             {booking.images && booking.images.length > 0 && (
               <div>
                 <h3 className="text-lg font-bold text-gray-900 mb-4">Attached Images</h3>
@@ -578,6 +594,7 @@ const BookingDetailsModal = ({
             )}
 
             {/* Review Section */}
+            {/* [MOCK] booking.review — in prod this comes from GET /bookings/:id which joins reviews table */}
             {normalizedStatus === 'completed' && booking.review && (
               <div>
                 <h3 className="text-lg font-bold text-gray-900 mb-4">
@@ -618,6 +635,7 @@ const BookingDetailsModal = ({
                 {/* UPDATED: Pending status - show quote modal */}
                 {normalizedStatus === 'pending' && (
                   <div className="flex gap-4">
+                    {/* [API] PATCH /bookings/:id/status — {status: 'confirmed', quotedPrice, breakdown} on accept */}
                     <button
                       onClick={handleAcceptWithQuote}
                       className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold"
@@ -625,6 +643,7 @@ const BookingDetailsModal = ({
                       <ThumbsUp className="w-5 h-5" />
                       Accept & Quote Price
                     </button>
+                    {/* [API] PATCH /bookings/:id/status — {status: 'declined', reason} */}
                     <button
                       onClick={() => onDecline?.(booking)}
                       className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-semibold"
@@ -637,6 +656,7 @@ const BookingDetailsModal = ({
 
                 {normalizedStatus === 'confirmed' && (
                   <div className="space-y-3">
+                    {/* [API] PATCH /bookings/:id/status — {status: 'in-progress', startedAt: timestamp} */}
                     <button
                       onClick={() => onStartJob?.(booking)}
                       className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-semibold"
@@ -645,7 +665,7 @@ const BookingDetailsModal = ({
                       Start Job
                     </button>
                     <div className="flex gap-3">
-                      <Link to="/messagePage" className="flex-1">
+                      <Link to="/lucid/messages" className="flex-1">
                       <button className="w-full px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold flex items-center justify-center gap-2">
                         <MessageCircle className="w-5 h-5" />
                         Message Provider
@@ -666,6 +686,7 @@ const BookingDetailsModal = ({
                 {normalizedStatus === 'in-progress' && (
                   <div className="space-y-3">
                     {!hasCompletionRequest ? (
+                      // [API] POST /bookings/:id/completion-request — {requestedBy: 'provider', notes}
                       <button
                         onClick={() => setShowCompleteRequestModal(true)}
                         className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-semibold"
@@ -682,6 +703,7 @@ const BookingDetailsModal = ({
                     )}
                     <div className="flex gap-3">
                       {/* NEW: Adjust Price button */}
+                      {/* [API] POST /bookings/:id/price-adjustment — {newPrice, reason, originalPrice} */}
                       {!hasPriceAdjustment && (
                         <button
                           onClick={() => setShowAdjustPriceModal(true)}
@@ -691,13 +713,14 @@ const BookingDetailsModal = ({
                           Adjust Price
                         </button>
                       )}
-                      <Link to="/messagePage" className="flex-1">
+                      <Link to="/lucid/messages" className="flex-1">
                         <button className="w-full px-4 py-2 bg-white border-2 border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-semibold">
                           <MessageCircle className="w-4 h-4 inline mr-2" />
                           Message Client
                         </button>
                       </Link>
                       {!hasCancellationRequest && (
+                        // [API] POST /bookings/:id/cancel — {reason, requestedBy: 'provider'}
                         <button
                           onClick={() => setShowCancelRequestModal(true)}
                           className="px-6 py-2 bg-white border-2 border-red-600 text-red-600 rounded-lg hover:bg-red-50 transition-colors font-semibold"
@@ -731,6 +754,7 @@ const BookingDetailsModal = ({
               <>
                 {normalizedStatus === 'pending' && (
                   <div className="flex gap-4">
+                    {/* [API] PATCH /bookings/:id — {date, time, description, budget} to edit before confirmed */}
                     <button
                       onClick={() => onEdit?.(booking)}
                       className="flex-1 px-4 py-3 bg-white border-2 border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-semibold flex items-center justify-center gap-2"
@@ -738,6 +762,7 @@ const BookingDetailsModal = ({
                       <Edit2 className="w-5 h-5" />
                       Edit Booking
                     </button>
+                    {/* [API] POST /bookings/:id/cancel — {reason, requestedBy: 'client'} */}
                     <button
                       onClick={() => onCancel?.(booking)}
                       className="flex-1 px-4 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-semibold flex items-center justify-center gap-2"
@@ -750,12 +775,13 @@ const BookingDetailsModal = ({
 
                 {normalizedStatus === 'confirmed' && (
                   <div className="flex gap-4">
-                    <Link to="/messagePage" className="flex-1">
+                    <Link to="/lucid/messages" className="flex-1">
                       <button className="w-full px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold flex items-center justify-center gap-2">
                         <MessageCircle className="w-5 h-5" />
                         Message Provider
                       </button>
                     </Link>
+                    {/* [API] POST /bookings/:id/cancel — {reason, requestedBy: 'client'} */}
                     <button
                       onClick={() => onCancel?.(booking)}
                       className="px-6 py-2 bg-white border-2 border-red-600 text-red-600 rounded-lg hover:bg-red-50 transition-colors font-semibold flex items-center gap-2"
@@ -770,6 +796,8 @@ const BookingDetailsModal = ({
                 {normalizedStatus === 'in-progress' && (
                   <div className="space-y-3">
                     {!hasCompletionRequest ? (
+                      // [API] POST /payments — {bookingId, amount, method, phoneNumber} called via PaymentModal
+                      // [API] PATCH /bookings/:id/status — {status: 'completed'} called after payment success
                       <button
                         onClick={handleClientMarkComplete}
                         className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-semibold"
@@ -785,13 +813,14 @@ const BookingDetailsModal = ({
                       </div>
                     )}
                     <div className="flex gap-3">
-                      <Link to="/messagePage" className="flex-1">
+                      <Link to="/lucid/messages" className="flex-1">
                         <button className="w-full px-4 py-2 bg-white border-2 border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-semibold">
                           <MessageCircle className="w-4 h-4 inline mr-2" />
                           Message Provider
                         </button>
                       </Link>
                       {!hasCancellationRequest && (
+                        // [API] POST /bookings/:id/cancel — {reason, requestedBy: 'client'}
                         <button
                           onClick={() => setShowCancelRequestModal(true)}
                           className="px-6 py-2 bg-white border-2 border-orange-600 text-orange-600 rounded-lg hover:bg-orange-50 transition-colors font-semibold"
@@ -810,6 +839,7 @@ const BookingDetailsModal = ({
                       <span className="font-semibold text-lg">Service Completed</span>
                     </div>
                     {!booking.review && (
+                      // [API] POST /reviews — {bookingId, targetUserId, rating, comment} on submit
                       <button
                         onClick={() => setShowReviewModal(true)}
                         className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold"
@@ -863,6 +893,7 @@ const BookingDetailsModal = ({
                   You are requesting to cancel this in-progress booking. The {contactLabel.toLowerCase()} must approve your request before the cancellation is finalized.
                 </p>
 
+                {/* [API] GET /bookings/:id/cancellation-policy — shows fee if within cancellation window */}
                 <div className="bg-yellow-50 border-l-4 border-yellow-400 p-3 mb-4">
                   <p className="text-sm text-yellow-800">
                     <span className="font-semibold">Important:</span> Work will continue until the request is approved. Be sure to communicate with the {contactLabel.toLowerCase()}.
@@ -893,6 +924,7 @@ const BookingDetailsModal = ({
                 >
                   Cancel
                 </button>
+                {/* [API] POST /bookings/:id/cancel — {reason, requestedBy: 'client'|'provider'} */}
                 <button
                   onClick={handleSubmitCancellationRequest}
                   disabled={isSubmitting || !cancellationReason.trim()}
@@ -947,7 +979,7 @@ const BookingDetailsModal = ({
                   onChange={(e) => setCompletionNotes(e.target.value)}
                   rows="4"
                   className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-green-500 focus:outline-none resize-none"
-                  placeholder={userType === 'provider' 
+                  placeholder={userType === 'provider'
                     ? "Describe what was completed (e.g., 'Installed new pipes, tested for leaks, cleaned work area')"
                     : "Confirm the work completed meets your expectations..."
                   }
@@ -966,6 +998,7 @@ const BookingDetailsModal = ({
                 >
                   Cancel
                 </button>
+                {/* [API] POST /bookings/:id/completion-request — {requestedBy, notes, timestamp} */}
                 <button
                   onClick={handleSubmitCompletionRequest}
                   disabled={isSubmitting || !completionNotes.trim()}
@@ -1002,7 +1035,9 @@ const BookingDetailsModal = ({
           onProcessPayment={handlePaymentSuccess}
         />
 
-        <LeaveReviewModal
+        {/* [API] POST /reviews — {bookingId, targetUserId, rating, comment} */}
+        {/* [DB] Update bookings.rating and create reviews record on submit */}
+        <ReviewModal
           booking={booking}
           isOpen={showReviewModal}
           onClose={() => setShowReviewModal(false)}
@@ -1016,4 +1051,4 @@ setShowReviewModal(false);
   );
 };
 
-export default BookingDetailsModal;
+export const BookingDetailsModal = React.memo(BookingDetailsModalComponent);

@@ -215,6 +215,7 @@ const ConversationItem = memo(({ conversation, onSelect, onShowActions }) => {
       </div>
 
       {/* Unread Badge & Icons */}
+      {/* [DB] unreadCount aggregated from messages WHERE conversationId = :id AND readAt IS NULL AND senderId != currentUserId */}
       <div className="flex flex-col items-end gap-2 flex-shrink-0">
         {conversation.unreadCount > 0 && (
           <div className="bg-blue-600 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
@@ -281,6 +282,8 @@ const MessagesListPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [confirmDelete, setConfirmDelete] = useState(null);
   const [selectedConversation, setSelectedConversation] = useState(null);
+  // [MOCK] Replace with GET /conversations?userId={id} — sorted by lastMessageAt desc → [{id, name, avatar, lastMessage, time, unreadCount, online, pinned, muted, archived, isOutgoing, status}]
+  // [WS] Listen for 'conversation:updated' event to bump updated conversation to top and refresh lastMessage/unreadCount
   const [conversations, setConversations] = useState([
     {
       id: 1,
@@ -416,12 +419,14 @@ const MessagesListPage = () => {
     });
 
   const handleDelete = useCallback((id) => {
+    // [API] DELETE /conversations/:id — soft-delete for current user; other participant retains history
     setConversations(prev => prev.filter(c => c.id !== id));
     showNotification('Conversation deleted', 'success');
   }, [showNotification]);
 
   const handlePin = useCallback((id) => {
-    setConversations(prev => prev.map(c => 
+    // [API] PATCH /conversations/:id — {pinned: true|false}
+    setConversations(prev => prev.map(c =>
       c.id === id ? { ...c, pinned: !c.pinned } : c
     ));
     const conv = conversations.find(c => c.id === id);
@@ -430,7 +435,8 @@ const MessagesListPage = () => {
   }, [conversations, showNotification]);
 
   const handleMute = useCallback((id) => {
-    setConversations(prev => prev.map(c => 
+    // [API] PATCH /conversations/:id — {muted: true|false} — suppresses push/WS notifications for this thread
+    setConversations(prev => prev.map(c =>
       c.id === id ? { ...c, muted: !c.muted } : c
     ));
     const conv = conversations.find(c => c.id === id);
@@ -439,7 +445,8 @@ const MessagesListPage = () => {
   }, [conversations, showNotification]);
 
   const handleArchive = useCallback((id) => {
-    setConversations(prev => prev.map(c => 
+    // [API] PATCH /conversations/:id — {archived: true|false}
+    setConversations(prev => prev.map(c =>
       c.id === id ? { ...c, archived: !c.archived } : c
     ));
     const conv = conversations.find(c => c.id === id);
@@ -450,13 +457,14 @@ const MessagesListPage = () => {
   const handleSelectConversation = useCallback((conversation) => {
     showNotification(`Opening chat with ${conversation.name}...`, 'info');
     setTimeout(() => {
-      navigate('/messagePage');
+      navigate('/lucid/messages');
     }, 300);
   }, [navigate, showNotification]);
 
-  const handleBackClick = useNavigateBack('/lucid_dev_backup', 400);
+  const handleBackClick = useNavigateBack('/lucid/', 400);
 
   const handleNewMessage = useCallback(() => {
+    // [API] POST /conversations — {participantIds: [userId, recipientId], bookingId?} → {conversationId}
     showNotification('New message feature coming soon!', 'info');
   }, [showNotification]);
 
@@ -514,7 +522,7 @@ const MessagesListPage = () => {
               placeholder="Search conversations..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 bg-gray-100 rounded-full text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all"
+              className="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-full text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-all"
             />
             {searchQuery && (
               <button

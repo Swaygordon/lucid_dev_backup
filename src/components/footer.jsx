@@ -82,38 +82,38 @@ const DownloadButton = memo(({ src, alt, to }) => (
 
 // Data Constants
 const SOCIAL_LINKS = [
-  { Icon: FaXTwitter, to: "/lucid_dev_backup", label: "Twitter" },
-  { Icon: FaYoutube, to: "/lucid_dev_backup", label: "YouTube" },
-  { Icon: FaFacebook, to: "/lucid_dev_backup", label: "Facebook" },
-  { Icon: FaInstagram, to: "/lucid_dev_backup", label: "Instagram" },
-  { Icon: FaThreads, to: "/lucid_dev_backup", label: "Threads" }
+  { Icon: FaXTwitter, to: "/lucid", label: "Twitter" },
+  { Icon: FaYoutube, to: "/lucid", label: "YouTube" },
+  { Icon: FaFacebook, to: "/lucid", label: "Facebook" },
+  { Icon: FaInstagram, to: "/lucid", label: "Instagram" },
+  { Icon: FaThreads, to: "/lucid", label: "Threads" }
 ];
 
 const QUICK_LINKS = [
-  { to: "/lucid_dev_backup", label: "Pricing" },
-  { to: "/lucid_dev_backup", label: "How it works" },
+  { to: "/lucid", label: "Pricing" },
+  { to: "/lucid", label: "How it works" },
   { to: "/Service", label: "Services" },
-  { to: "/lucid_dev_backup", label: "Safety" },
+  { to: "/lucid", label: "Safety" },
   { to: "/client_dashboard", label: "client dashboard" }
 ];
 
 const COMPANY_LINKS = [
   { to: "/about", label: "About us" },
-  { to: "/lucid_dev_backup", label: "Contact" },
-  { to: "/lucid_dev_backup", label: "Jobs" },
+  { to: "/lucid", label: "Contact" },
+  { to: "/lucid", label: "Jobs" },
   { to: "/client_bookings", label: "client bookings" },
   { to: "/client_account", label: "Client Account profile" }
 ];
 
 const LEGAL_LINKS = [
-  { to: "/lucid_dev_backup", label: "Terms of use" },
-  { to: "/lucid_dev_backup", label: "Privacy policy" },
-  { to: "/lucid_dev_backup", label: "Cookie policy" }
+  { to: "/lucid", label: "Terms of use" },
+  { to: "/lucid", label: "Privacy policy" },
+  { to: "/lucid", label: "Cookie policy" }
 ];
 
 const DOWNLOAD_BUTTONS = [
-  { src: downloadBtn_1, alt: "App Store download button", to: "/lucid_dev_backup" },
-  { src: downloadBtn_2, alt: "Play Store download button", to: "/lucid_dev_backup" }
+  { src: downloadBtn_1, alt: "App Store download button", to: "/lucid" },
+  { src: downloadBtn_2, alt: "Play Store download button", to: "/lucid" }
 ];
 
 // Memoized Footer Section Component
@@ -142,7 +142,7 @@ const Footer = () => {
           variants={staggerContainer}
         >
           <motion.div variants={fadeInUp}>
-            <Link to="/lucid_dev_backup" className="flex items-center">
+            <Link to="/lucid" className="flex items-center">
               <motion.img
                 src={Logo2}
                 alt="Lucid Logo"

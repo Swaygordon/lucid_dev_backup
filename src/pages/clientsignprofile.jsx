@@ -14,12 +14,15 @@ const navigate = useNavigate();
   const [isUploading, setIsUploading] = useState(false);
    const [notification, setNotification] = useState('');
 
+  // [MOCK] Profile data (name, email, location, stats) is hardcoded — replace with GET /users/me → {profile} on mount
+
   const openImageUpload = () => {
     setShowImageUpload(true);
   };
 
   const showNotification = (text) => {
     setNotification(text);
+    // [MOCK] Remove setTimeout; drive dismissal via state or a toast library
     setTimeout(() => setNotification(''), 2000);
   };
 
@@ -28,7 +31,7 @@ const navigate = useNavigate();
   if (window.history.length > 2) {
     navigate(-1);
   } else {
-    navigate('/userEdit');
+    navigate('/lucid/account/profile/edit');
   }
 };
 
@@ -46,7 +49,7 @@ const navigate = useNavigate();
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-    
+
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       setSelectedFile(e.dataTransfer.files[0]);
     }
@@ -60,14 +63,17 @@ const navigate = useNavigate();
 
   const handleSave = () => {
     if (!selectedFile) return;
-    
+
     setIsUploading(true);
     setUploadProgress(0);
-    
+
+    // [API] POST /upload/avatar — multipart/form-data {file} → {imageUrl}
+    // [MOCK] Remove simulated progress interval; track real upload progress via XHR onprogress or axios onUploadProgress
     const interval = setInterval(() => {
       setUploadProgress((prev) => {
         if (prev >= 100) {
           clearInterval(interval);
+          // [API] PUT /users/me/avatar — {imageUrl} → {updatedUser} — persist returned imageUrl to user profile
           setTimeout(() => {
             setIsUploading(false);
             setShowImageUpload(false);
@@ -97,14 +103,14 @@ const navigate = useNavigate();
         </div>
       )}
 
-        <button 
+        <button
           onClick={handleBackClick}
             className="absolute hidden md:inline-flex items-center top-4 left-4 md:top-6 md:left-10 p-2 text-blue-600 hover:bg-gray-100 rounded-lg transition-colors"
           >
             <ArrowLeft size={22} color="#2563eb"/>
             <span className="ml-1 text-lg" >Go back</span>
         </button>
-        <button 
+        <button
           onClick={handleBackClick}
             className="absolute md:hidden inline-flex items-center top-6 left-5 md:top-6 p-2 text-white bg-blue-600 rounded-lg"
           >
@@ -116,7 +122,8 @@ const navigate = useNavigate();
         {/* Profile Card */}
         <div className="bg-white rounded-3xl p-8 shadow-lg border text-center backdrop-blur-sm animate-[fadeInUp_0.6s_ease-out]"
              style={{ boxShadow: '8px 8px 15px rgba(94, 93, 93, 0.25), 5px 5px 10px rgba(0, 0, 0, 0.25)' }}>
-              
+
+          {/* [MOCK] Avatar initials "GG" are hardcoded — render actual avatar image from GET /users/me → {avatarUrl} */}
           <div className="relative w-24 h-24 mx-auto mb-4 cursor-pointer transition-transform duration-300 hover:scale-105 group"
                onClick={openImageUpload}>
             <div className="w-full h-full rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-3xl font-bold shadow-lg">
@@ -127,13 +134,14 @@ const navigate = useNavigate();
             </div>
           </div>
 
-          <button 
+          <button
             onClick={openImageUpload}
             className="bg-gradient-to-r from-blue-600 to-blue-800 text-white border-none px-6 py-3 rounded-xl font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center gap-2 mx-auto mb-5 shadow-md hover:-translate-y-0.5 hover:shadow-xl">
             <Upload className="w-4 h-4" />
             Upload Photo
           </button>
 
+          {/* [MOCK] Name, email, and location are hardcoded — replace with values from GET /users/me */}
           <h2 className="text-2xl font-bold text-gray-800 mb-1">Gabriel Gordon-Mensah</h2>
           <p className="text-gray-500 mb-2 text-base">gordongabriel2004@gmail.com</p>
           <p className="text-gray-400 text-sm flex items-center justify-center gap-2 mb-6">
@@ -141,6 +149,7 @@ const navigate = useNavigate();
             Achimota, Accra
           </p>
 
+          {/* [MOCK] Project stats (10 completed, 1 active) are hardcoded — replace with GET /users/me/stats → {completedProjects, activeProjects} */}
           <div className="flex justify-around items-center bg-slate-50 rounded-2xl p-5 mt-4 border border-slate-200">
             <div className="text-center flex-1">
               <p className="text-gray-500 text-sm mb-1">Completed Projects</p>
@@ -156,7 +165,7 @@ const navigate = useNavigate();
 
         {/* Action Panel */}
         <div className="flex flex-col gap-4 animate-[fadeInUp_0.6s_ease-out] [animation-delay:0.2s]">
-          <Link to="/accountsettings">
+          <Link to="/lucid/account">
           <button className="bg-white w-full max-w-lg border-2 border-slate-200 rounded-2xl p-5 cursor-pointer transition-all duration-300 flex items-center justify-between text-left hover:border-indigo-500 hover:-translate-y-0.5 hover:shadow-xl">
             <div className="flex items-center gap-3">
               <Settings className="w-5 h-5 text-blue-800" />
@@ -166,7 +175,7 @@ const navigate = useNavigate();
           </button>
           </Link>
 
-          <Link to="/notificationsettings">
+          <Link to="/lucid/notifications/settings">
           <button className="bg-white w-full max-w-lg border-2 border-slate-200 rounded-2xl p-5 cursor-pointer transition-all duration-300 flex items-center justify-between text-left hover:border-indigo-500 hover:-translate-y-0.5 hover:shadow-xl">
             <div className="flex items-center gap-3">
               <Bell className="w-5 h-5 text-blue-800" />
@@ -177,7 +186,8 @@ const navigate = useNavigate();
           </Link>
 
           <div className="mt-6">
-            <Link to="/signin">
+            {/* [AUTH] Log out — call POST /auth/logout to invalidate server-side session/token, then clear local storage and redirect to /signin */}
+            <Link to="/lucid/signin">
             <button className="bg-gradient-to-r w-full max-w-lg from-red-600 to-red-700 text-white border-none px-6 py-4 rounded-2xl font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center gap-2 shadow-md hover:-translate-y-0.5 hover:shadow-xl">
               <LogOut size={20} color="white"/>
               Log out
@@ -191,7 +201,7 @@ const navigate = useNavigate();
       {showImageUpload && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full p-8 relative">
-            <button 
+            <button
               onClick={handleCancel}
               className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-full transition-colors"
             >
@@ -212,7 +222,7 @@ const navigate = useNavigate();
               {!isUploading ? (
                 <>
                   <Upload className="w-16 h-16 text-blue-600 mx-auto mb-4" />
-                  
+
                   <label htmlFor="file-upload" className="cursor-pointer">
                     <div className="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors mb-4">
                       Browse
@@ -227,7 +237,7 @@ const navigate = useNavigate();
                   </label>
 
                   <p className="text-gray-600 text-lg mb-2">Drop a file here</p>
-                  
+
                   {selectedFile && !isUploading && (
                     <p className="text-green-600 font-semibold mt-4">
                       Selected: {selectedFile.name}
@@ -264,7 +274,7 @@ const navigate = useNavigate();
                   </div>
                 </>
               )}
-              
+
               <p className="text-sm text-gray-500 mt-6">
                 <span className="text-red-500">*</span>Files supported .png, .jpg, .jpeg & .webp
               </p>

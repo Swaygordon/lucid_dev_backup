@@ -10,6 +10,7 @@ const AccountSettings = () => {
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState(''); // 'save', 'deactivate', 'delete'
   const [verificationInput, setVerificationInput] = useState('');
+  // [MOCK] Fetch initial values with GET /users/:id/settings — {firstName, lastName, otherName, email, phoneNumber, region, city}
   const [formData, setFormData] = useState({
     firstName: 'John',
     lastName: 'Doe',
@@ -53,12 +54,14 @@ const AccountSettings = () => {
 
   const handleModalConfirm = () => {
     if (modalType === 'save') {
+      // [API] PATCH /users/:id/settings — {changed fields from formData} → {updatedUser}
       setIsEditing(false);
       showNotification('Changes saved successfully!');
       console.log('Saved data:', formData);
       closeModal();
     } else if (modalType === 'deactivate') {
       if (verificationInput.toLowerCase() === 'deactivate') {
+        // [API] PATCH /users/:id/settings — {status: 'inactive'} → {success: true}
         showNotification('Account deactivated successfully');
         closeModal();
         // Add deactivation logic here
@@ -67,6 +70,7 @@ const AccountSettings = () => {
       }
     } else if (modalType === 'delete') {
       if (verificationInput.toLowerCase() === 'delete') {
+        // [API] DELETE /users/:id — requires re-auth; invalidate session after success
         showNotification('Account deletion request submitted');
         closeModal();
         // Add deletion logic here
@@ -85,11 +89,11 @@ const AccountSettings = () => {
     switch (modalType) {
       case 'save':
         return {
-          icon: <CheckCircle className="w-16 h-16 text-blue-600 mx-auto mb-4" />,
+          icon: <CheckCircle className="w-16 h-16 text-primary mx-auto mb-4" />,
           title: 'Confirm Changes',
           message: 'Are you sure you want to save these changes to your account?',
           confirmText: 'Save Changes',
-          confirmColor: 'bg-blue-600 hover:bg-blue-700',
+          confirmColor: 'bg-primary hover:bg-primary-hover',
           showInput: false
         };
       case 'deactivate':
@@ -100,18 +104,18 @@ const AccountSettings = () => {
           verificationText: 'DEACTIVATE',
           placeholder: 'Type "DEACTIVATE" to confirm',
           confirmText: 'Deactivate Account',
-          confirmColor: 'bg-blue-600 hover:bg-blue-700',
+          confirmColor: 'bg-primary hover:bg-primary-hover',
           showInput: true
         };
       case 'delete':
         return {
-          icon: <AlertTriangle className="w-16 h-16 text-red-600 mx-auto mb-4" />,
+          icon: <AlertTriangle className="w-16 h-16 text-error mx-auto mb-4" />,
           title: 'Delete Account',
           message: 'This action cannot be undone. All your data will be permanently deleted.',
           verificationText: 'DELETE',
           placeholder: 'Type "DELETE" to confirm',
           confirmText: 'Delete Account',
-          confirmColor: 'bg-red-600 hover:bg-red-700',
+          confirmColor: 'bg-error hover:bg-error/90',
           showInput: true
         };
       default:
@@ -125,7 +129,7 @@ const AccountSettings = () => {
     <div className="bg-white min-h-screen flex justify-center items-start p-8">
       {/* Notification Toast */}
       {notification && (
-        <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-slide-up">
+        <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-primary text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-slide-up">
           {notification}
         </div>
       )}
@@ -190,7 +194,7 @@ const AccountSettings = () => {
           }}
             className="p-2 hover:bg-gray-100 rounded-full transition-colors"
           >
-            <ArrowLeft className="w-6 h-6 text-blue-600" />
+            <ArrowLeft className="w-6 h-6 text-primary" />
         </button>
         {/* User Information Section */}
         <div className="relative pb-4 mb-8 border-b border-gray-200">
@@ -201,7 +205,7 @@ const AccountSettings = () => {
             {!isEditing && (
               <button
                 onClick={handleEditToggle}
-                className="flex items-center gap-2 bg-transparent hover:bg-blue-50 text-blue-600 font-medium px-4 py-2 rounded-md transition-all duration-200"
+                className="flex items-center gap-2 bg-transparent hover:bg-blue-50 text-primary font-medium px-4 py-2 rounded-md transition-all duration-200"
               >
                 <Edit2 size={20} />
                 <span>Edit</span>
@@ -352,13 +356,13 @@ const AccountSettings = () => {
               <div className="flex flex-col md:flex-row gap-4 justify-center items-center">
                 <button
                   onClick={() => openModal('deactivate')}
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-8 py-3 rounded-md transition-all duration-200 transform hover:-translate-y-0.5 hover:shadow-lg min-w-[160px]"
+                  className="bg-primary hover:bg-primary-hover text-white font-medium px-8 py-3 rounded-md transition-all duration-200 transform hover:-translate-y-0.5 hover:shadow-lg min-w-[160px]"
                 >
                   Deactivate Account
                 </button>
                 <button
                   onClick={() => openModal('delete')}
-                  className="bg-red-600 hover:bg-red-700 text-white font-medium px-8 py-3 rounded-md transition-all duration-200 transform hover:-translate-y-0.5 hover:shadow-lg min-w-[160px]"
+                  className="bg-error hover:bg-error/90 text-white font-medium px-8 py-3 rounded-md transition-all duration-200 transform hover:-translate-y-0.5 hover:shadow-lg min-w-[160px]"
                 >
                   Delete Account
                 </button>
@@ -373,14 +377,14 @@ const AccountSettings = () => {
             <div className="flex flex-col md:flex-row gap-4 justify-center items-center">
               <button
                 onClick={() => openModal('save')}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-8 py-3 rounded-md transition-all duration-200 transform hover:-translate-y-0.5 hover:shadow-lg min-w-[160px] flex items-center justify-center gap-2"
+                className="bg-primary hover:bg-primary-hover text-white font-medium px-8 py-3 rounded-md transition-all duration-200 transform hover:-translate-y-0.5 hover:shadow-lg min-w-[160px] flex items-center justify-center gap-2"
               >
                 <Save size={20} />
                 Save
               </button>
               <button
                 onClick={handleCancel}
-                className="bg-white hover:bg-blue-600 text-blue-600 hover:text-white border-2 border-blue-600 font-medium px-8 py-3 rounded-md transition-all duration-200 transform hover:-translate-y-0.5 hover:shadow-lg min-w-[160px] flex items-center justify-center gap-2"
+                className="bg-white hover:bg-primary text-primary hover:text-white border-2 border-primary font-medium px-8 py-3 rounded-md transition-all duration-200 transform hover:-translate-y-0.5 hover:shadow-lg min-w-[160px] flex items-center justify-center gap-2"
               >
                 <X size={20} />
                 Cancel

@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
 import { TrendingUp, DollarSign, Calendar, Eye, EyeOff } from 'lucide-react';
 
+// [MOCK] All chart data below is hardcoded. Replace with:
+//   GET /providers/:id/earnings?period=week|month|year
+//   → { data: [{ name: string, earnings: number, jobs: number }], total: number, avg: number }
+// The timeframe selector (week/month/year) should be passed as a query param when fetching.
 // Mock data for different time periods
 const weeklyData = [
   { name: 'Mon', earnings: 180, jobs: 2 },

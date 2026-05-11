@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  ArrowLeft, 
+import {
+  ArrowLeft,
   Calendar,
   Clock,
   CheckCircle,
@@ -47,7 +47,8 @@ const ClientBookings = () => {
     }
   }, []);
 
-  // Mock booking data
+  // [MOCK] Replace with GET /bookings?userId={currentUserId}&role=client — returns paginated booking list
+  // [API] Move filter/sort to query params; backend paginates: GET /bookings?userId={id}&status={filter}&sort=date&page={n}&limit={n}
   const bookings = useMemo(() => [
     {
       id: 1,
@@ -231,6 +232,7 @@ const ClientBookings = () => {
     }
   ], []);
 
+  // [API] Move status counts to API response metadata: GET /bookings?userId={id}&countByStatus=true → {counts: {pending, confirmed, ...}}
   const filterButtons = [
     { id: 'all', label: 'All Bookings', count: bookings.length },
     { id: 'pending', label: 'Pending', count: bookings.filter(b => b.status === 'pending').length },
@@ -240,6 +242,7 @@ const ClientBookings = () => {
     { id: 'cancelled', label: 'Cancelled', count: bookings.filter(b => b.status === 'cancelled').length }
   ];
 
+  // [API] Move filter/search logic to query params instead of client-side JS filtering
   const filteredBookings = useMemo(() => {
     return bookings.filter(booking => {
       const matchesFilter = activeFilter === 'all' || booking.status === activeFilter;
@@ -265,8 +268,8 @@ const ClientBookings = () => {
         label: 'Confirmed'
       },
       'in-progress': {
-        bg: 'bg-blue-100',
-        text: 'text-blue-700',
+        bg: 'bg-primary/10',
+        text: 'text-primary',
         icon: AlertCircle,
         label: 'In Progress'
       },
@@ -288,13 +291,14 @@ const ClientBookings = () => {
 
   const getUrgencyConfig = (urgency) => {
     const configs = {
-      normal: { bg: 'bg-blue-100', text: 'text-blue-700', label: 'Normal' },
+      normal: { bg: 'bg-primary/10', text: 'text-primary', label: 'Normal' },
       urgent: { bg: 'bg-orange-100', text: 'text-orange-700', label: 'Urgent' },
       emergency: { bg: 'bg-red-100', text: 'text-red-700', label: 'Emergency' }
     };
     return configs[urgency] || configs.normal;
   };
 
+  // [API] PATCH /bookings/:id/status — {status: 'cancelled'} → {bookingId, status}
   const handleCancelBooking = (bookingId) => {
     console.log('Cancelling booking:', bookingId);
     setShowCancelModal(null);
@@ -372,16 +376,18 @@ const ClientBookings = () => {
                 <span className="text-sm font-semibold">{booking.rating}.0</span>
               </div>
             )}
-            <button 
+            {/* [MOCK] Replace with GET /bookings/:id on click to fetch full booking detail */}
+            <button
               onClick={() => setSelectedBooking(booking)}
-              className="px-4 py-2 bg-white border-2 border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors text-sm font-semibold flex items-center gap-2"
+              className="px-4 py-2 bg-white border-2 border-primary text-primary rounded-lg hover:bg-primary/10 transition-colors text-sm font-semibold flex items-center gap-2"
             >
               <Eye className="w-4 h-4" />
               Details
             </button>
             {booking.status !== 'cancelled' && booking.status !== 'completed' && (
-              <button 
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-semibold flex items-center gap-2"
+              // [API] Navigating to chat should include conversationId: GET /conversations?bookingId={id} → {conversationId}
+              <button
+                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors text-sm font-semibold flex items-center gap-2"
               >
                 <MessageCircle className="w-4 h-4" />
                 Chat
@@ -394,6 +400,7 @@ const ClientBookings = () => {
   };
 
   // Booking Details Modal
+  // [MOCK] Replace modal data source with GET /bookings/:id → full booking object
   const BookingDetailsModal = ({ booking, onClose }) => {
     if (!booking) return null;
 
@@ -445,9 +452,10 @@ const ClientBookings = () => {
             {/* Modal Content */}
             <div className="p-6 space-y-6">
               {/* Service Provider Information */}
+              {/* [DB] Provider contact details should come from GET /providers/:id, not stored on every booking record */}
               <div>
                 <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <User className="w-5 h-5 text-blue-600" />
+                  <User className="w-5 h-5 text-primary" />
                   Service Provider
                 </h3>
                 <div className="bg-gray-50 rounded-lg p-4">
@@ -465,14 +473,14 @@ const ClientBookings = () => {
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
                       <p className="text-sm text-gray-600 mb-1">Phone</p>
-                      <a href={`tel:${booking.providerPhone}`} className="font-semibold text-blue-600 hover:underline flex items-center gap-1">
+                      <a href={`tel:${booking.providerPhone}`} className="font-semibold text-primary hover:underline flex items-center gap-1">
                         <Phone className="w-4 h-4" />
                         {booking.providerPhone}
                       </a>
                     </div>
                     <div>
                       <p className="text-sm text-gray-600 mb-1">Email</p>
-                      <a href={`mailto:${booking.providerEmail}`} className="font-semibold text-blue-600 hover:underline flex items-center gap-1">
+                      <a href={`mailto:${booking.providerEmail}`} className="font-semibold text-primary hover:underline flex items-center gap-1">
                         <Mail className="w-4 h-4" />
                         {booking.providerEmail}
                       </a>
@@ -484,7 +492,7 @@ const ClientBookings = () => {
               {/* Booking Details */}
               <div>
                 <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <FileText className="w-5 h-5 text-blue-600" />
+                  <FileText className="w-5 h-5 text-primary" />
                   Booking Details
                 </h3>
                 <div className="space-y-4">
@@ -492,12 +500,12 @@ const ClientBookings = () => {
                     <p className="text-sm text-gray-600 mb-1">Service Type</p>
                     <p className="font-semibold text-gray-900">{booking.serviceType}</p>
                   </div>
-                  
+
                   <div>
                     <p className="text-sm text-gray-600 mb-1">Description</p>
                     <p className="text-gray-900 bg-gray-50 rounded-lg p-3">{booking.description}</p>
                   </div>
-                  
+
                   <div className="grid md:grid-cols-3 gap-4">
                     <div>
                       <p className="text-sm text-gray-600 mb-1">Duration</p>
@@ -575,7 +583,7 @@ const ClientBookings = () => {
                     href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(booking.address + ', ' + booking.area + ', ' + booking.city)}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold"
+                    className="inline-flex items-center gap-2 text-primary hover:text-primary-hover font-semibold"
                   >
                     <Navigation className="w-4 h-4" />
                     Open in Google Maps
@@ -597,6 +605,7 @@ const ClientBookings = () => {
               {booking.status === 'completed' && booking.review && (
                 <div>
                   <h3 className="text-lg font-bold text-gray-900 mb-4">Your Review</h3>
+                  {/* [DB] Reviews stored on bookings record; alternatively GET /reviews?bookingId={id} */}
                   <div className="bg-green-50 rounded-lg p-4 border-l-4 border-green-400">
                     <div className="flex items-center gap-2 mb-2">
                       <div className="flex">
@@ -622,6 +631,7 @@ const ClientBookings = () => {
               {booking.status === 'cancelled' && booking.cancellationReason && (
                 <div>
                   <h3 className="text-lg font-bold text-gray-900 mb-4">Cancellation Reason</h3>
+                  {/* [DB] cancellationReason stored on booking record; set via PATCH /bookings/:id/status */}
                   <p className="text-gray-900 bg-red-50 rounded-lg p-4 border-l-4 border-red-400">
                     {booking.cancellationReason}
                   </p>
@@ -632,9 +642,10 @@ const ClientBookings = () => {
               {booking.images && booking.images.length > 0 && (
                 <div>
                   <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <ImageIcon className="w-5 h-5 text-blue-600" />
+                    <ImageIcon className="w-5 h-5 text-primary" />
                     Attached Images
                   </h3>
+                  {/* [API] GET /bookings/:id/attachments — {} → {attachments: [{id, url, createdAt}]} */}
                   <div className="grid grid-cols-3 gap-4">
                     {booking.images.map((img, index) => (
                       <img
@@ -653,13 +664,15 @@ const ClientBookings = () => {
             <div className="sticky bottom-0 bg-white border-t border-gray-200 p-6">
               {booking.status === 'pending' && (
                 <div className="flex gap-4">
+                  {/* [API] PATCH /bookings/:id — {updatable fields} → {bookingId, updatedFields} */}
                   <button className="flex-1 px-4 py-3 bg-white border-2 border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-semibold flex items-center justify-center gap-2">
                     <Edit2 className="w-5 h-5" />
                     Edit Booking
                   </button>
-                  <button 
+                  {/* [API] PATCH /bookings/:id/status — {status: 'cancelled', reason?} → {bookingId, status} */}
+                  <button
                     onClick={() => setShowCancelModal(booking)}
-                    className="flex-1 px-4 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-semibold flex items-center justify-center gap-2"
+                    className="flex-1 px-4 py-3 bg-error text-white rounded-lg hover:bg-error/90 transition-colors font-semibold flex items-center justify-center gap-2"
                   >
                     <Trash2 className="w-5 h-5" />
                     Cancel Booking
@@ -668,13 +681,15 @@ const ClientBookings = () => {
               )}
               {booking.status === 'confirmed' && (
                 <div className="flex gap-4">
+                  {/* [API] GET /conversations?bookingId={id} → {conversationId} before navigating to message page */}
                   <button className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold flex items-center justify-center gap-2">
                     <MessageCircle className="w-5 h-5" />
                     Message Provider
                   </button>
-                  <button 
+                  {/* [API] PATCH /bookings/:id/status — {status: 'cancelled', reason?} → {bookingId, status} */}
+                  <button
                     onClick={() => setShowCancelModal(booking)}
-                    className="px-6 py-3 bg-white border-2 border-red-600 text-red-600 rounded-lg hover:bg-red-50 transition-colors font-semibold flex items-center gap-2"
+                    className="px-6 py-3 bg-white border-2 border-error text-error rounded-lg hover:bg-red-50 transition-colors font-semibold flex items-center gap-2"
                   >
                     <Trash2 className="w-5 h-5" />
                     Cancel
@@ -683,6 +698,7 @@ const ClientBookings = () => {
               )}
               {booking.status === 'in-progress' && (
                 <div className="flex gap-4">
+                  {/* [API] GET /conversations?bookingId={id} → {conversationId} before navigating to message page */}
                   <button className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold flex items-center justify-center gap-2">
                     <MessageCircle className="w-5 h-5" />
                     Message Provider
@@ -695,10 +711,12 @@ const ClientBookings = () => {
               )}
               {booking.status === 'completed' && !booking.review && (
                 <div className="flex gap-4">
+                  {/* [API] POST /bookings/:id/reviews — {rating, reviewText} → {reviewId, bookingId} */}
                   <button className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold flex items-center justify-center gap-2">
                     <Star className="w-5 h-5" />
                     Leave Review
                   </button>
+                  {/* [API] GET /bookings/:id/receipt — {} → PDF download URL or binary */}
                   <button className="flex-1 px-4 py-3 bg-white border-2 border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-semibold flex items-center justify-center gap-2">
                     <Download className="w-5 h-5" />
                     Download Receipt
@@ -711,7 +729,8 @@ const ClientBookings = () => {
                     <CheckCircle className="w-6 h-6" />
                     <span className="font-semibold text-lg">Service Completed</span>
                   </div>
-                  <button className="px-6 py-3 bg-white border-2 border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-semibold flex items-center gap-2 mx-auto">
+                  {/* [API] GET /bookings/:id/receipt — {} → PDF download URL or binary */}
+                  <button className="px-6 py-3 bg-white border-2 border-primary text-primary rounded-lg hover:bg-primary/10 transition-colors font-semibold flex items-center gap-2 mx-auto">
                     <Download className="w-5 h-5" />
                     Download Receipt
                   </button>
@@ -719,7 +738,7 @@ const ClientBookings = () => {
               )}
               {booking.status === 'cancelled' && (
                 <div className="text-center">
-                  <div className="flex items-center justify-center gap-2 text-red-600 mb-3">
+                  <div className="flex items-center justify-center gap-2 text-error mb-3">
                     <XCircle className="w-6 h-6" />
                     <span className="font-semibold text-lg">Booking Cancelled</span>
                   </div>
@@ -758,13 +777,13 @@ const ClientBookings = () => {
             <div className="p-6">
               <div className="flex items-center space-x-3 mb-4">
                 <div className="bg-red-100 p-3 rounded-full">
-                  <Trash2 className="w-6 h-6 text-red-600" />
+                  <Trash2 className="w-6 h-6 text-error" />
                 </div>
                 <h2 className="text-xl font-semibold text-gray-900">Cancel Booking?</h2>
               </div>
-              
+
               <p className="text-gray-600 mb-2">Are you sure you want to cancel this booking?</p>
-              
+
               <div className="bg-gray-50 p-4 rounded-lg mb-6 border border-gray-200">
                 <p className="text-sm font-semibold text-gray-900 mb-1">{booking.title}</p>
                 <p className="text-sm text-gray-600 mb-1">Provider: {booking.provider}</p>
@@ -772,6 +791,7 @@ const ClientBookings = () => {
               </div>
 
               <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
+                {/* [API] GET /bookings/:id/cancellation-policy — {} → {policy, refundEligible, deadline} */}
                 <p className="text-sm text-yellow-800">
                   <strong>Note:</strong> Cancellation policies may apply. The provider will be notified immediately.
                 </p>
@@ -784,9 +804,10 @@ const ClientBookings = () => {
                 >
                   Keep Booking
                 </button>
+                {/* [API] PATCH /bookings/:id/status — {status: 'cancelled'} → {bookingId, status} */}
                 <button
                   onClick={() => onConfirm(booking.id)}
-                  className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
+                  className="flex-1 px-4 py-2 bg-error text-white rounded-lg hover:bg-error/90 transition-colors font-medium"
                 >
                   Cancel Booking
                 </button>
@@ -801,7 +822,7 @@ const ClientBookings = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <motion.header 
+      <motion.header
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         className="bg-white shadow-sm sticky top-0 z-30"
@@ -831,6 +852,7 @@ const ClientBookings = () => {
           className="mb-8 space-y-4"
         >
           {/* Search Bar */}
+          {/* [API] Pass search query as param: GET /bookings?userId={id}&q={searchQuery} */}
           <div className="relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
             <input
@@ -850,7 +872,7 @@ const ClientBookings = () => {
                 onClick={() => setActiveFilter(filter.id)}
                 className={`px-4 py-2 rounded-lg font-semibold transition-all ${
                   activeFilter === filter.id
-                    ? 'bg-blue-600 text-white shadow-md'
+                    ? 'bg-primary text-white shadow-md'
                     : 'bg-white text-gray-700 hover:bg-gray-100 border-2 border-gray-200'
                 }`}
               >
@@ -888,7 +910,7 @@ const ClientBookings = () => {
                   ? "Try adjusting your search terms"
                   : "You don't have any bookings in this category"}
               </p>
-              <button className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold">
+              <button className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors font-semibold">
                 Book a Service
               </button>
             </div>
@@ -898,9 +920,9 @@ const ClientBookings = () => {
 
       {/* Booking Details Modal */}
       {selectedBooking && (
-        <BookingDetailsModal 
-          booking={selectedBooking} 
-          onClose={() => setSelectedBooking(null)} 
+        <BookingDetailsModal
+          booking={selectedBooking}
+          onClose={() => setSelectedBooking(null)}
         />
       )}
 

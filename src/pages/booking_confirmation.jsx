@@ -6,7 +6,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { 
+import {
   CheckCircle,
   Calendar,
   Clock,
@@ -19,8 +19,7 @@ import {
   FileText,
   Download
 } from 'lucide-react';
-import { Button } from '../components/ui/Button';
-import { Card } from '../components/ui/Card';
+import { Button, Card } from '../components/ui';
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
@@ -31,9 +30,11 @@ const BookingConfirmation = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [countdown, setCountdown] = useState(30);
-  
+
+  // [MOCK] Replace with GET /bookings/:id using bookingId from navigation state; remove reliance on location.state for direct-URL access
   const { bookingData, provider } = location.state || {};
 
+  // [MOCK] paymentInfo should come from GET /bookings/:id response; price and fee breakdown computed server-side
   // Add payment info to booking flow
 const paymentInfo = {
   amount: bookingData.price,
@@ -44,6 +45,7 @@ const paymentInfo = {
   // Generate booking reference
   const bookingRefRef = React.useRef(null);
 
+// [DB] Generate bookingReference server-side on POST /bookings; do not derive client-side from Date.now()
 if (!bookingRefRef.current) {
   bookingRefRef.current = `BK${Date.now().toString().slice(-8)}`;
 }
@@ -56,7 +58,7 @@ const bookingRef = bookingRefRef.current;
       setCountdown(prev => {
         if (prev <= 1) {
           clearInterval(timer);
-          navigate('/generalProfile');
+          navigate('/lucid/providers/me');
           return 0;
         }
         return prev - 1;
@@ -71,7 +73,7 @@ const bookingRef = bookingRefRef.current;
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <Card className="text-center p-8">
           <p className="text-gray-600 mb-4">No booking data found</p>
-          <Button onClick={() => navigate('/')}>Go Home</Button>
+          <Button onClick={() => navigate('/lucid/')}>Go Home</Button>
         </Card>
       </div>
     );
@@ -90,7 +92,7 @@ const bookingRef = bookingRefRef.current;
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            transition={{ 
+            transition={{
               type: "spring",
               stiffness: 200,
               damping: 15,
@@ -109,8 +111,9 @@ const bookingRef = bookingRefRef.current;
           <p className="text-xl text-gray-600 mb-2">
             Your booking request has been successfully submitted to {provider.name}
           </p>
+          {/* [DB] Display bookingReference returned from POST /bookings response, not locally generated */}
           <p className="text-gray-600">
-            Booking Reference: <span className="font-bold text-blue-600">{bookingRef}</span>
+            Booking Reference: <span className="font-bold text-primary">{bookingRef}</span>
           </p>
         </motion.div>
 
@@ -126,7 +129,7 @@ const bookingRef = bookingRefRef.current;
             <h2 className="text-2xl font-bold text-gray-900 mb-6">What Happens Next?</h2>
             <div className="space-y-4">
               <div className="flex gap-4">
-                <div className="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">
+                <div className="flex-shrink-0 w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center font-bold">
                   1
                 </div>
                 <div>
@@ -136,21 +139,22 @@ const bookingRef = bookingRefRef.current;
                   </p>
                 </div>
               </div>
-              
+
               <div className="flex gap-4">
-                <div className="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">
+                <div className="flex-shrink-0 w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center font-bold">
                   2
                 </div>
                 <div>
+                  {/* [WS] Subscribe to booking status channel (e.g., ws://…/bookings/:id/status) for real-time accept/decline notifications */}
                   <h3 className="font-semibold text-gray-900 mb-1">Confirmation or Discussion</h3>
                   <p className="text-gray-600">
                     You'll receive a notification when the provider confirms or wants to discuss details.
                   </p>
                 </div>
               </div>
-              
+
               <div className="flex gap-4">
-                <div className="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">
+                <div className="flex-shrink-0 w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center font-bold">
                   3
                 </div>
                 <div>
@@ -162,10 +166,12 @@ const bookingRef = bookingRefRef.current;
               </div>
 
               <div className="flex gap-4">
-                <div className="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">
+                <div className="flex-shrink-0 w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center font-bold">
                   4
                 </div>
                 <div>
+                  {/* [API] POST /payments/initiate — {bookingId, method, phoneNumber} → {paymentRef, status} */}
+                  {/* [API] GET /payments/:ref/status — poll until confirmed or use webhook callback */}
                   <h3 className="font-semibold text-gray-900 mb-1">Payment & Review</h3>
                   <p className="text-gray-600">
                     After completion, make payment and leave a review for the service.
@@ -176,12 +182,13 @@ const bookingRef = bookingRefRef.current;
           </Card>
 
           {/* Booking Details */}
+          {/* [MOCK] Replace with GET /bookings/:id — all fields below should be sourced from API response, not navigation state */}
           <Card>
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Booking Details</h2>
             <div className="grid md:grid-cols-2 gap-6">
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
-                  <User className="w-5 h-5 text-blue-600 mt-1" />
+                  <User className="w-5 h-5 text-primary mt-1" />
                   <div>
                     <p className="text-sm text-gray-600">Service Provider</p>
                     <p className="font-semibold text-gray-900">{provider.name}</p>
@@ -190,19 +197,19 @@ const bookingRef = bookingRefRef.current;
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <FileText className="w-5 h-5 text-blue-600 mt-1" />
+                  <FileText className="w-5 h-5 text-primary mt-1" />
                   <div>
                     <p className="text-sm text-gray-600">Service Type</p>
                     <p className="font-semibold text-gray-900">
-                      {bookingData.serviceType === 'Other (Specify)' 
-                        ? bookingData.customService 
+                      {bookingData.serviceType === 'Other (Specify)'
+                        ? bookingData.customService
                         : bookingData.serviceType}
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <Calendar className="w-5 h-5 text-blue-600 mt-1" />
+                  <Calendar className="w-5 h-5 text-primary mt-1" />
                   <div>
                     <p className="text-sm text-gray-600">Preferred Date & Time</p>
                     <p className="font-semibold text-gray-900">
@@ -215,7 +222,7 @@ const bookingRef = bookingRefRef.current;
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <MapPin className="w-5 h-5 text-blue-600 mt-1" />
+                  <MapPin className="w-5 h-5 text-primary mt-1" />
                   <div>
                     <p className="text-sm text-gray-600">Location</p>
                     <p className="font-semibold text-gray-900">{bookingData.address}</p>
@@ -226,7 +233,7 @@ const bookingRef = bookingRefRef.current;
 
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
-                  <User className="w-5 h-5 text-blue-600 mt-1" />
+                  <User className="w-5 h-5 text-primary mt-1" />
                   <div>
                     <p className="text-sm text-gray-600">Contact Person</p>
                     <p className="font-semibold text-gray-900">{bookingData.contactName}</p>
@@ -234,7 +241,7 @@ const bookingRef = bookingRefRef.current;
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <Phone className="w-5 h-5 text-blue-600 mt-1" />
+                  <Phone className="w-5 h-5 text-primary mt-1" />
                   <div>
                     <p className="text-sm text-gray-600">Phone Number</p>
                     <p className="font-semibold text-gray-900">{bookingData.contactPhone}</p>
@@ -243,7 +250,7 @@ const bookingRef = bookingRefRef.current;
 
                 {bookingData.contactEmail && (
                   <div className="flex items-start gap-3">
-                    <Mail className="w-5 h-5 text-blue-600 mt-1" />
+                    <Mail className="w-5 h-5 text-primary mt-1" />
                     <div>
                       <p className="text-sm text-gray-600">Email</p>
                       <p className="font-semibold text-gray-900">{bookingData.contactEmail}</p>
@@ -252,7 +259,7 @@ const bookingRef = bookingRefRef.current;
                 )}
 
                 <div className="flex items-start gap-3">
-                  <Clock className="w-5 h-5 text-blue-600 mt-1" />
+                  <Clock className="w-5 h-5 text-primary mt-1" />
                   <div>
                     <p className="text-sm text-gray-600">Urgency</p>
                     <p className="font-semibold text-gray-900 capitalize">
@@ -272,15 +279,18 @@ const bookingRef = bookingRefRef.current;
           </Card>
 
           {/* Important Information */}
-          <Card className="bg-blue-50 border-2 border-blue-200">
+          <Card className="bg-primary/10 border-2 border-primary/30">
             <div className="flex gap-3">
-              <CheckCircle className="w-6 h-6 text-blue-600 flex-shrink-0 mt-0.5" />
+              <CheckCircle className="w-6 h-6 text-primary flex-shrink-0 mt-0.5" />
               <div>
-                <h3 className="font-semibold text-blue-900 mb-2">Important Information</h3>
-                <ul className="space-y-1 text-sm text-blue-800">
+                <h3 className="font-semibold text-primary-dark mb-2">Important Information</h3>
+                <ul className="space-y-1 text-sm text-primary-dark/80">
+                  {/* [WS] Notification delivery for booking status changes should use WebSocket or push notification service */}
                   <li>• You will receive notifications about your booking status</li>
+                  {/* [DB] provider.responseTime should be stored on the provider record and returned by GET /providers/:id */}
                   <li>• The service provider typically responds within {provider.responseTime || '2 hours'}</li>
                   <li>• You can message the provider directly if you have questions</li>
+                  {/* [API] POST /notifications/email — {bookingId, recipientEmail, templateId: 'booking_confirmation'} triggered server-side after booking creation */}
                   <li>• A confirmation email has been sent to {bookingData.contactEmail || 'your email'}</li>
                 </ul>
               </div>
@@ -293,26 +303,27 @@ const bookingRef = bookingRefRef.current;
               variant="outline"
               size="md"
               fullWidth
-              onClick={() => navigate('/client_bookings')}
+              onClick={() => navigate('/lucid/bookings')}
             >
               <FileText className="w-5 h-5" />
               View My Bookings
             </Button>
-            
+
+            {/* [API] Navigating to messages should include conversationId or bookingId as context: GET /conversations?bookingId={id} */}
             <Button
               variant="outline"
               size="md"
               fullWidth
-              onClick={() => navigate('/messagePage')}
+              onClick={() => navigate('/lucid/messages')}
             >
               <MessageCircle className="w-5 h-5" />
               Message Provider
             </Button>
-            
+
             <Button
               size="md"
               fullWidth
-              onClick={() => navigate('/lucid_dev_backup')}
+              onClick={() => navigate('/lucid/')}
             >
               <Home className="w-5 h-5" />
               Back to Home

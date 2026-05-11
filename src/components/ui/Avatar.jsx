@@ -1,5 +1,14 @@
 import React from 'react';
 
+/**
+ * Avatar Component - User profile image with initials fallback
+ * @param {string} src - Image source URL
+ * @param {string} name - User name for initials
+ * @param {string} size - Avatar size (sm, md, lg, xl)
+ * @param {string} fallback - Custom fallback text
+ * @param {string} className - Additional CSS classes
+ * @returns {JSX.Element}
+ */
 export const Avatar = ({ 
   src, 
   name = '', 
@@ -28,7 +37,7 @@ export const Avatar = ({
       className={`
         ${sizes[size]} 
         rounded-full overflow-hidden 
-        bg-gradient-to-br from-blue-500 to-purple-600 
+        bg-gradient-to-br from-primary to-purple-600 
         flex items-center justify-center 
         text-white font-bold 
         ${className}

@@ -16,7 +16,12 @@ import {
 } from 'lucide-react';
 import 'leaflet/dist/leaflet.css';
 
-// Import mock providers data
+// [MOCK] mockProviders is used as a fallback when no providers prop is passed.
+// In production, the parent component fetches nearby providers and passes them as a prop:
+//   GET /providers/nearby?lat={userLat}&lng={userLng}&radius=5  (radius in km)
+//   → [{ id, name, profession, location: { lat, lng }, rating, isAvailable, ... }]
+// Requires browser Geolocation API: navigator.geolocation.getCurrentPosition()
+// Each provider's location.lat / location.lng must be stored in the DB (providers table).
 import { mockProviders } from '../data/mockProfiles';
 
 // Fix for default marker icons in Leaflet
@@ -163,7 +168,7 @@ const ProviderInfoWindow = ({ provider, distance, onClose, onBookNow }) => {
               {provider.fullName}
             </h3>
           </div>
-          <p className="text-xs text-gray-600 line-clamp-1">{provider.profession}</p>
+          <p className="text-xs text-gray-600 line-clamp-1">{provider.occupation}</p>
           
           <div className="flex items-center gap-2 mt-1">
             <div className="flex items-center gap-1">

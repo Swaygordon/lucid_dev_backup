@@ -9,6 +9,8 @@ import Profilepic from '../assets/profile.svg';
 
 export default function ChatMessagingPage() {
   const [message, setMessage] = useState('');
+  // [MOCK] Replace with GET /conversations/:id/messages?page={n} — paginated, newest last → {messages: [{id, text, sender, time, type, edited}]}
+  // [WS] Subscribe to ws://…/conversations/:id — receive new message events and append to this array
   const [messages, setMessages] = useState([
     { id: 1, text: 'Hey There!', sender: 'other', time: 'Today, 8:30pm', type: 'text' },
     { id: 2, text: 'How are you?', sender: 'other', time: 'Today, 8:30pm', type: 'text' },
@@ -20,7 +22,7 @@ export default function ChatMessagingPage() {
     { id: 8, text: 'Hey', sender: 'user', time: 'Today, 9:05pm', type: 'text' },
   ]);
   const messagesContainerRef = useRef(null);
-  const handleBackClick = useNavigateBack('/lucid_dev_backup', 400);
+  const handleBackClick = useNavigateBack('/lucid/messages', 400);
   // UI state
   const [selectedMessage, setSelectedMessage] = useState(null); // id for message menu
   const [editingMessage, setEditingMessage] = useState(null);
@@ -152,6 +154,7 @@ export default function ChatMessagingPage() {
   const handleSendMessage = () => {
     if (message.trim()) {
       if (editingMessage) {
+        // [API] PATCH /conversations/:id/messages/:messageId — {text} → {id, text, edited: true}
         setMessages(messages.map(msg =>
           msg.id === editingMessage.id
             ? { ...msg, text: message, edited: true }
@@ -159,6 +162,8 @@ export default function ChatMessagingPage() {
         ));
         setEditingMessage(null);
       } else {
+        // [API] POST /conversations/:id/messages — {text, type: 'text', attachments: []} → {id, text, sender, time, type}
+        // [API] PATCH /conversations/:id/messages/read — {lastReadMessageId} (mark conversation read on open)
         const newMessage = {
           id: messages.length + 1,
           text: message,
@@ -185,18 +190,22 @@ export default function ChatMessagingPage() {
     }
   };
 
+  // [WS] Emit 'typing' event on keypress; listen for peer 'typing' event to show typing indicator UI
+
   const handleEditMessage = (msg) => {
     setConfirmEdit(msg);
     setSelectedMessage(null);
   };
 
   const confirmClearChatAction = () => {
+    // [API] DELETE /conversations/:id/messages — clears all messages for the current user's view
     setMessages([]);
     showNotification("Chat cleared!");
     setConfirmClearChat(false);
   };
 
   const confirmBlockUserAction = () => {
+    // [API] POST /users/:id/block — {blockedUserId} → blocks user and suppresses future messages/calls
     showNotification("User has been blocked");
     setConfirmBlockUser(false);
   };
@@ -221,6 +230,7 @@ export default function ChatMessagingPage() {
   };
 
   const confirmDeleteAction = () => {
+    // [API] DELETE /conversations/:id/messages/:messageId
     setMessages(messages.filter(msg => msg.id !== confirmDelete.id));
     setConfirmDelete(null);
   };
@@ -239,6 +249,7 @@ export default function ChatMessagingPage() {
   };
 
   const handleAttachment = (type) => {
+    // [API] POST /conversations/:id/messages — multipart/form-data {file, type: 'image'|'document'|'audio'|'video'} → {id, url, type}
     const attachmentTypes = {
       image: '📷 Photo',
       document: '📄 Document',
@@ -259,10 +270,12 @@ export default function ChatMessagingPage() {
   };
 
   const handleCall = (type) => {
+    // [WS] Initiate WebRTC signaling via ws://…/calls — emit 'call:start' with {conversationId, callType: 'voice'|'video'}
     setShowCallModal(type);
   };
 
   const endCall = () => {
+    // [WS] Emit 'call:end' event to terminate session for all participants
     showNotification(`${showCallModal === 'voice' ? 'Voice' : 'Video'} call ended`);
     setShowCallModal(null);
   };
@@ -274,6 +287,7 @@ export default function ChatMessagingPage() {
 
   const stopRecording = () => {
     setIsRecording(false);
+    // [API] POST /conversations/:id/messages — multipart/form-data {audioBlob, type: 'voice', duration: recordingTime} → {id, url, type}
     const newMessage = {
       id: messages.length + 1,
       text: `Voice message (${recordingTime}s)`,

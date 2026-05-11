@@ -1,79 +1,141 @@
-import React, { createContext, useContext, useState } from 'react';
-import { CheckCircle, AlertCircle, Info, X } from 'lucide-react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useRef,
+  useCallback
+} from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { CheckCircle, XCircle, AlertTriangle, Info, X } from 'lucide-react';
+
+// [WS] Integration point: open a WebSocket connection to ws://…/users/:id/notifications after auth.
+// On every incoming 'notification' event, call showNotification(event.message, event.type) to surface
+// the toast. The entire toast/dismiss system below is client-side and requires no changes — only the
+// WS listener that drives it needs to be wired up here (or in a sibling useEffect inside NotificationProvider).
 
 const NotificationContext = createContext();
 
 export const useNotification = () => {
   const context = useContext(NotificationContext);
-  if (!context) {
-    throw new Error('useNotification must be used within NotificationProvider');
-  }
+  if (!context) throw new Error('useNotification must be used within NotificationProvider');
   return context;
 };
 
 export const NotificationProvider = ({ children }) => {
-  const [notifications, setNotifications] = useState([]);
+  const [toasts, setToasts] = useState([]);
 
-  const showNotification = (message, type = 'info', duration = 1300) => {
+  // [WS] In production, trigger showNotification from a WebSocket 'notification' event listener mounted here
+  const showNotification = useCallback((message, type = 'info', duration = 4000) => {
     const id = Date.now();
-    setNotifications(prev => [...prev, { id, message, type }]);
-    
-    if (duration) {
-      setTimeout(() => {
-        setNotifications(prev => prev.filter(n => n.id !== id));
-      }, duration);
-    }
-  };
+    setToasts(prev => [...prev, { id, message, type, duration }]);
+  }, []);
 
-  const removeNotification = (id) => {
-    setNotifications(prev => prev.filter(n => n.id !== id));
-  };
+  const dismiss = useCallback((id) => {
+    setToasts(prev => prev.filter(t => t.id !== id));
+  }, []);
 
   return (
     <NotificationContext.Provider value={{ showNotification }}>
       {children}
-      <ToastContainer notifications={notifications} onRemove={removeNotification} />
+      <ToastContainer toasts={toasts} onDismiss={dismiss} />
     </NotificationContext.Provider>
   );
 };
 
-const ToastContainer = ({ notifications, onRemove }) => {
-  return (
-    <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 flex flex-col gap-2">
-      {notifications.map(notification => (
-        <Toast
-          key={notification.id}
-          message={notification.message}
-          type={notification.type}
-          onClose={() => onRemove(notification.id)}
-        />
+const ToastContainer = ({ toasts, onDismiss }) => (
+  <div
+    aria-live="polite"
+    aria-label="Notifications"
+    className="fixed bottom-6 right-6 z-50 flex flex-col-reverse gap-3 items-end pointer-events-none"
+  >
+    <AnimatePresence initial={false}>
+      {toasts.map(toast => (
+        <Toast key={toast.id} {...toast} onDismiss={onDismiss} />
       ))}
-    </div>
-  );
+    </AnimatePresence>
+  </div>
+);
+
+const CONFIG = {
+  success: {
+    border: 'border-l-green-500',
+    icon: CheckCircle,
+    iconColor: 'text-green-500',
+  },
+  error: {
+    border: 'border-l-error',
+    icon: XCircle,
+    iconColor: 'text-error',
+  },
+  warning: {
+    border: 'border-l-yellow-500',
+    icon: AlertTriangle,
+    iconColor: 'text-yellow-500',
+  },
+  info: {
+    border: 'border-l-primary',
+    icon: Info,
+    iconColor: 'text-primary',
+  },
 };
 
-const Toast = ({ message, type, onClose }) => {
-  const styles = {
-    success: 'bg-green-600',
-    error: 'bg-red-600',
-    warning: 'bg-yellow-600',
-    info: 'bg-blue-600',
-  };
+const Toast = ({ id, message, type, duration, onDismiss }) => {
+  const cfg = CONFIG[type] ?? CONFIG.info;
+  const Icon = cfg.icon;
 
-  const icons = {
-    success: <CheckCircle className="w-5 h-5" />,
-    error: <AlertCircle className="w-5 h-5" />,
-    warning: <AlertCircle className="w-5 h-5" />,
-    info: <Info className="w-5 h-5" />,
-  };
+  const timerRef = useRef(null);
+  const remainingRef = useRef(duration);
+  const startedAtRef = useRef(null);
+
+  const startTimer = useCallback(() => {
+    startedAtRef.current = Date.now();
+    timerRef.current = setTimeout(
+      () => onDismiss(id),
+      Math.max(remainingRef.current, 0)
+    );
+  }, [id, onDismiss]);
+
+  const pauseTimer = useCallback(() => {
+    clearTimeout(timerRef.current);
+    remainingRef.current -= Date.now() - startedAtRef.current;
+  }, []);
+
+  useEffect(() => {
+    startTimer();
+    return () => clearTimeout(timerRef.current);
+  }, [startTimer]);
 
   return (
-    <div className={`${styles[type]} text-white px-6 py-3 rounded-lg border-white border-2 shadow-lg flex items-center gap-3 min-w-[300px]`}>
-      {icons[type]}
-      <span className="flex-1">{message}</span>
-      <button onClick={onClose} className="hover:bg-white/20 rounded p-1">
+    <motion.div
+      layout
+      initial={{ opacity: 0, x: 48, scale: 0.95 }}
+      animate={{ opacity: 1, x: 0, scale: 1 }}
+      exit={{ opacity: 0, x: 48, scale: 0.95, transition: { duration: 0.18, ease: 'easeIn' } }}
+      transition={{ type: 'spring', stiffness: 420, damping: 32 }}
+      onMouseEnter={pauseTimer}
+      onMouseLeave={startTimer}
+      role="alert"
+      className={`
+        pointer-events-auto
+        bg-white rounded-lg shadow-lg
+        border border-gray-100 border-l-4 ${cfg.border}
+        px-4 py-3.5
+        flex items-start gap-3
+        min-w-[300px] max-w-sm
+      `}
+    >
+      <Icon className={`w-5 h-5 flex-shrink-0 mt-0.5 ${cfg.iconColor}`} />
+      <span className="flex-1 text-sm font-medium text-gray-800 leading-snug">
+        {message}
+      </span>
+      <button
+        onClick={() => onDismiss(id)}
+        aria-label="Dismiss notification"
+        className="flex-shrink-0 p-1 -mr-1 rounded text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+      >
         <X className="w-4 h-4" />
       </button>
-    </div>
+    </motion.div>
   );
 };

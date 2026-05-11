@@ -3,7 +3,7 @@ import BackToTop from '../components/back_the_top_btn.jsx';
 import { useNavigate, Link } from "react-router-dom";
 import { useNotification } from "../contexts/NotificationContext.jsx";
 import { useImageUpload } from "../hooks/useImageUpload";
-import ImageUploadModal from "../components/ImageUploadModal";
+import { ImageUploadModal } from "../components/shared";
 import { 
   ArrowLeft, 
   Upload, 
@@ -30,7 +30,7 @@ function AccountOverview() {
       if (window.history.length > 2) {
         navigate(-1);
       } else {
-        navigate('/dashboard');
+        navigate('/lucid/dashboard');
       }
     }, 800);
   }, [showNotification, navigate]);
@@ -80,16 +80,16 @@ function AccountOverview() {
       {/* Back Button - Desktop */}
       <button 
         onClick={handleBackClick}
-        className="absolute hidden md:inline-flex items-center top-4 left-4 md:top-6 md:left-10 p-2 text-blue-600 hover:bg-gray-100 rounded-lg transition-colors"
+        className="absolute hidden md:inline-flex items-center top-4 left-4 md:top-6 md:left-10 p-2 text-primary hover:bg-gray-100 rounded-lg transition-colors"
       >
-        <ArrowLeft size={22} className="text-blue-600" />
+        <ArrowLeft size={22} className="text-primary" />
         <span className="ml-1 text-lg">Go back</span>
       </button>
 
       {/* Back Button - Mobile */}
       <button 
         onClick={handleBackClick}
-        className="absolute md:hidden inline-flex items-center top-6 left-5 p-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
+        className="absolute md:hidden inline-flex items-center top-6 left-5 p-2 text-white bg-primary rounded-lg hover:bg-primary-hover transition-colors"
       >
         <ArrowLeft size={22} className="text-white" />
         <span className="ml-1 text-lg">Go back</span>
@@ -123,27 +123,28 @@ function AccountOverview() {
           </button>
 
           {/* User Info */}
+          {/* [MOCK] Replace with GET /users/:id/overview — {name, email, location, completedProjects, activeProjects} */}
           <h2 className="text-2xl font-bold text-gray-800 mb-1">
-            Gabriel Gordon-Mensah
+            Gabriel Gordon-Mensah {/* [MOCK] Replace with authenticated user's name */}
           </h2>
           <p className="text-gray-500 mb-2 text-base">
-            gordongabriel2004@gmail.com
+            gordongabriel2004@gmail.com {/* [AUTH] Replace with authenticated user's email from session/token */}
           </p>
           <p className="text-gray-400 text-sm flex items-center justify-center gap-2 mb-6">
             <MapPin className="w-4 h-4" />
-            Achimota, Accra
+            Achimota, Accra {/* [MOCK] Replace with user location from profile */}
           </p>
 
           {/* Stats */}
           <div className="flex justify-around items-center bg-slate-50 rounded-2xl p-5 mt-4 border border-slate-200">
             <div className="text-center flex-1">
               <p className="text-gray-500 text-sm mb-1">Completed Projects</p>
-              <p className="text-indigo-500 text-2xl font-bold">10</p>
+              <p className="text-indigo-500 text-2xl font-bold">10</p>{/* [DB] Aggregate query on bookings table WHERE status='completed' */}
             </div>
             <div className="w-px h-10 bg-slate-200"></div>
             <div className="text-center flex-1">
               <p className="text-gray-500 text-sm mb-1">Active Projects</p>
-              <p className="text-indigo-500 text-2xl font-bold">1</p>
+              <p className="text-indigo-500 text-2xl font-bold">1</p>{/* [DB] Aggregate query on bookings table WHERE status='active' */}
             </div>
           </div>
         </div>
@@ -162,8 +163,8 @@ function AccountOverview() {
                 className="bg-white w-full border-2 border-slate-200 rounded-2xl p-5 cursor-pointer transition-all duration-300 flex items-center justify-between text-left hover:border-indigo-500 hover:-translate-y-0.5 hover:shadow-xl group"
               >
                 <div className="flex items-center gap-4">
-                  <div className="p-3 bg-blue-50 rounded-xl group-hover:bg-blue-100 transition-colors">
-                    <Icon className="w-6 h-6 text-blue-600" />
+                  <div className="p-3 bg-primary/10 rounded-xl group-hover:bg-primary/20 transition-colors">
+                    <Icon className="w-6 h-6 text-primary" />
                   </div>
                   <div>
                     <span className="text-gray-800 font-semibold text-base block mb-1">
@@ -180,9 +181,10 @@ function AccountOverview() {
           })}
 
           {/* Logout Button */}
+          {/* [AUTH] POST /auth/logout — invalidate session/token on server before redirecting */}
           <div className="mt-2">
-            <Link 
-              to="/signin"
+            <Link
+              to="/lucid/signin"
               className="bg-gradient-to-r w-full from-red-600 to-red-700 text-white px-6 py-4 rounded-2xl font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center gap-2 shadow-md hover:-translate-y-0.5 hover:shadow-xl"
             >
               <LogOut size={20} />
@@ -194,16 +196,9 @@ function AccountOverview() {
 
       {/* Image Upload Modal */}
       <ImageUploadModal
-        open={upload.open}
+        isOpen={upload.open}
         onClose={upload.closeModal}
-        dragActive={upload.dragActive}
-        onDrag={upload.onDrag}
-        onDrop={upload.onDrop}
-        onFileChange={upload.onFileChange}
-        selectedFile={upload.selectedFile}
-        isUploading={upload.isUploading}
-        uploadProgress={upload.uploadProgress}
-        onSave={upload.onSave}
+        onUpload={() => {}}
         title="Upload Image"
       />
 

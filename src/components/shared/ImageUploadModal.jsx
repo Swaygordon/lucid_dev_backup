@@ -1,8 +1,23 @@
 import React, { useState } from 'react';
-import { Upload, X } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Upload } from 'lucide-react';
 import { Modal } from '../ui';
 
-export const ImageUploadModal = ({ isOpen, onClose, onUpload, title = "Upload Image" }) => {
+/**
+ * ImageUploadModal Component
+ * @param {boolean} isOpen - Controls modal visibility
+ * @param {function} onClose - Called when modal is closed
+ * @param {function} onUpload - Called when file is successfully uploaded
+ * @param {string} title - Modal title
+ * @returns {JSX.Element}
+ */
+export const ImageUploadModal = ({ 
+  isOpen, 
+  onClose, 
+  onUpload, 
+  title = "Upload Image",
+  accept = ".png,.jpg,.jpeg,.webp" 
+}) => {
   const [dragActive, setDragActive] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -64,7 +79,7 @@ export const ImageUploadModal = ({ isOpen, onClose, onUpload, title = "Upload Im
 
   return (
     <Modal isOpen={isOpen} onClose={handleCancel} title={title} size="md">
-      <div
+      <motion.div
         onDragEnter={handleDrag}
         onDragLeave={handleDrag}
         onDragOver={handleDrag}
@@ -72,20 +87,32 @@ export const ImageUploadModal = ({ isOpen, onClose, onUpload, title = "Upload Im
         className={`border-4 border-dashed rounded-lg p-12 text-center transition-colors ${
           dragActive ? 'border-blue-600 bg-blue-50' : 'border-blue-600'
         }`}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
       >
         {!isUploading ? (
           <>
-            <Upload className="w-16 h-16 text-blue-600 mx-auto mb-4" />
+            <motion.div
+              initial={{ y: -20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.1 }}
+            >
+              <Upload className="w-16 h-16 text-blue-600 mx-auto mb-4" />
+            </motion.div>
             
             <label htmlFor="file-upload" className="cursor-pointer">
-              <div className="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors mb-4">
+              <motion.div 
+                className="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors mb-4"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
                 Browse
-              </div>
+              </motion.div>
               <input
                 id="file-upload"
                 type="file"
                 className="hidden"
-                accept=".png,.jpg,.jpeg,.webp"
+                accept={accept}
                 onChange={handleFileChange}
               />
             </label>
@@ -93,34 +120,49 @@ export const ImageUploadModal = ({ isOpen, onClose, onUpload, title = "Upload Im
             <p className="text-gray-600 text-lg mb-2">Drop a file here</p>
             
             {selectedFile && !isUploading && (
-              <p className="text-green-600 font-semibold mt-4">
+              <motion.p 
+                className="text-green-600 font-semibold mt-4"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+              >
                 Selected: {selectedFile.name}
-              </p>
+              </motion.p>
             )}
           </>
         ) : (
-          <div className="w-full max-w-md mx-auto">
+          <motion.div 
+            className="w-full max-w-md mx-auto"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
             <div className="flex items-center space-x-4">
               <div className="flex-1 bg-gray-300 rounded-full h-3 overflow-hidden">
-                <div
-                  className="bg-blue-600 h-3 rounded-full transition-all duration-300"
-                  style={{ width: `${uploadProgress}%` }}
-                ></div>
+                <motion.div
+                  className="bg-blue-600 h-3 rounded-full"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${uploadProgress}%` }}
+                  transition={{ duration: 0.3 }}
+                />
               </div>
               <span className="text-xl font-semibold text-gray-700 min-w-[3rem]">
                 {uploadProgress}%
               </span>
             </div>
-          </div>
+          </motion.div>
         )}
         
         <p className="text-sm text-gray-500 mt-6">
-          <span className="text-red-500">*</span>Files supported .png, .jpg, .jpeg & .webp
+          <span className="text-red-500">*</span> Files supported {accept}
         </p>
-      </div>
+      </motion.div>
 
-      <div className="flex items-center justify-center space-x-4 mt-8">
-        <button
+      <motion.div 
+        className="flex items-center justify-center space-x-4 mt-8"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+      >
+        <motion.button
           onClick={handleSave}
           disabled={!selectedFile || isUploading}
           className={`px-12 py-3 rounded-lg font-semibold transition-colors ${
@@ -128,10 +170,12 @@ export const ImageUploadModal = ({ isOpen, onClose, onUpload, title = "Upload Im
               ? 'bg-blue-600 text-white hover:bg-blue-700'
               : 'bg-gray-300 text-gray-500 cursor-not-allowed'
           }`}
+          whileHover={selectedFile && !isUploading ? { scale: 1.05 } : {}}
+          whileTap={selectedFile && !isUploading ? { scale: 0.95 } : {}}
         >
           Save
-        </button>
-        <button
+        </motion.button>
+        <motion.button
           onClick={handleCancel}
           disabled={isUploading}
           className={`px-12 py-3 rounded-lg font-semibold border-2 transition-colors ${
@@ -139,10 +183,12 @@ export const ImageUploadModal = ({ isOpen, onClose, onUpload, title = "Upload Im
               ? 'border-gray-300 text-gray-400 cursor-not-allowed'
               : 'border-blue-600 text-blue-600 hover:bg-blue-50'
           }`}
+          whileHover={!isUploading ? { scale: 1.05 } : {}}
+          whileTap={!isUploading ? { scale: 0.95 } : {}}
         >
           Cancel
-        </button>
-      </div>
+        </motion.button>
+      </motion.div>
     </Modal>
   );
 };

@@ -9,7 +9,7 @@ import {
  * Receipt Modal Component - CORRECTED VERSION
  * Platform fee is DEDUCTED from provider payment, NOT added to client payment
  */
-const ReceiptModal = ({ booking, onClose, userType = 'provider' }) => {
+const ReceiptModalComponent = ({ booking, onClose, userType = 'provider' }) => {
   const receiptRef = useRef();
 
   if (!booking) return null;
@@ -23,6 +23,8 @@ const ReceiptModal = ({ booking, onClose, userType = 'provider' }) => {
     });
   };
 
+  // [DB] receiptNumber should be a persistent ID stored in the payments or receipts table,
+  // not generated on the fly. Use: booking.paymentData?.receiptNumber or GET /receipts/:bookingId
   const receiptNumber = `${booking.bookingReference}-RCP-${new Date().getFullYear()}`;
   
   const provider = booking.provider || {};
@@ -42,7 +44,9 @@ const ReceiptModal = ({ booking, onClose, userType = 'provider' }) => {
   // Client's total payment (just the service charge, no additional fees)
   const totalPaid = serviceCharge.toFixed(2);
 
-  // Handle download PDF
+  // [API] GET /receipts/:bookingId?format=pdf  — backend returns a pre-rendered PDF blob.
+  // Option A (server-rendered): backend uses puppeteer/wkhtmltopdf, returns blob — simplest.
+  // Option B (client-rendered): install html2pdf.js, pass receiptRef.current to html2pdf().save()
   const handleDownload = () => {
     alert('PDF download would trigger here. Integrate html2pdf.js library.');
     console.log('Downloading receipt as PDF...');
@@ -68,6 +72,9 @@ const ReceiptModal = ({ booking, onClose, userType = 'provider' }) => {
     }
   };
 
+  // [API] POST /receipts/:bookingId/email  { to: userEmail }
+  // Backend sends a formatted HTML email with the receipt (via SendGrid/Mailgun/SMTP).
+  // Current mailto: workaround opens the user's local email client — not reliable on mobile.
   const handleEmail = () => {
     const subject = encodeURIComponent(`Receipt - ${booking.title}`);
     const body = encodeURIComponent(
@@ -309,8 +316,10 @@ const ReceiptModal = ({ booking, onClose, userType = 'provider' }) => {
                   </div>
                   <div className="col-span-2">
                     <p className="text-gray-600 font-semibold mb-1">Transaction ID</p>
-                    <p className="text-gray-900 font-mono text-xs">
-                      {booking.paymentData?.transactionId || 
+                    {/* [DB] transactionId must come from the payment gateway response stored in payments.gateway_reference.
+                       Never generate it on the frontend — it's the authoritative payment proof. */}
+                  <p className="text-gray-900 font-mono text-xs">
+                      {booking.paymentData?.transactionId ||
                        `TXN-${booking.bookingReference}-${new Date().getTime().toString().slice(-6)}`}
                     </p>
                   </div>
@@ -393,4 +402,4 @@ const ReceiptModal = ({ booking, onClose, userType = 'provider' }) => {
   );
 };
 
-export default ReceiptModal;
+export const ReceiptModal = React.memo(ReceiptModalComponent);

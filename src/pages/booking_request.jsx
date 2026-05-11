@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useNotification } from '../contexts/NotificationContext';
 import { useNavigateBack } from "../hooks/useNavigateBack.js";
-import { 
+import {
   ArrowLeft,
   Calendar,
   Clock,
@@ -21,9 +21,7 @@ import {
   AlertCircle,
   Image as ImageIcon
 } from 'lucide-react';
-import { Button } from '../components/ui/Button';
-import { Card } from '../components/ui/Card';
-import { Input } from '../components/ui/Input';
+import { Button, Card, Input } from '../components/ui';
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
@@ -33,12 +31,12 @@ const fadeIn = {
 const BookingRequest = () => {
   const navigate = useNavigate();
   const { showNotification } = useNotification();
-  const { providerId } = useParams();
+  const { providerId } = useParams(); // [API] GET /providers/:id — {} → {id, name, profession, phone, email, rating, location}
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [uploadedImages, setUploadedImages] = useState([]);
-  const handleBackClick = useNavigateBack('/generalProfile', 600);
-  
+  const handleBackClick = useNavigateBack('/lucid/providers/me', 600);
+
 
   // Form state
   const [formData, setFormData] = useState({
@@ -64,14 +62,14 @@ const BookingRequest = () => {
     additionalNotes: ''
   });
 
-  // Mock provider data
+  // [MOCK] Fetch provider by ID from route params: GET /providers/:id
   const provider = {
     name: 'Gabriel A. Gordon-Mensah',
     profession: 'Master Plumber & Electrician',
-    hourlyRate: 80,
     location: 'Achimota, Accra'
   };
 
+  // [API] Consider GET /services?providerId={id} to return the provider's offered service types
   const serviceTypes = [
     'Plumbing Repair',
     'Electrical Installation',
@@ -94,19 +92,20 @@ const BookingRequest = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  // [API] POST /bookings/:id/attachments — multipart/form-data; images uploaded separately after booking is created
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
     if (uploadedImages.length + files.length > 5) {
       showNotification('Maximum 5 images allowed', 'error');
       return;
     }
-    
+
     const newImages = files.map(file => ({
       id: Date.now() + Math.random(),
       file,
       preview: URL.createObjectURL(file)
     }));
-    
+
     setUploadedImages(prev => [...prev, ...newImages]);
   };
 
@@ -130,28 +129,28 @@ const BookingRequest = () => {
           return false;
         }
         return true;
-      
+
       case 2:
         if (!formData.preferredDate || !formData.preferredTime) {
           showNotification('Please select preferred date and time', 'error');
           return false;
         }
         return true;
-      
+
       case 3:
         if (!formData.address || !formData.area) {
           showNotification('Please provide complete address', 'error');
           return false;
         }
         return true;
-      
+
       case 4:
         if (!formData.contactName || !formData.contactPhone) {
           showNotification('Please provide contact information', 'error');
           return false;
         }
         return true;
-      
+
       default:
         return true;
     }
@@ -174,11 +173,11 @@ const BookingRequest = () => {
   if (!validateStep(4)) return;
 
   setLoading(true);
-  
+
   try {
     // Transform form data to match booking structure
     const transformedBooking = {
-  id: Date.now(),
+  id: Date.now(), // [API] id assigned by backend on POST /bookings
 
   title:
     formData.serviceType === 'Other (Specify)'
@@ -190,7 +189,7 @@ const BookingRequest = () => {
       ? formData.customService
       : formData.serviceType,
 
-  status: 'pending',
+  status: 'pending', // [DB] initial status set by backend, not client
 
   date: formData.preferredDate,
   time: formData.preferredTime,
@@ -209,7 +208,7 @@ const BookingRequest = () => {
     day: 'numeric'
   }),
 
-  bookingReference: `BK${Date.now().toString().slice(-8)}`,
+  bookingReference: `BK${Date.now().toString().slice(-8)}`, // [DB] generate reference server-side for uniqueness guarantees
 
   provider: {
     name: provider.name,
@@ -231,6 +230,7 @@ const BookingRequest = () => {
     city: formData.city,
     landmark: formData.landmark || null,
     postalCode: formData.postalCode || null
+    // [API] Consider GET /geocode?q={address} for coordinate storage
   },
 
   budget: {
@@ -238,22 +238,23 @@ const BookingRequest = () => {
     max: formData.budgetMax ? parseInt(formData.budgetMax, 10) : null
   },
 
-  images: uploadedImages.map(img => img.preview),
+  images: uploadedImages.map(img => img.preview), // [API] POST /bookings/:id/attachments — multipart/form-data → {attachmentUrls[]}
 
   additionalNotes: formData.additionalNotes || null
 };
 
+    // [API] POST /bookings — {providerId, serviceType, description, urgency, preferredDate, preferredTime, alternateDate, alternateTime, estimatedDuration, address, area, city, landmark, postalCode, budgetMin, budgetMax, contactName, contactPhone, contactEmail, additionalNotes} → {bookingId, bookingReference, status}
     // In real app: await api.createBooking(transformedBooking);
     await new Promise(resolve => setTimeout(resolve, 2000));
-    
+
     showNotification('Booking request sent successfully!', 'success');
-    
+
     // Navigate with transformed data
-    navigate('/booking_confirmation', { 
-      state: { 
+    navigate('/lucid/bookings/confirmation', {
+      state: {
         bookingData: transformedBooking,
-        provider 
-      } 
+        provider
+      }
     });
   } catch (error) {
     showNotification('Failed to submit booking', 'error');
@@ -272,7 +273,7 @@ const BookingRequest = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <motion.header 
+      <motion.header
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         className="bg-white shadow-sm sticky top-0 z-30"
@@ -308,15 +309,15 @@ const BookingRequest = () => {
               const StepIcon = step.icon;
               const isActive = currentStep === step.number;
               const isCompleted = currentStep > step.number;
-              
+
               return (
                 <React.Fragment key={step.number}>
                   <div className="flex flex-col items-center flex-1">
                     <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-2 transition-colors ${
-                      isCompleted 
-                        ? 'bg-green-600' 
-                        : isActive 
-                          ? 'bg-blue-600' 
+                      isCompleted
+                        ? 'bg-green-600'
+                        : isActive
+                          ? 'bg-primary'
                           : 'bg-gray-300'
                     }`}>
                       {isCompleted ? (
@@ -326,7 +327,7 @@ const BookingRequest = () => {
                       )}
                     </div>
                     <span className={`text-sm font-medium text-center ${
-                      isActive ? 'text-blue-600' : 'text-gray-600'
+                      isActive ? 'text-primary' : 'text-gray-600'
                     }`}>
                       {step.title}
                     </span>
@@ -356,7 +357,7 @@ const BookingRequest = () => {
               >
                 <Card>
                   <h2 className="text-2xl font-bold text-gray-900 mb-6">Service Details</h2>
-                  
+
                   <div className="space-y-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-3">
@@ -455,14 +456,14 @@ const BookingRequest = () => {
                           htmlFor="image-upload"
                           className="flex flex-col items-center cursor-pointer"
                         >
-                          <ImageIcon className="w-12 h-12 text-gray-400 hover:text-blue-600 transition-colors mb-2" />
+                          <ImageIcon className="w-12 h-12 text-gray-400 hover:text-primary transition-colors mb-2" />
                           <span className="text-sm text-gray-600">Click to upload images</span>
                           <span className="text-xs text-gray-500 mt-1">
                             PNG, JPG up to 5MB each
                           </span>
                         </label>
                       </div>
-                      
+
                       {uploadedImages.length > 0 && (
                         <div className="grid grid-cols-3 gap-3 mt-4">
                           {uploadedImages.map((img) => (
@@ -500,7 +501,7 @@ const BookingRequest = () => {
               >
                 <Card>
                   <h2 className="text-2xl font-bold text-gray-900 mb-6">Schedule</h2>
-                  
+
                   <div className="space-y-6">
                     <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                       <div className="flex gap-3">
@@ -512,6 +513,7 @@ const BookingRequest = () => {
                       </div>
                     </div>
 
+                    {/* [API] Consider GET /providers/:id/availability?date={date} to validate preferred date against provider schedule */}
                     <div className="grid md:grid-cols-2 gap-6">
                       <Input
                         label="Preferred Date"
@@ -574,8 +576,9 @@ const BookingRequest = () => {
               >
                 <Card>
                   <h2 className="text-2xl font-bold text-gray-900 mb-6">Location Details</h2>
-                  
+
                   <div className="space-y-6">
+                    {/* [API] Consider GET /geocode?q={address} for coordinate storage after address entry */}
                     <Input
                       label="Street Address"
                       name="address"
@@ -590,6 +593,7 @@ const BookingRequest = () => {
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           City <span className="text-red-500">*</span>
                         </label>
+                        {/* [API] Consider GET /cities or GET /locations to populate city options dynamically */}
                         <select
                           name="city"
                           value={formData.city}
@@ -647,7 +651,8 @@ const BookingRequest = () => {
               >
                 <Card>
                   <h2 className="text-2xl font-bold text-gray-900 mb-6">Contact Information</h2>
-                  
+
+                  {/* [AUTH] Pre-fill contactName, contactPhone, contactEmail from authenticated user profile: GET /users/me */}
                   <div className="space-y-6">
                     <Input
                       label="Contact Name"
@@ -716,7 +721,7 @@ const BookingRequest = () => {
                 {/* Review Summary */}
                 <Card className="bg-gray-50">
                   <h2 className="text-2xl font-bold text-gray-900 mb-6">Booking Summary</h2>
-                  
+
                   <div className="space-y-4">
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
@@ -726,8 +731,8 @@ const BookingRequest = () => {
                       <div>
                         <p className="text-sm text-gray-600 mb-1">Service Type</p>
                         <p className="font-semibold text-gray-900">
-                          {formData.serviceType === 'Other (Specify)' 
-                            ? formData.customService 
+                          {formData.serviceType === 'Other (Specify)'
+                            ? formData.customService
                             : formData.serviceType}
                         </p>
                       </div>
@@ -747,12 +752,6 @@ const BookingRequest = () => {
                         <p className="text-sm text-gray-600 mb-1">Urgency</p>
                         <p className="font-semibold text-gray-900 capitalize">
                           {formData.urgency}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-600 mb-1">Hourly Rate</p>
-                        <p className="font-semibold text-blue-600">
-                          GH₵{provider.hourlyRate}/hour
                         </p>
                       </div>
                     </div>

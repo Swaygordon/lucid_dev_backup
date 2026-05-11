@@ -16,8 +16,7 @@ import {
   Smartphone,
   Save
 } from 'lucide-react';
-import { Button } from '../components/ui/Button';
-import { Card } from '../components/ui/Card';
+import { Button, Card } from '../components/ui';
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
@@ -27,9 +26,10 @@ const fadeIn = {
 const NotificationSettings = () => {
   const [loading, setLoading] = useState(false);
   const { showNotification } = useNotification();
-  const handleBackClick = useNavigateBack('/provider_dashboard', 400);
+  const handleBackClick = useNavigateBack('/lucid/notifications', 400);
     
 
+  // [MOCK] Fetch initial prefs with GET /users/:id/notification-prefs → {pushBookingRequests, pushMessages, …all keys below}
   const [settings, setSettings] = useState({
     // Push Notifications
     pushBookingRequests: true,
@@ -73,6 +73,7 @@ const NotificationSettings = () => {
   };
 
   const handleSaveSettings = async () => {
+    // [API] PATCH /users/:id/notification-prefs — {pushBookingRequests, pushMessages, pushPayments, pushReviews, pushReminders, pushPromotions, emailBookingConfirm, emailMessages, emailPayments, emailWeeklySummary, emailMonthlyReport, emailPromotions, emailTips, smsBookingRequests, smsPayments, smsReminders, smsPromotions, soundEnabled, vibrationEnabled, dndEnabled, dndStart, dndEnd} → {success: true}
     setLoading(true);
     await new Promise(resolve => setTimeout(resolve, 1500));
     setLoading(false);

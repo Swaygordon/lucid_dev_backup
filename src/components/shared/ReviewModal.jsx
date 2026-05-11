@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   X, 
@@ -17,7 +17,7 @@ import {
  * @param {Function} onClose - Close modal handler
  * @param {Function} onSubmit - Submit review handler
  */
-const LeaveReviewModal = ({ booking, isOpen, onClose, onSubmit }) => {
+const ReviewModalComponent = ({ booking, isOpen, onClose, onSubmit }) => {
   const [rating, setRating] = useState(0);
   const [hoveredRating, setHoveredRating] = useState(0);
   const [reviewText, setReviewText] = useState('');
@@ -83,9 +83,16 @@ const LeaveReviewModal = ({ booking, isOpen, onClose, onSubmit }) => {
         categories,
         serviceType: booking.serviceType || booking.title,
         timestamp: new Date().toISOString(),
-        verified: true // Since it's from a completed booking
+        verified: true // [DB] Backend should verify booking exists, is 'completed', and belongs to this client
       };
 
+      // [API] Parent's onSubmit should call:
+      //   POST /reviews  { bookingId, providerId, rating, reviewText, categories }
+      //   → { review: createdReview }
+      // Backend must also:
+      //   UPDATE bookings SET rating = ?, review = ? WHERE id = ?
+      //   UPDATE providers SET avgRating = (SELECT AVG(rating) FROM reviews WHERE provider_id = ?)
+      // One review per booking is enforced — check bookings.rating IS NULL before allowing submission.
       await onSubmit(reviewData);
       
       // Reset form
@@ -304,4 +311,4 @@ const LeaveReviewModal = ({ booking, isOpen, onClose, onSubmit }) => {
   );
 };
 
-export default LeaveReviewModal;
+export const ReviewModal = memo(ReviewModalComponent);

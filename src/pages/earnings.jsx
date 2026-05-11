@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useNavigateBack } from "../hooks/useNavigateBack.js";
 import EarningsChart from '../components/earnings_chart.jsx';
-import { 
+import {
   ArrowLeft,
   DollarSign,
   TrendingUp,
@@ -33,12 +33,13 @@ const fadeIn = {
 };
 
 const EarningsPayments = () => {
-  const handleBackClick = useNavigateBack('/provider_dashboard', 600);
+  const handleBackClick = useNavigateBack('/lucid/dashboard', 600);
   const [selectedPeriod, setSelectedPeriod] = useState('month');
   const [showAddPayment, setShowAddPayment] = useState(false);
-  
-  
-  // UPDATED: Enhanced data structure matching chart requirements
+
+
+  // [MOCK] earningsData — replace with GET /providers/:id/earnings?period={week|month|year}
+  // [DB] Aggregated from completed bookings where paymentStatus='paid', grouped by period
   const earningsData = useMemo(() => ({
     thisWeek: 1250,
     lastWeek: 980,
@@ -48,8 +49,8 @@ const EarningsPayments = () => {
     lastYear: 45000,
     pending: 650,
     available: 4170,
-    
-    // NEW: Weekly breakdown (for chart)
+
+    // [DB] Weekly chart data — aggregated from bookings.completedAt grouped by day of week
     weeklyData: [
       { name: 'Mon', earnings: 180, jobs: 2, date: '2025-12-15' },
       { name: 'Tue', earnings: 250, jobs: 3, date: '2025-12-16' },
@@ -59,16 +60,16 @@ const EarningsPayments = () => {
       { name: 'Sat', earnings: 150, jobs: 1, date: '2025-12-20' },
       { name: 'Sun', earnings: 220, jobs: 2, date: '2025-12-21' }
     ],
-    
-    // NEW: Monthly breakdown (for chart)
+
+    // [DB] Monthly chart data — aggregated from bookings grouped by week-of-month
     monthlyData: [
       { name: 'Week 1', earnings: 950, jobs: 8, period: 'Dec 1-7' },
       { name: 'Week 2', earnings: 1200, jobs: 12, period: 'Dec 8-14' },
       { name: 'Week 3', earnings: 1350, jobs: 14, period: 'Dec 15-21' },
       { name: 'Week 4', earnings: 1320, jobs: 13, period: 'Dec 22-28' }
     ],
-    
-    // NEW: Yearly breakdown (for chart)
+
+    // [DB] Yearly chart data — aggregated from bookings grouped by month
     yearlyData: [
       { name: 'Jan', earnings: 3200, jobs: 28 },
       { name: 'Feb', earnings: 3500, jobs: 32 },
@@ -83,21 +84,23 @@ const EarningsPayments = () => {
       { name: 'Nov', earnings: 4820, jobs: 45 },
       { name: 'Dec', earnings: 5100, jobs: 47 }
     ],
-    
-    // NEW: Job statistics
+
+    // [DB] Job counts — COUNT(*) from bookings WHERE providerId=:id AND status='completed', grouped by period
     totalJobs: {
       thisWeek: 17,
       thisMonth: 45,
       thisYear: 487
     },
-    
-    // NEW: Goals
+
+    // [DB] Goals — from providers.goals or a separate provider_goals table
     goals: {
       monthly: 5000,
       yearly: 60000
     }
   }), []);
 
+  // [MOCK] transactions — replace with GET /providers/:id/transactions?page={n}
+  // [DB] From transactions table joined with bookings; includes both credits (payments) and debits (withdrawals)
   const transactions = useMemo(() => [
     {
       id: 1,
@@ -145,6 +148,7 @@ const EarningsPayments = () => {
     }
   ], []);
 
+  // [MOCK] paymentMethods — replace with GET /users/:id/payment-methods — [{id, type, name, number, isPrimary}]
   const paymentMethods = useMemo(() => [
     {
       id: 1,
@@ -173,15 +177,15 @@ const EarningsPayments = () => {
     >
       <div className="flex items-start justify-between mb-4">
         <div className={`p-3 rounded-lg ${
-          trend === 'up' ? 'bg-green-50' : trend === 'down' ? 'bg-red-50' : 'bg-blue-50'
+          trend === 'up' ? 'bg-green-50' : trend === 'down' ? 'bg-red-50' : 'bg-primary/10'
         }`}>
           <Icon className={`w-6 h-6 ${
-            trend === 'up' ? 'text-green-600' : trend === 'down' ? 'text-red-600' : 'text-blue-600'
+            trend === 'up' ? 'text-green-600' : trend === 'down' ? 'text-error' : 'text-primary'
           }`} />
         </div>
         {change && (
           <div className={`flex items-center gap-1 text-sm font-semibold ${
-            parseFloat(change) >= 0 ? 'text-green-600' : 'text-red-600'
+            parseFloat(change) >= 0 ? 'text-green-600' : 'text-error'
           }`}>
             {parseFloat(change) >= 0 ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
             {Math.abs(change)}%
@@ -199,7 +203,7 @@ const EarningsPayments = () => {
     const statusConfig = {
       completed: { icon: CheckCircle, color: 'text-green-600', bg: 'bg-green-100' },
       pending: { icon: Clock, color: 'text-yellow-600', bg: 'bg-yellow-100' },
-      failed: { icon: AlertCircle, color: 'text-red-600', bg: 'bg-red-100' }
+      failed: { icon: AlertCircle, color: 'text-error', bg: 'bg-red-100' }
     }[transaction.status];
 
     const StatusIcon = statusConfig.icon;
@@ -208,7 +212,7 @@ const EarningsPayments = () => {
       <div className="flex items-center justify-between py-4 border-b border-gray-200 last:border-0">
         <div className="flex gap-4 flex-1">
           <div className={`p-2 rounded-lg ${isWithdrawal ? 'bg-red-50' : 'bg-green-50'} h-fit`}>
-            <DollarSign className={`w-5 h-5 ${isWithdrawal ? 'text-red-600' : 'text-green-600'}`} />
+            <DollarSign className={`w-5 h-5 ${isWithdrawal ? 'text-error' : 'text-green-600'}`} />
           </div>
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-1">
@@ -229,7 +233,7 @@ const EarningsPayments = () => {
           </div>
         </div>
         <div className={`text-lg font-bold ${
-          isWithdrawal ? 'text-red-600' : 'text-green-600'
+          isWithdrawal ? 'text-error' : 'text-green-600'
         }`}>
           {isWithdrawal ? '-' : '+'}GH₵{Math.abs(transaction.amount)}
         </div>
@@ -264,12 +268,14 @@ const EarningsPayments = () => {
           </div>
         </div>
         <div className="flex gap-2">
+          {/* [API] PUT /users/:id/payment-methods/:methodId — {name, number, isPrimary} */}
           <button className="flex-1 px-4 py-2 bg-white border-2 border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium flex items-center justify-center gap-2">
             <Edit className="w-4 h-4" />
             Edit
           </button>
           {!method.isPrimary && (
-            <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium">
+            // [API] DELETE /users/:id/payment-methods/:methodId
+            <button className="px-4 py-2 bg-error text-white rounded-lg hover:bg-error/90 transition-colors font-medium">
               <Trash2 className="w-4 h-4" />
             </button>
           )}
@@ -281,7 +287,7 @@ const EarningsPayments = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <motion.header 
+      <motion.header
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         className="bg-white shadow-sm sticky top-0 z-30"
@@ -304,6 +310,7 @@ const EarningsPayments = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats Overview */}
+        {/* [MOCK] Stat values from earningsData — replace with GET /providers/:id/earnings?period=month */}
         <motion.div
           initial="hidden"
           animate="visible"
@@ -347,7 +354,8 @@ const EarningsPayments = () => {
           />
         </motion.div>
 
-        {/* NEW: Earnings Chart */}
+        {/* Earnings Chart */}
+        {/* [DB] Chart data aggregated from completed bookings with paymentStatus='paid', grouped by selectedPeriod */}
         <motion.div
           initial="hidden"
           animate="visible"
@@ -356,6 +364,7 @@ const EarningsPayments = () => {
         >
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold text-gray-900">Earnings Overview</h2>
+            {/* [API] GET /providers/:id/earnings/report?period={week|month|year} — detailed breakdown export */}
             <button className="px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg font-semibold transition-colors">
               View Detailed Report
             </button>
@@ -374,6 +383,7 @@ const EarningsPayments = () => {
             <div className="bg-white rounded-xl p-6 shadow-md">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold text-gray-900">Recent Transactions</h2>
+                {/* [API] GET /providers/:id/transactions?page={n} — paginated; also supports ?export=csv */}
                 <button className="px-4 py-2 bg-white border-2 border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium flex items-center gap-2">
                   <Download className="w-4 h-4" />
                   Export
@@ -387,6 +397,7 @@ const EarningsPayments = () => {
             </div>
 
             {/* Withdraw Section */}
+            {/* [API] POST /providers/:id/payouts — {amount, bankDetails} → {payoutId, status, estimatedArrival} */}
             <div className="bg-gradient-to-br from-blue-600 to-purple-600 text-white rounded-xl p-6 shadow-md">
               <h3 className="text-2xl font-bold mb-2">Ready to withdraw?</h3>
               <p className="text-blue-100 mb-6">
@@ -410,6 +421,7 @@ const EarningsPayments = () => {
             <div className="bg-white rounded-xl p-6 shadow-md">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-bold text-gray-900">Payment Methods</h2>
+                {/* [API] POST /users/:id/payment-methods — {type, name, number|accountNumber, isPrimary} */}
                 <button
                   onClick={() => setShowAddPayment(!showAddPayment)}
                   className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold flex items-center gap-2"
@@ -418,6 +430,7 @@ const EarningsPayments = () => {
                   Add
                 </button>
               </div>
+              {/* [MOCK] paymentMethods — replace with GET /users/:id/payment-methods */}
               <div className="space-y-4">
                 {paymentMethods.map((method) => (
                   <PaymentMethodCard key={method.id} method={method} />
@@ -426,6 +439,7 @@ const EarningsPayments = () => {
             </div>
 
             {/* Quick Stats */}
+            {/* [MOCK] Summary figures — replace with GET /providers/:id/earnings?period=month summary fields */}
             <div className="bg-white rounded-xl p-6 shadow-md">
               <h3 className="text-lg font-bold text-gray-900 mb-4">This Month Summary</h3>
               <div className="space-y-4">

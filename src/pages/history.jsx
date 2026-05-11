@@ -1,7 +1,7 @@
 import React, { useState, useMemo,useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { 
+import {
   ArrowLeft,
   Calendar,
   Clock,
@@ -17,8 +17,7 @@ import {
   XCircle,
   BarChart3
 } from 'lucide-react';
-import { Button } from '../components/ui/Button';
-import { Card } from '../components/ui/Card';
+import { Button, Card } from '../components/ui';
 import { useNotification } from '../contexts/NotificationContext';
 
 const fadeIn = {
@@ -43,7 +42,8 @@ const handleBackClick = useCallback(() => {
     }, 800);
   }, [showNotification, navigate]);
 
-  // Mock history data
+  // [MOCK] historyData — replace with GET /bookings?userId={id}&status=completed,cancelled&page={n}
+  // [AUTH] userId sourced from authenticated session (JWT / auth context)
   const historyData = useMemo(() => [
     {
       id: 1,
@@ -117,6 +117,7 @@ const handleBackClick = useCallback(() => {
     }
   ], []);
 
+  // Period filter options — [API] pass ?period= as query param to /bookings endpoint
   const periods = [
     { id: 'all', label: 'All Time' },
     { id: 'week', label: 'This Week' },
@@ -125,16 +126,18 @@ const handleBackClick = useCallback(() => {
     { id: 'year', label: 'This Year' }
   ];
 
+  // [MOCK] Client-side period filtering — in production pass ?period= query param instead
   const filteredHistory = useMemo(() => {
     // In production, filter by actual dates
     return historyData;
   }, [historyData, selectedPeriod]);
 
+  // [MOCK] Stats computed client-side — replace with GET /bookings/stats?userId={id}&period={n}
   const stats = useMemo(() => {
     const completed = filteredHistory.filter(h => h.status === 'completed');
     const totalEarnings = completed.reduce((sum, h) => sum + h.amount, 0);
     const avgRating = completed.filter(h => h.rating).reduce((sum, h) => sum + h.rating, 0) / completed.filter(h => h.rating).length;
-    
+
     return {
       totalJobs: filteredHistory.length,
       completedJobs: completed.length,
@@ -207,11 +210,13 @@ const handleBackClick = useCallback(() => {
         </div>
 
         <div className="flex gap-2 mt-4 pt-4 border-t border-gray-200">
+          {/* [API] GET /bookings/:id/receipt — returns receipt data for the modal */}
           <Button size="sm" variant="outline" className="flex-1">
             <FileText className="w-4 h-4" />
             View Receipt
           </Button>
           {item.status === 'completed' && (
+            // [API] GET /bookings/:id/receipt?format=pdf — returns PDF blob for download
             <Button size="sm" variant="outline" className="flex-1">
               <Download className="w-4 h-4" />
               Download
@@ -225,7 +230,7 @@ const handleBackClick = useCallback(() => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <motion.header 
+      <motion.header
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         className="bg-white shadow-sm sticky top-0 z-30"
@@ -272,6 +277,7 @@ const handleBackClick = useCallback(() => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Period Filter */}
+        {/* [API] Selecting a period should re-fetch GET /bookings?userId={id}&status=completed,cancelled&period={n} */}
         <motion.div
           initial="hidden"
           animate="visible"
@@ -300,6 +306,7 @@ const handleBackClick = useCallback(() => {
         </motion.div>
 
         {/* Stats Overview */}
+        {/* [MOCK] Stats computed client-side — replace with GET /bookings/stats?userId={id}&period={n} */}
         {viewMode === 'stats' && (
           <motion.div
             initial="hidden"
@@ -347,6 +354,7 @@ const handleBackClick = useCallback(() => {
         )}
 
         {/* History List */}
+        {/* [MOCK] filteredHistory from in-memory data — replace with paginated API response */}
         <div className="space-y-4">
           {filteredHistory.map((item) => (
             <HistoryItem key={item.id} item={item} />
@@ -354,6 +362,7 @@ const handleBackClick = useCallback(() => {
         </div>
 
         {/* Export Button */}
+        {/* [API] GET /bookings/export?userId={id}&status=completed,cancelled&format=csv — triggers file download */}
         <motion.div
           initial="hidden"
           animate="visible"

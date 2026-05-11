@@ -10,7 +10,7 @@ import { Button } from '../ui/Button.jsx';
  * @param {Function} onClose - Close modal handler
  * @param {Function} onConfirm - Confirm cancellation handler (can be async)
  */
-const CancelBookingModal = ({ booking, isOpen, onClose, onConfirm }) => {
+const CancelBookingModalComponent = ({ booking, isOpen, onClose, onConfirm }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   if (!isOpen || !booking) return null;
@@ -18,6 +18,11 @@ const CancelBookingModal = ({ booking, isOpen, onClose, onConfirm }) => {
   const handleConfirm = async () => {
     setIsLoading(true);
     try {
+      // [API] Parent's onConfirm should call:
+      //   POST /bookings/:id/cancel  { reason: string, requestedBy: 'client' | 'provider' }
+      //   → { booking: updatedBooking, refundAmount?: number }
+      // Backend must: update bookings.status = 'cancelled', create cancellation_requests record,
+      // trigger refund logic if within cancellation window, notify the other party via push/email.
       await onConfirm(booking);
       onClose();
     } catch (error) {
@@ -78,9 +83,12 @@ const CancelBookingModal = ({ booking, isOpen, onClose, onConfirm }) => {
           </div>
 
           {/* Warning Message */}
+          {/* [API] Replace static warning with real policy: GET /bookings/:id/cancellation-policy
+               → { feePercent: number, feeAmount: number, hoursRemaining: number, deadline: string }
+               Show the actual fee amount if within the penalty window. */}
           <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
             <p className="text-sm text-yellow-800">
-              <span className="font-semibold">Note:</span> Cancellation policies may apply. 
+              <span className="font-semibold">Note:</span> Cancellation policies may apply.
               You may be charged a cancellation fee depending on the timing.
             </p>
           </div>
@@ -112,4 +120,4 @@ const CancelBookingModal = ({ booking, isOpen, onClose, onConfirm }) => {
   );
 };
 
-export default CancelBookingModal;
+export const CancelBookingModal = React.memo(CancelBookingModalComponent);

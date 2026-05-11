@@ -263,8 +263,8 @@ const filteredTransactions = useMemo(() => {
             const Icon = stat.icon;
             const colors = {
               green: 'bg-green-50 text-green-600',
-              orange: 'bg-orange-50 text-orange-600',
-              blue: 'bg-blue-50 text-blue-600',
+              orange: 'bg-orange-50 text-secondary',
+              blue: 'bg-primary/10 text-primary',
               purple: 'bg-purple-50 text-purple-600'
             };
 
@@ -317,7 +317,7 @@ const filteredTransactions = useMemo(() => {
               onClick={() => setSelectedTab(tab)}
               className={`px-6 py-3 font-semibold capitalize transition-colors ${
                 selectedTab === tab
-                  ? 'text-blue-600 border-b-2 border-blue-600'
+                  ? 'text-primary border-b-2 border-primary'
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
@@ -400,7 +400,7 @@ const TransactionItem = ({ transaction, onClick }) => {
   const statusColors = {
     completed: 'bg-green-100 text-green-700',
     pending: 'bg-yellow-100 text-yellow-700',
-    processing: 'bg-blue-100 text-blue-700',
+    processing: 'bg-primary/10 text-primary',
     failed: 'bg-red-100 text-red-700'
   };
 
@@ -412,7 +412,7 @@ const TransactionItem = ({ transaction, onClick }) => {
     >
       <div className="flex items-center gap-4">
         <div className={`p-3 rounded-lg ${
-          isEarning ? 'bg-green-50' : 'bg-blue-50'
+          isEarning ? 'bg-green-50' : 'bg-primary/10'
         }`}>
           {isEarning ? (
             <ArrowUpCircle className={`w-5 h-5 ${
@@ -534,7 +534,7 @@ const WithdrawalModal = ({ availableBalance, onClose }) => {
             </div>
             <button
               onClick={() => setAmount(availableBalance.toString())}
-              className="text-sm text-blue-600 hover:text-blue-700 font-semibold mt-2"
+              className="text-sm text-primary hover:text-primary-hover font-semibold mt-2"
             >
               Withdraw All
             </button>
@@ -554,12 +554,12 @@ const WithdrawalModal = ({ availableBalance, onClose }) => {
                     onClick={() => setMethod(m.id)}
                     className={`p-4 border-2 rounded-lg transition-all ${
                       method === m.id
-                        ? 'border-blue-600 bg-blue-50'
+                        ? 'border-primary bg-primary/10'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
                     <Icon className={`w-6 h-6 mx-auto mb-2 ${
-                      method === m.id ? 'text-blue-600' : 'text-gray-600'
+                      method === m.id ? 'text-primary' : 'text-gray-600'
                     }`} />
                     <p className="text-sm font-semibold text-gray-900">{m.name}</p>
                   </button>
@@ -600,8 +600,8 @@ const WithdrawalModal = ({ availableBalance, onClose }) => {
           </div>
 
           {/* Processing Time Info */}
-          <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-3">
-            <p className="text-sm text-blue-800">
+          <div className="bg-primary/10 border-2 border-primary/30 rounded-lg p-3">
+            <p className="text-sm text-primary-dark/80">
               <strong>Processing Time:</strong> Withdrawals are typically processed within 24 hours
             </p>
           </div>
@@ -610,7 +610,7 @@ const WithdrawalModal = ({ availableBalance, onClose }) => {
           <button
             onClick={handleWithdraw}
             disabled={loading}
-            className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="w-full bg-primary text-white py-3 px-6 rounded-lg font-semibold hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {loading ? (
               <>

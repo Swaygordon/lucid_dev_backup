@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigateBack } from "../hooks/useNavigateBack.js";
 import { useNotification } from '../contexts/NotificationContext';
 import emptyNotificationsImage from '../assets/No Messages.png';
-import { NotificationBadge } from '../components/ui/NotificationBadge.jsx';
+import { NotificationBadge } from '../components/ui';
 import { Link } from 'react-router-dom';
 
 // Animation variants
@@ -287,12 +287,14 @@ const FilterButton = memo(({ filter, isActive, badgeCount, onClick }) => (
 
 // Main Notifications Page
 const NotificationsPage = () => {
-  const handleBackClick = useNavigateBack('/lucid_dev_backup', 400);
+  const handleBackClick = useNavigateBack('/lucid/', 400);
   const { showNotification } = useNotification();
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [confirmDelete, setConfirmDelete] = useState(null);
   const [confirmClearAll, setConfirmClearAll] = useState(false);
   const [selectedNotification, setSelectedNotification] = useState(null);
+  // [MOCK] Replace with GET /notifications?userId={id}&page={n} — sorted by createdAt desc → [{id, type, status, title, message, time, read, date, category, bookmarked, loc}]
+  // [WS] Subscribe to user notification channel — on 'notification:new' event, prepend to this array and update badge counts
   const [notifications, setNotifications] = useState([
     {
       id: 1,
@@ -344,7 +346,7 @@ const NotificationsPage = () => {
       date: 'Yesterday',
       category: 'read',
       bookmarked: false,
-      loc: '/messagePage'
+      loc: '/lucid/messages'
     },
     {
       id: 5,
@@ -370,7 +372,7 @@ const NotificationsPage = () => {
       date: 'October 21, 2025',
       category: 'read',
       bookmarked: false,
-      loc: '/messagePage'
+      loc: '/lucid/messages'
     },
     {
       id: 7,
@@ -383,7 +385,7 @@ const NotificationsPage = () => {
       date: 'October 20, 2025',
       category: 'bookmark',
       bookmarked: true,
-      loc: '/messagePage'
+      loc: '/lucid/messages'
     },
     {
       id: 8,
@@ -396,7 +398,7 @@ const NotificationsPage = () => {
       date: 'October 20, 2025',
       category: 'bookmark',
       bookmarked: true,
-      loc: '/messagePage'
+      loc: '/lucid/messages'
     },
   ]);
 
@@ -469,12 +471,14 @@ const NotificationsPage = () => {
   }, [notifications, selectedFilter]);
 
   const handleDelete = useCallback((id) => {
+    // [API] DELETE /notifications/:id
     setNotifications(prev => prev.filter(n => n.id !== id));
     showNotification('Notification deleted', 'success');
   }, [showNotification]);
 
   const handleMarkAsRead = useCallback((id) => {
-    setNotifications(prev => prev.map(n => 
+    // [API] PATCH /notifications/:id/read — {read: true}
+    setNotifications(prev => prev.map(n =>
       n.id === id ? { ...n, read: true } : n
     ));
     setSelectedNotification(null);
@@ -482,7 +486,8 @@ const NotificationsPage = () => {
   }, [showNotification]);
 
   const handleMarkAsUnread = useCallback((id) => {
-    setNotifications(prev => prev.map(n => 
+    // [API] PATCH /notifications/:id/read — {read: false}
+    setNotifications(prev => prev.map(n =>
       n.id === id ? { ...n, read: false } : n
     ));
     setSelectedNotification(null);
@@ -490,23 +495,26 @@ const NotificationsPage = () => {
   }, [showNotification]);
 
   const handleBookmark = useCallback((id) => {
-    setNotifications(prev => prev.map(n => 
+    // [API] PATCH /notifications/:id — {bookmarked: true|false}
+    setNotifications(prev => prev.map(n =>
       n.id === id ? { ...n, bookmarked: !n.bookmarked, category: !n.bookmarked ? 'bookmark' : n.category } : n
     ));
     const notif = notifications.find(n => n.id === id);
     setSelectedNotification(null);
     showNotification(
-      notif?.bookmarked ? 'Removed from bookmarks' : 'Added to bookmarks', 
+      notif?.bookmarked ? 'Removed from bookmarks' : 'Added to bookmarks',
       'success'
     );
   }, [notifications, showNotification]);
 
   const handleMarkAllRead = useCallback(() => {
+    // [API] POST /notifications/read-all — {userId} — marks all unread notifications as read
     setNotifications(prev => prev.map(n => ({ ...n, read: true })));
     showNotification('All notifications marked as read', 'success');
   }, [showNotification]);
 
   const handleClearAll = useCallback(() => {
+    // [API] DELETE /notifications — {userId} — deletes all notifications for user
     setNotifications([]);
     setConfirmClearAll(false);
     showNotification('All notifications cleared', 'success');
@@ -560,7 +568,7 @@ const NotificationsPage = () => {
               <ArrowLeft className="w-6 h-6 text-gray-700" />
             </motion.button>
             <h1 className="text-3xl font-bold text-gray-900">Notifications</h1>
-            <Link to='/notification-settings'>
+            <Link to='/lucid/notifications/settings'>
             <motion.button
               className="p-2 hover:bg-gray-100 rounded-full transition-colors"
               whileHover={{ scale: 1.1 }}

@@ -2,7 +2,7 @@ import React, { memo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Star, ChevronDown, ChevronUp, Reply } from "lucide-react";
 
-const ReviewThread = ({ item, depth = 0, onReply }) => {
+const ReviewThreadComponent = ({ item, depth = 0, onReply }) => {
   const [expanded, setExpanded] = useState(false);
 
   const hasReplies = item.replies && item.replies.length > 0;
@@ -98,4 +98,4 @@ const ReviewThread = ({ item, depth = 0, onReply }) => {
   );
 };
 
-export default memo(ReviewThread);
+export const ReviewThread = memo(ReviewThreadComponent);

@@ -1,10 +1,13 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import BackToTop from '../components/back_the_top_btn.jsx';
 import { Link } from "react-router-dom";
 import { useNotification } from "../contexts/NotificationContext.jsx";
 import { useImageUpload } from "../hooks/useImageUpload.js";
-import ImageUploadModal from "../components/ImageUploadModal.jsx";
+import { ImageUploadModal } from "../components/shared";
 import { useNavigateBack } from "../hooks/useNavigateBack.js";
+import { supabase } from '../lib/supabaseClient';
+import { useProviderProfile } from '../hooks/useProviderProfile';
+import { getBookingsByProvider, calculateBookingStats, CURRENT_PROVIDER_ID } from '../data/mockData';
 import { 
   ArrowLeft, 
   Upload, 
@@ -21,43 +24,59 @@ import {
 } from "lucide-react";
 
 function ProviderAccountOverview() {
-  const handleBackClick = useNavigateBack('/provider_dashboard', 600);
+  const handleBackClick = useNavigateBack('/lucid/dashboard', 600);
   const upload = useImageUpload();
+
+  const [currentUserId, setCurrentUserId] = useState(null);
+  const [currentUserEmail, setCurrentUserEmail] = useState('');
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        setCurrentUserId(session.user.id);
+        setCurrentUserEmail(session.user.email || '');
+      }
+    });
+  }, []);
+  const { profile } = useProviderProfile(currentUserId);
+  const displayName     = profile?.name || '';
+  const displayInitials = displayName.split(' ').filter(Boolean).map(w => w[0]).join('').slice(0, 2).toUpperCase() || '?';
+  const displayLocation = profile?.location || '';
+  const providerStats   = calculateBookingStats(getBookingsByProvider(CURRENT_PROVIDER_ID));
 
   // Navigation items configuration
   const navigationItems = [
     {
-      to: "/User_info",
+      to: "/lucid/account/settings",
       icon: Settings,
       label: "Account Settings",
       description: "Manage your personal information"
     },
     {
-      to: "/provider_bookings",
+      to: "/lucid/bookings",
       icon: ClipboardList,
       label: "My Tasks",
       description: "View and manage bookings"
     },
     {
-      to: "/earnings",
+      to: "/lucid/earnings",
       icon: DollarSign,
       label: "Earnings & Payments",
       description: "Track earnings and withdrawals"
     },
     {
-      to: "/provider_history",
+      to: "/lucid/bookings/history",
       icon: History,
       label: "History",
       description: "View past jobs and transactions"
     },
     {
-      to: "/notification-settings",
+      to: "/lucid/notifications/settings",
       icon: Bell,
       label: "Notification Settings",
       description: "Customize your notifications"
     },
     {
-      to: "/help",
+      to: "/lucid/help",
       icon: HelpCircle,
       label: "Help & Support",
       description: "Get help and contact support"
@@ -94,9 +113,13 @@ function ProviderAccountOverview() {
             className="relative w-24 h-24 mx-auto mb-4 cursor-pointer transition-transform duration-300 hover:scale-105 group"
             onClick={upload.openModal}
           >
-            <div className="w-full h-full rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-3xl font-bold shadow-lg">
-              GG
-            </div>
+            {profile?.avatar_url ? (
+              <img src={profile.avatar_url} alt={displayName} className="w-full h-full rounded-full object-cover" />
+            ) : (
+              <div className="w-full h-full rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-3xl font-bold shadow-lg">
+                {displayInitials}
+              </div>
+            )}
             <div className="absolute inset-0 rounded-full bg-black bg-opacity-60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               <Camera className="w-6 h-6 text-white" />
             </div>
@@ -112,27 +135,26 @@ function ProviderAccountOverview() {
           </button>
 
           {/* User Info */}
-          <h2 className="text-2xl font-bold text-gray-800 mb-1">
-            Gabriel Gordon-Mensah
-          </h2>
-          <p className="text-gray-500 mb-2 text-base">
-            gordongabriel2004@gmail.com
-          </p>
-          <p className="text-gray-400 text-sm flex items-center justify-center gap-2 mb-6">
-            <MapPin className="w-4 h-4" />
-            Achimota, Accra
-          </p>
+          {/* [MOCK] Replace with GET /users/:id/overview — {name, email, location, completedProjects, activeProjects} */}
+          <h2 className="text-2xl font-bold text-gray-800 mb-1">{displayName}</h2>
+          <p className="text-gray-500 mb-2 text-base">{currentUserEmail}</p>
+          {displayLocation && (
+            <p className="text-gray-400 text-sm flex items-center justify-center gap-2 mb-6">
+              <MapPin className="w-4 h-4" />
+              {displayLocation}
+            </p>
+          )}
 
           {/* Stats */}
           <div className="flex justify-around items-center bg-slate-50 rounded-2xl p-5 mt-4 border border-slate-200">
             <div className="text-center flex-1">
               <p className="text-gray-500 text-sm mb-1">Completed Projects</p>
-              <p className="text-indigo-500 text-2xl font-bold">10</p>
+              <p className="text-indigo-500 text-2xl font-bold">{providerStats.completed}</p>
             </div>
             <div className="w-px h-10 bg-slate-200"></div>
             <div className="text-center flex-1">
               <p className="text-gray-500 text-sm mb-1">Active Projects</p>
-              <p className="text-indigo-500 text-2xl font-bold">1</p>
+              <p className="text-indigo-500 text-2xl font-bold">{providerStats.active}</p>
             </div>
           </div>
         </div>
@@ -169,9 +191,10 @@ function ProviderAccountOverview() {
           })}
 
           {/* Logout Button */}
+          {/* [AUTH] POST /auth/logout — invalidate session/token on server before redirecting */}
           <div className="mt-2">
-            <Link 
-              to="/signin"
+            <Link
+              to="/lucid/signin"
               className="bg-gradient-to-r w-full from-red-600 to-red-700 text-white px-6 py-4 rounded-2xl font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center gap-2 shadow-md hover:-translate-y-0.5 hover:shadow-xl"
             >
               <LogOut size={20} />
@@ -183,16 +206,9 @@ function ProviderAccountOverview() {
 
       {/* Image Upload Modal */}
       <ImageUploadModal
-        open={upload.open}
+        isOpen={upload.open}
         onClose={upload.closeModal}
-        dragActive={upload.dragActive}
-        onDrag={upload.onDrag}
-        onDrop={upload.onDrop}
-        onFileChange={upload.onFileChange}
-        selectedFile={upload.selectedFile}
-        isUploading={upload.isUploading}
-        uploadProgress={upload.uploadProgress}
-        onSave={upload.onSave}
+        onUpload={() => {}}
         title="Upload Image"
       />
 

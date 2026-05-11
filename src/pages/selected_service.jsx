@@ -10,38 +10,30 @@
 import React, { useState, useMemo, lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
-import { Hammer, House, Truck, Settings, ChevronRight, Filter, MapPin, Star } from 'lucide-react';
-import { FaBroom } from 'react-icons/fa';
+import { ChevronRight, Filter, MapPin, Star } from 'lucide-react';
 import BusinessCategorySection from '../components/suggested_category.jsx';
 import { DownloadSection } from '../components/download_ad.jsx';
+import Breadcrumb from '../components/Breadcrumb.jsx';
+import { getCategoryBySlug, getServiceBySlug } from '../data/categories.js';
 
 // Lazy load heavy components
 const BackToTop = lazy(() => import('../components/back_the_top_btn'));
 
 // Import ProfileCard directly (not lazy) since it's needed immediately
-import ProfileCard from '../components/user_card';
+import { ProfileCard } from '../components/shared';
 
 // ============================================
 // IMPORT MOCK DATA
 // ============================================
-import { 
-  mockProviders, 
-  getProvidersBySkill, 
+// [MOCK] mockProviders and helpers — replace with GET /providers?serviceId={id}&lat={}&lng={}&radius={}
+import {
+  mockProviders,
+  getProvidersBySkill,
   getProvidersByArea,
   getTopRatedProviders,
-  getAvailableProviders 
+  getAvailableProviders
 } from '../data/mockProfiles';
 
-// Image imports (these will be bundled)
-import BackgroundImage from "../assets/roommates-cleaning.jpg";
-import BackgroundImage1 from "../assets/143147.jpg";
-import BackgroundImage2 from "../assets/delivery.jpg";
-import BackgroundImage3 from "../assets/leftdown.jpg";
-import BackgroundImage4 from "../assets/carpentry.jpg";
-import homerepair from "../assets/cleaners.jpg";
-import moving from "../assets/delivery.jpg";
-import autorepair from "../assets/carmechanic.jpg";
-import construction from "../assets/carpenterlady.jpg";
 
 // ============================================
 // ANIMATION VARIANTS
@@ -83,7 +75,7 @@ const HeroSection = React.memo(({ backgroundImage, icon: Icon, title, subtitle }
       }}
     >
       <div className="hero-overlay bg-black bg-opacity-40"></div>
-      <motion.div 
+      <motion.div
         className="hero-content justify-start items-start w-full"
         initial="hidden"
         animate="visible"
@@ -92,7 +84,7 @@ const HeroSection = React.memo(({ backgroundImage, icon: Icon, title, subtitle }
       >
         <div className="max-w-3xl px-6 text-left">
           {/* Icon */}
-          <motion.div 
+          <motion.div
             className="mb-4"
             initial={{ scale: 0, rotate: -180 }}
             animate={{ scale: 1, rotate: 0 }}
@@ -100,16 +92,16 @@ const HeroSection = React.memo(({ backgroundImage, icon: Icon, title, subtitle }
           >
             <Icon size={46} className="text-white" />
           </motion.div>
-          
+
           {/* Heading */}
-          <motion.h1 
+          <motion.h1
             className="text-2xl md:text-4xl font-bold text-white leading-tight mb-4 drop-shadow-lg"
             variants={fadeInUp}
             transition={{ delay: 0.2 }}
           >
             {title}
           </motion.h1>
-          <motion.p 
+          <motion.p
             className="text-white text-lg md:text-xl drop-shadow-md"
             variants={fadeInUp}
             transition={{ delay: 0.3 }}
@@ -122,40 +114,14 @@ const HeroSection = React.memo(({ backgroundImage, icon: Icon, title, subtitle }
   </div>
 ));
 
-// Breadcrumb Component
-const Breadcrumb = React.memo(({ items }) => (
-  <motion.div 
-    className="container my-4 mx-auto px-6 py-6"
-    initial={{ opacity: 0, x: -20 }}
-    animate={{ opacity: 1, x: 0 }}
-    transition={{ duration: 0.4 }}
-  >
-    <div className="breadcrumbs text-sm">
-      <ul className="flex items-center">
-        {items.map((item, index) => (
-          <li key={index} className="flex items-center">
-            <Link 
-              to={item.path} 
-              className="text-black text-base font-semibold hover:text-blue-600 transition-colors"
-            >
-              {item.label}
-            </Link>
-            {index < items.length - 1 && (
-              <ChevronRight className="w-5 h-5 mx-2 text-gray-400" />
-            )}
-          </li>
-        ))}
-      </ul>
-    </div>
-  </motion.div>
-));
 
 // Filter Section Component
+// [API] Pass filter values as query params: ?sortBy=rating&minRating=4&availability=today&verified=true
 const FilterSection = React.memo(({ onFilterChange, activeFilters }) => {
   const [showFilters, setShowFilters] = useState(false);
 
   return (
-    <motion.div 
+    <motion.div
       className="bg-white rounded-lg shadow-sm p-4 mb-6"
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
@@ -176,6 +142,7 @@ const FilterSection = React.memo(({ onFilterChange, activeFilters }) => {
       {showFilters && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Rating Filter */}
+          {/* [API] Pass as query param: ?minRating=4.0 */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Minimum Rating
@@ -191,24 +158,8 @@ const FilterSection = React.memo(({ onFilterChange, activeFilters }) => {
             </select>
           </div>
 
-          {/* Price Range Filter */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Price Range (GHS/hour)
-            </label>
-            <select
-              onChange={(e) => onFilterChange('priceRange', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-            >
-              <option value="all">All Prices</option>
-              <option value="0-50">Under 50</option>
-              <option value="50-100">50 - 100</option>
-              <option value="100-200">100 - 200</option>
-              <option value="200+">200+</option>
-            </select>
-          </div>
-
           {/* Availability Filter */}
+          {/* [API] Pass as query param: ?availability=available or ?verified=true */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Availability
@@ -220,7 +171,6 @@ const FilterSection = React.memo(({ onFilterChange, activeFilters }) => {
               <option value="all">All Providers</option>
               <option value="available">Available Now</option>
               <option value="verified">Verified Only</option>
-              <option value="premium">Premium Members</option>
             </select>
           </div>
         </div>
@@ -230,13 +180,14 @@ const FilterSection = React.memo(({ onFilterChange, activeFilters }) => {
 });
 
 // Stats Bar Component
-const StatsBar = React.memo(({ totalProviders, averageRating, averagePrice }) => (
-  <motion.div 
+// [MOCK] totalProviders and averageRating — replace with aggregates from GET /providers response metadata
+const StatsBar = React.memo(({ totalProviders, averageRating }) => (
+  <motion.div
     className="bg-blue-50 rounded-lg p-4 mb-6"
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
   >
-    <div className="grid grid-cols-3 gap-4 text-center">
+    <div className="grid grid-cols-2 gap-4 text-center">
       <div>
         <p className="text-2xl font-bold text-blue-600">{totalProviders}</p>
         <p className="text-sm text-gray-600">Professionals</p>
@@ -247,10 +198,6 @@ const StatsBar = React.memo(({ totalProviders, averageRating, averagePrice }) =>
           {averageRating}
         </p>
         <p className="text-sm text-gray-600">Avg Rating</p>
-      </div>
-      <div>
-        <p className="text-2xl font-bold text-blue-600">GHS {averagePrice}</p>
-        <p className="text-sm text-gray-600">Avg Price/hr</p>
       </div>
     </div>
   </motion.div>
@@ -268,70 +215,55 @@ const ProfileCardSkeleton = () => (
 );
 
 // ============================================
-// STATIC DATA
+// STATIC DATA — built from shared categories taxonomy
 // ============================================
-const SERVICE_ICONS = [
-  { id: 1, icon: House, name: 'Home repairs' },
-  { id: 2, icon: Truck, name: 'Moving' },
-  { id: 3, icon: Settings, name: 'Auto repairs' },
-  { id: 4, icon: Hammer, name: 'Construction' }
-];
+const _FEATURED_SLUGS = ['home-repairs', 'moving', 'auto-repairs', 'construction'];
 
-const BUSINESS_CARDS = {
-  'Home repairs': {
-    cat: 'Home repairs',
-    mainCardBackground: BackgroundImage1,
-    cardIcon: House,
-    heading: 'Maintenance and painting business',
-    seeAll: 'See all maintenance'
-  },
-  'Moving': {
-    cat: 'Moving',
-    mainCardBackground: BackgroundImage2,
-    cardIcon: Truck,
-    heading: 'Moving and relocation services',
-    seeAll: 'See all moving services'
-  },
-  'Auto repairs': {
-    cat: 'Auto repairs',
-    mainCardBackground: BackgroundImage3,
-    cardIcon: Settings,
-    heading: 'Professional auto repair services',
-    seeAll: 'See all auto services'
-  },
-  'Construction': {
-    cat: 'Construction',
-    mainCardBackground: BackgroundImage4,
-    cardIcon: Hammer,
-    heading: 'Construction and renovation',
-    seeAll: 'See all construction services'
-  }
-};
+const SERVICE_ICONS = _FEATURED_SLUGS.map((slug, i) => {
+  const cat = getCategoryBySlug(slug);
+  return { id: i + 1, icon: cat.icon, name: cat.name, slug };
+});
 
-const BUSINESS_SERVICES = [
-  { cat: 'Home repairs', image: homerepair, title: 'House Cleaning', subtitle: 'See workers near you', icon: 'map.png' },
-  { cat: 'Home repairs', image: homerepair, title: 'Handy Man', subtitle: 'See workers near you', icon: 'map.png' },
-  { cat: 'Home repairs', image: homerepair, title: 'Interior painting', subtitle: 'See workers near you', icon: 'map.png' },
-  { cat: 'Moving', image: moving, title: 'Packing Services', subtitle: 'See workers near you', icon: 'map.png' },
-  { cat: 'Moving', image: moving, title: 'Furniture Moving', subtitle: 'See workers near you', icon: 'map.png' },
-  { cat: 'Moving', image: moving, title: 'Storage Solutions', subtitle: 'See workers near you', icon: 'map.png' },
-  { cat: 'Auto repairs', image: autorepair, title: 'Engine Repair', subtitle: 'See workers near you', icon: 'map.png' },
-  { cat: 'Auto repairs', image: autorepair, title: 'Brake Service', subtitle: 'See workers near you', icon: 'map.png' },
-  { cat: 'Auto repairs', image: autorepair, title: 'Oil Change', subtitle: 'See workers near you', icon: 'map.png' },
-  { cat: 'Construction', image: construction, title: 'Building Construction', subtitle: 'See workers near you', icon: 'map.png' },
-  { cat: 'Construction', image: construction, title: 'Renovation', subtitle: 'See workers near you', icon: 'map.png' },
-  { cat: 'Construction', image: construction, title: 'Roofing', subtitle: 'See workers near you', icon: 'map.png' }
-];
+const BUSINESS_CARDS = Object.fromEntries(
+  SERVICE_ICONS.map(({ name, slug }) => {
+    const cat = getCategoryBySlug(slug);
+    return [name, {
+      cat:                name,
+      slug,
+      mainCardBackground: cat.image,
+      cardIcon:           cat.icon,
+      heading:            cat.description,
+      seeAll:             `See all ${name.toLowerCase()} services`,
+    }];
+  })
+);
+
+const BUSINESS_SERVICES = SERVICE_ICONS.flatMap(({ name, slug }) => {
+  const cat = getCategoryBySlug(slug);
+  return (cat?.services ?? []).slice(0, 3).map(svc => ({
+    cat:      name,
+    catSlug:  slug,
+    slug:     svc.slug,
+    image:    svc.image,
+    title:    svc.name,
+    subtitle: 'See workers near you',
+  }));
+});
 
 // ============================================
 // MAIN COMPONENT
 // ============================================
 const SelectedService = () => {
-  // Get service and area from URL params or search params
-  const { service } = useParams();
+  const { category: categorySlug, service: serviceSlug } = useParams();
   const [searchParams] = useSearchParams();
   const area = searchParams.get('area');
-  const skill = searchParams.get('skill') || service || 'plumbing';
+
+  // Resolve category + service from shared taxonomy
+  const catData  = getCategoryBySlug(categorySlug);
+  const svcData  = getServiceBySlug(categorySlug, serviceSlug);
+
+  // Skill keyword for provider filtering (use service slug or name)
+  const skill = svcData?.name ?? serviceSlug ?? 'service';
 
   // State for filters
   const [filters, setFilters] = useState({
@@ -343,6 +275,8 @@ const SelectedService = () => {
   // ============================================
   // FETCH AND FILTER PROVIDERS
   // ============================================
+  // [MOCK] Provider list — replace with GET /providers?serviceId={id}&lat={}&lng={}&radius={}
+  // [API] GET /providers?serviceId={id}&lat={}&lng={}&radius={} — returns [{id, name, rating, location, verified, availability}]
   const providers = useMemo(() => {
     // Start with providers that match the skill
     let filteredProviders = getProvidersBySkill(skill);
@@ -354,7 +288,7 @@ const SelectedService = () => {
 
     // Further filter by area if specified
     if (area) {
-      filteredProviders = filteredProviders.filter(p => 
+      filteredProviders = filteredProviders.filter(p =>
         p.location.area.toLowerCase().includes(area.toLowerCase()) ||
         p.location.city.toLowerCase().includes(area.toLowerCase())
       );
@@ -362,35 +296,24 @@ const SelectedService = () => {
 
     // Apply rating filter
     if (filters.rating > 0) {
-      filteredProviders = filteredProviders.filter(p => 
+      filteredProviders = filteredProviders.filter(p =>
         p.rating.overall >= filters.rating
       );
-    }
-
-    // Apply price range filter
-    if (filters.priceRange !== 'all') {
-      const [min, max] = filters.priceRange.split('-').map(v => 
-        v === '+' ? Infinity : parseInt(v)
-      );
-      filteredProviders = filteredProviders.filter(p => {
-        const rate = p.pricing.hourlyRate;
-        return max ? (rate >= min && rate <= max) : rate >= min;
-      });
     }
 
     // Apply availability filter
     if (filters.availability !== 'all') {
       switch (filters.availability) {
         case 'available':
-          filteredProviders = filteredProviders.filter(p => 
+          filteredProviders = filteredProviders.filter(p =>
             p.availability.status === 'available'
           );
           break;
         case 'verified':
-          filteredProviders = filteredProviders.filter(p => p.verified);
+          filteredProviders = filteredProviders.filter(p => p.isVerified);
           break;
         case 'premium':
-          filteredProviders = filteredProviders.filter(p => p.premiumMember);
+          // No premium tier in current data — show all providers
           break;
       }
     }
@@ -410,10 +333,9 @@ const SelectedService = () => {
       rating: provider.rating.overall,
       image: provider.profileImage,
       // Additional data for ProfileCard if needed
-      verified: provider.verified,
-      premium: provider.premiumMember,
-      hourlyRate: provider.pricing.hourlyRate,
-      responseTime: provider.availability.responseTime,
+      verified: provider.isVerified,
+      premium: false,
+      responseTime: null,
       totalJobs: provider.workExperience.totalJobs
     }));
   }, [providers]);
@@ -421,29 +343,26 @@ const SelectedService = () => {
   // ============================================
   // CALCULATE STATS
   // ============================================
+  // [MOCK] stats — in production derive from API response metadata (total, averageRating fields)
   const stats = useMemo(() => {
     if (profiles.length === 0) {
-      return { totalProviders: 0, averageRating: 0, averagePrice: 0 };
+      return { totalProviders: 0, averageRating: 0 };
     }
 
     const totalRating = profiles.reduce((sum, p) => sum + p.rating, 0);
-    const totalPrice = profiles.reduce((sum, p) => sum + p.hourlyRate, 0);
 
     return {
       totalProviders: profiles.length,
-      averageRating: (totalRating / profiles.length).toFixed(1),
-      averagePrice: Math.round(totalPrice / profiles.length)
+      averageRating: (totalRating / profiles.length).toFixed(1)
     };
   }, [profiles]);
 
-  // ============================================
-  // BREADCRUMB ITEMS
-  // ============================================
-  const breadcrumbItems = useMemo(() => [
-    { label: 'Services', path: '/Service' },
-    { label: 'Home', path: '/category' },
-    { label: skill.charAt(0).toUpperCase() + skill.slice(1), path: '#' }
-  ], [skill]);
+  const breadcrumbCrumbs = useMemo(() => [
+    { label: 'Home',         href: '/lucid/' },
+    { label: 'All Services', href: '/lucid/services/all' },
+    { label: catData?.name ?? categorySlug, href: `/lucid/services/${categorySlug}` },
+    { label: svcData?.name ?? serviceSlug },
+  ], [catData, svcData, categorySlug, serviceSlug]);
 
   // ============================================
   // FILTER CHANGE HANDLER
@@ -454,16 +373,28 @@ const SelectedService = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 pb-20">
-      {/* Hero Section */}
-      <HeroSection
-        backgroundImage={BackgroundImage}
-        icon={FaBroom}
-        title="Trusted help, when and how you need it."
-        subtitle="Connect with verified professionals for all your service needs"
-      />
+      {/* Hero */}
+      <div className="relative w-full h-52 md:h-64 overflow-hidden">
+        <img
+          src={svcData?.image ?? catData?.image ?? 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&auto=format'}
+          alt={svcData?.name ?? skill}
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-black bg-opacity-50" />
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-white px-5 text-center">
+          <h1 className="text-2xl md:text-3xl font-bold mb-1">
+            {svcData?.name ?? skill} Services
+          </h1>
+          <p className="text-white/80 text-sm">
+            {catData?.name ?? 'Lucid'} · Ghana
+          </p>
+        </div>
+      </div>
 
-      {/* Breadcrumbs */}
-      <Breadcrumb items={breadcrumbItems} />
+      {/* Breadcrumb */}
+      <div className="max-w-6xl mx-auto px-5 pt-4 pb-2">
+        <Breadcrumb crumbs={breadcrumbCrumbs} />
+      </div>
 
       {/* Main Content */}
       <div className="container mx-auto px-6 pb-16">
@@ -471,13 +402,13 @@ const SelectedService = () => {
         <StatsBar {...stats} />
 
         {/* Filter Section */}
-        <FilterSection 
+        <FilterSection
           onFilterChange={handleFilterChange}
           activeFilters={filters}
         />
 
         {/* Section Header */}
-        <motion.div 
+        <motion.div
           className="text-center mb-12"
           initial="hidden"
           whileInView="visible"
@@ -486,18 +417,19 @@ const SelectedService = () => {
           transition={{ duration: 0.6 }}
         >
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-            {skill.charAt(0).toUpperCase() + skill.slice(1)} Services Near You
+            {svcData?.name ?? skill} Services Near You
           </h2>
           <p className="text-gray-600 text-lg">
-            {area 
-              ? `Showing ${profiles.length} professionals in ${area}` 
+            {area
+              ? `Showing ${profiles.length} professionals in ${area}`
               : `Choose from ${profiles.length} verified professionals`}
           </p>
         </motion.div>
 
         {/* Profile Cards Grid */}
+        {/* [API] GET /providers/:id — fetch full provider profile before navigating to booking; triggered on card click */}
         {profiles.length > 0 ? (
-          <motion.div 
+          <motion.div
             className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-6"
             variants={staggerContainer}
             initial="hidden"
@@ -510,7 +442,7 @@ const SelectedService = () => {
                 variants={scaleIn}
                 transition={{ duration: 0.3 }}
               >
-                <ProfileCard 
+                <ProfileCard
                   {...profile}
                   onViewProfile={() => console.log('View profile:', profile.id)}
                 />
@@ -545,7 +477,7 @@ const SelectedService = () => {
       <DownloadSection />
 
       {/* Business Category Section */}
-      <motion.div 
+      <motion.div
         className="w-full"
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}

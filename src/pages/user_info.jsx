@@ -1,15 +1,16 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigateBack } from "../hooks/useNavigateBack.js";
 import { useNotification } from '../contexts/NotificationContext';
-import { 
-  ArrowLeft, 
-  User, 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Briefcase,
-  Globe,
+import { useRole } from '../hooks/useRole';
+import { MOCK_PROVIDER } from '../data/mockProvider';
+import { MOCK_CLIENT } from '../data/mockClient';
+import {
+  ArrowLeft,
+  User,
+  Mail,
+  Phone,
+  MapPin,
   Calendar,
   Save,
   Lock,
@@ -17,40 +18,48 @@ import {
   Trash2,
   AlertCircle
 } from 'lucide-react';
-import { Button } from '../components/ui/Button';
-import { Input } from '../components/ui/Input';
-import { Card } from '../components/ui/Card';
+import { Button, Input, Card } from '../components/ui';
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0 }
 };
 
+const EMPTY_PERSONAL = { firstName: '', lastName: '', otherName: '', email: '', phone: '', dateOfBirth: '', gender: 'male' };
+const EMPTY_LOCATION  = { address: '', city: '', region: '', area: '', postalCode: '' };
+
 const UserInfo = () => {
   const { showNotification } = useNotification();
+  const role = useRole(); // null while loading, then 'client' | 'service_provider'
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('personal');
-  const handleBackClick = useNavigateBack('/lucid_website_test', 400);
+  const handleBackClick = useNavigateBack('/lucid/account', 400);
 
-  // Form states
-  const [personalInfo, setPersonalInfo] = useState({
-    firstName: 'Gabriel',
-    lastName: 'Gordon-Mensah',
-    email: 'gordongabriel2004@gmail.com',
-    phone: '+233 24 123 4567',
-    dateOfBirth: '2004-01-15',
-    gender: 'male'
-  });
+  // [MOCK] Populated from centralized mock once role resolves.
+  // Replace with GET /users/me on mount when backend is ready.
+  const [personalInfo, setPersonalInfo] = useState(EMPTY_PERSONAL);
+  const [locationInfo, setLocationInfo] = useState(EMPTY_LOCATION);
 
-  const [locationInfo, setLocationInfo] = useState({
-    address: '123 Main Street',
-    city: 'Accra',
-    region: 'Greater Accra',
-    area: 'Achimota',
-    postalCode: 'GA-123-4567'
-  });
-
-  
+  useEffect(() => {
+    if (role === null) return; // still resolving from Supabase
+    const mock = role === 'service_provider' ? MOCK_PROVIDER : MOCK_CLIENT;
+    setPersonalInfo({
+      firstName:   mock.firstName,
+      lastName:    mock.lastName,
+      otherName:   mock.otherName,
+      email:       mock.email,
+      phone:       mock.phone,
+      dateOfBirth: mock.dateOfBirth,
+      gender:      mock.gender,
+    });
+    setLocationInfo({
+      address:    mock.address,
+      city:       mock.city,
+      region:     mock.region,
+      area:       mock.area,
+      postalCode: mock.postalCode,
+    });
+  }, [role]);
 
   const [passwordInfo, setPasswordInfo] = useState({
     currentPassword: '',
@@ -58,49 +67,36 @@ const UserInfo = () => {
     confirmPassword: ''
   });
 
-  const handlePersonalInfoChange = (e) => {
-    setPersonalInfo({ ...personalInfo, [e.target.name]: e.target.value });
-  };
-
-  const handleLocationInfoChange = (e) => {
-    setLocationInfo({ ...locationInfo, [e.target.name]: e.target.value });
-  };
-
-  const handlePasswordChange = (e) => {
-    setPasswordInfo({ ...passwordInfo, [e.target.name]: e.target.value });
-  };
+  const handlePersonalInfoChange   = (e) => setPersonalInfo(p => ({ ...p, [e.target.name]: e.target.value }));
+  const handleLocationInfoChange   = (e) => setLocationInfo(l => ({ ...l, [e.target.name]: e.target.value }));
+  const handlePasswordChange       = (e) => setPasswordInfo(p => ({ ...p, [e.target.name]: e.target.value }));
 
   const handleSavePersonalInfo = async () => {
     setLoading(true);
-    // Simulate API call
-    setLoading(true);
-     try {
-    // simulate save (replace with API call later)
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
-    showNotification('Personal information updated successfully!', 'success');
-  } catch (error) {
-    showNotification('Failed to update personal information', 'error');
-  } finally {
-    setLoading(false);
-  }
+    // [API] PUT /users/me/personal — {firstName, lastName, email, phone, dateOfBirth, gender}
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1200)); // [MOCK] remove when real API wired
+      showNotification('Personal information updated successfully!', 'success');
+    } catch {
+      showNotification('Failed to update personal information', 'error');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSaveLocationInfo = async () => {
     setLoading(true);
-     try {
-    // simulate save (replace with API call later)
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
-    showNotification('Location information updated successfully!', 'success');
-  } catch (error) {
-    showNotification('Failed to update location information', 'error');
-  } finally {
-    setLoading(false);
-  }
+    // [API] PUT /users/me/location — {address, city, region, area, postalCode}
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1200)); // [MOCK] remove when real API wired
+      showNotification('Location information updated successfully!', 'success');
+    } catch {
+      setLoading(false);
+      showNotification('Failed to update location information', 'error');
+    } finally {
+      setLoading(false);
+    }
   };
-
-  
 
   const handleChangePassword = async () => {
     if (passwordInfo.newPassword !== passwordInfo.confirmPassword) {
@@ -112,41 +108,89 @@ const UserInfo = () => {
       return;
     }
     setLoading(true);
-     try {
-    // simulate save (replace with API call later)
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    setPasswordInfo({ currentPassword: '', newPassword: '', confirmPassword: '' });
-    showNotification('Password changed successfully!', 'success');
-  } catch (error) {
-    showNotification('Failed to change profile', 'error');
-  } finally {
-    setLoading(false);
-  }
+    // [API] PUT /users/me/password — {currentPassword, newPassword}
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1200)); // [MOCK] remove when real API wired
+      setPasswordInfo({ currentPassword: '', newPassword: '', confirmPassword: '' });
+      showNotification('Password changed successfully!', 'success');
+    } catch {
+      showNotification('Failed to change password', 'error');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleDeactivateAccount = () => {
-    if (window.confirm('Are you sure you want to deactivate your account? This action can be reversed within 30 days.')) {
+    // [API] POST /users/me/deactivate — server sends confirmation email
+    if (window.confirm('Are you sure you want to deactivate your account? You can reactivate within 30 days by logging in again.')) {
       showNotification('Account deactivation requested. Check your email for confirmation.', 'warning');
     }
   };
 
   const handleDeleteAccount = () => {
-    if (window.confirm('⚠️ WARNING: This will permanently delete your account and all data. This action CANNOT be undone. Type "DELETE" to confirm.')) {
+    // [API] DELETE /users/me — server sends confirmation email before hard delete
+    if (window.confirm('WARNING: This will permanently delete your account and all data. This action CANNOT be undone.')) {
       showNotification('Account deletion initiated. Check your email to complete the process.', 'error');
     }
   };
 
   const tabs = [
     { id: 'personal', label: 'Personal Info', icon: User },
-    { id: 'location', label: 'Location', icon: MapPin },
-    { id: 'security', label: 'Security', icon: Shield },
-    { id: 'danger', label: 'Account', icon: AlertCircle }
+    { id: 'location', label: 'Location',      icon: MapPin },
+    { id: 'security', label: 'Security',      icon: Shield },
+    { id: 'danger',   label: 'Account',       icon: AlertCircle }
   ];
+
+  // Show skeleton while role resolves from Supabase
+  if (role === null) {
+    return (
+      <div className="min-h-screen bg-gray-50 animate-pulse">
+        {/* Header */}
+        <div className="bg-white shadow-sm px-4 sm:px-6 lg:px-8 py-6 mb-2">
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 rounded-lg bg-gray-200" />
+            <div className="space-y-2">
+              <div className="h-7 bg-gray-200 rounded-lg w-52" />
+              <div className="h-4 bg-gray-100 rounded-lg w-80" />
+            </div>
+          </div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="grid lg:grid-cols-4 gap-6">
+            {/* Sidebar tabs */}
+            <div className="bg-white rounded-xl border p-3 space-y-2">
+              {[1, 2, 3, 4].map(i => (
+                <div key={i} className="h-11 bg-gray-100 rounded-lg" />
+              ))}
+            </div>
+
+            {/* Form content */}
+            <div className="lg:col-span-3 bg-white rounded-xl border p-6 space-y-5">
+              <div className="h-7 bg-gray-200 rounded w-52 mb-2" />
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="h-12 bg-gray-100 rounded-lg" />
+                <div className="h-12 bg-gray-100 rounded-lg" />
+              </div>
+              <div className="h-12 bg-gray-100 rounded-lg" />
+              <div className="h-12 bg-gray-100 rounded-lg" />
+              <div className="h-12 bg-gray-100 rounded-lg" />
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="h-12 bg-gray-100 rounded-lg" />
+                <div className="h-12 bg-gray-100 rounded-lg" />
+              </div>
+              <div className="h-10 bg-gray-200 rounded-lg w-36 mt-2" />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <motion.header 
+      <motion.header
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         className="bg-white shadow-sm sticky top-0 z-30"
@@ -186,7 +230,7 @@ const UserInfo = () => {
                       onClick={() => setActiveTab(tab.id)}
                       className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                         activeTab === tab.id
-                          ? 'bg-blue-600 text-white'
+                          ? 'bg-primary text-white'
                           : 'text-gray-700 hover:bg-gray-100'
                       }`}
                     >
@@ -229,6 +273,13 @@ const UserInfo = () => {
                     />
                   </div>
                   <Input
+                    label="Other Name"
+                    name="otherName"
+                    value={personalInfo.otherName}
+                    onChange={handlePersonalInfoChange}
+                    placeholder="Middle name or other name (optional)"
+                  />
+                  <Input
                     label="Email Address"
                     name="email"
                     type="email"
@@ -260,7 +311,7 @@ const UserInfo = () => {
                         name="gender"
                         value={personalInfo.gender}
                         onChange={handlePersonalInfoChange}
-                        className="w-full px-4 py-3 text-gray-700 bg-white border-2 rounded-lg border-gray-300 focus:border-blue-600 focus:outline-none"
+                        className="w-full px-4 py-3 text-gray-700 bg-white border-2 rounded-lg border-gray-300 focus:border-primary focus:outline-none"
                       >
                         <option value="male">Male</option>
                         <option value="female">Female</option>
@@ -269,11 +320,7 @@ const UserInfo = () => {
                       </select>
                     </div>
                   </div>
-                  <Button
-                    onClick={handleSavePersonalInfo}
-                    loading={loading}
-                    className="mt-4"
-                  >
+                  <Button onClick={handleSavePersonalInfo} loading={loading} className="mt-4">
                     <Save className="w-4 h-4" />
                     Save Changes
                   </Button>
@@ -324,11 +371,7 @@ const UserInfo = () => {
                       onChange={handleLocationInfoChange}
                     />
                   </div>
-                  <Button
-                    onClick={handleSaveLocationInfo}
-                    loading={loading}
-                    className="mt-4"
-                  >
+                  <Button onClick={handleSaveLocationInfo} loading={loading} className="mt-4">
                     <Save className="w-4 h-4" />
                     Save Changes
                   </Button>
@@ -336,7 +379,7 @@ const UserInfo = () => {
               </Card>
             )}
 
-            {/* Security Settings */}
+            {/* Security */}
             {activeTab === 'security' && (
               <div className="space-y-6">
                 <Card>
@@ -370,11 +413,7 @@ const UserInfo = () => {
                       required
                       endIcon={<Lock className="w-5 h-5 text-gray-400" />}
                     />
-                    <Button
-                      onClick={handleChangePassword}
-                      loading={loading}
-                      className="mt-4"
-                    >
+                    <Button onClick={handleChangePassword} loading={loading} className="mt-4">
                       <Shield className="w-4 h-4" />
                       Change Password
                     </Button>
@@ -386,9 +425,8 @@ const UserInfo = () => {
                   <p className="text-gray-600 mb-4">
                     Add an extra layer of security to your account by enabling two-factor authentication.
                   </p>
-                  <Button variant="outline">
-                    Enable 2FA
-                  </Button>
+                  {/* [API] POST /users/me/2fa/enable — {} → {qrCodeUrl, secret} */}
+                  <Button variant="outline">Enable 2FA</Button>
                 </Card>
               </div>
             )}
@@ -406,11 +444,11 @@ const UserInfo = () => {
                   </Button>
                 </Card>
 
-                <Card className="border-2 border-red-200 bg-red-50">
+                <Card className="border-2 border-error bg-red-50">
                   <h2 className="text-2xl font-bold text-red-900 mb-4">Delete Account</h2>
-                  <div className="bg-red-100 border border-red-300 rounded-lg p-4 mb-4">
+                  <div className="bg-red-100 border border-error rounded-lg p-4 mb-4">
                     <div className="flex gap-3">
-                      <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                      <AlertCircle className="w-5 h-5 text-error flex-shrink-0 mt-0.5" />
                       <div>
                         <h3 className="font-semibold text-red-900 mb-1">Warning: This action is permanent</h3>
                         <p className="text-red-800 text-sm">

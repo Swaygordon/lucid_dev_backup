@@ -1,3 +1,9 @@
+// [API] This hook manages profile image uploads.
+// Replace the fake progress simulation in onSave() with a real multipart upload:
+//   POST /uploads/profile-image  (FormData, Content-Type: multipart/form-data)
+//   → { url: "https://cdn.lucid.com/avatars/..." }
+// Then patch the user record: PATCH /users/:id { profileImage: url }
+// Use XMLHttpRequest's onprogress event (or fetch + ReadableStream) for real uploadProgress.
 import { useState } from "react";
 
 export const useImageUpload = () => {
@@ -65,6 +71,15 @@ const onDrag = (e) => {
     if (!selectedFile) return;
     setIsUploading(true);
 
+    // [MOCK] Fake progress — replace this entire block with a real upload:
+    // const formData = new FormData();
+    // formData.append('file', selectedFile);
+    // const xhr = new XMLHttpRequest();
+    // xhr.upload.onprogress = (e) => setUploadProgress(Math.round((e.loaded / e.total) * 100));
+    // xhr.onload = () => { const { url } = JSON.parse(xhr.responseText); /* update user */ closeModal(); };
+    // xhr.open('POST', '/api/uploads/profile-image');
+    // xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+    // xhr.send(formData);
     const interval = setInterval(() => {
       setUploadProgress((p) => {
         if (p >= 100) {
