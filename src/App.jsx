@@ -19,6 +19,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavig
 // Global notification system — wraps the whole app so any page can call
 // useNotification() to show toast messages without prop drilling.
 import { NotificationProvider } from './contexts/NotificationContext';
+import { LocationProvider } from './contexts/LocationContext';
 
 // Supabase client — used here only in ProtectedRoute to check the session.
 // Pages import it directly from this same file when they need auth operations.
@@ -150,6 +151,12 @@ const ProtectedRoute = ({ children, allowedRoles = [] }) => {
 //
 // To hide nav/footer on a new page: add its path to the appropriate list.
 // ─────────────────────────────────────────────────────────────────────────────
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+  return null;
+}
+
 function Layout({ children }) {
   const location = useLocation(); // current URL — re-evaluates on every navigation
 
@@ -167,6 +174,7 @@ function Layout({ children }) {
     '/lucid/bookings/confirmation',   // BookingConfirmation
     '/lucid/bookings/new',            // BookingRequest
     '/lucid/account/profile/edit',    // EditProfile
+    '/lucid/help',                   // Help & Support page
   ];
 
   // Prefix-based hide — catches dynamic segments like /lucid/messages/abc123
@@ -203,7 +211,10 @@ function App() {
     // NotificationProvider must be outside Router so navbar and pages
     // can both call useNotification() for the same notification queue.
     <NotificationProvider>
+      <LocationProvider>
       <Router>
+        {/* ScrollToTop resets scroll position on every route change */}
+        <ScrollToTop />
         {/* Layout reads location from Router context — must be inside <Router> */}
         <Layout>
           <Routes>
@@ -348,6 +359,7 @@ function App() {
           </Routes>
         </Layout>
       </Router>
+      </LocationProvider>
     </NotificationProvider>
   );
 }
