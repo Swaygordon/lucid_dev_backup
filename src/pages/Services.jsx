@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Search, Zap, Sparkles, Truck, Droplets, Car, Scissors, Shirt, PaintRoller, ChevronRight } from 'lucide-react';
 import ServicesCarousel from '../components/servicePage_carousel.jsx';
 import BackToTop from '../components/back_the_top_btn.jsx';
+import LocationPicker from '../components/LocationPicker.jsx';
 import BusinessCategorySection from '../components/suggested_category.jsx';
 import { DownloadSection } from '../components/download_ad.jsx';
 import { ALL_CATEGORIES, getCategoryBySlug } from '../data/categories.js';
@@ -68,8 +69,8 @@ const COLLAGE_ROW3 = _collagePool.slice(32, 48);
 const ServiceCard = memo(({ service }) => {
   const Icon = service.icon;
   return (
-    <Link to={`/lucid/services/${service.slug}`}>
-      <div className="bg-white border border-gray-200 rounded-2xl p-6 flex flex-col items-center gap-3 hover:border-blue-500 hover:shadow-md transition-all duration-200 cursor-pointer group">
+    <Link to={`/lucid/services/${service.slug}`} className="block h-full">
+      <div className="h-full bg-white border border-gray-200 rounded-2xl p-6 flex flex-col items-center justify-center gap-3 hover:border-blue-500 hover:shadow-md transition-all duration-200 cursor-pointer group">
         <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center group-hover:bg-blue-100 transition-colors">
           <Icon size={24} className="text-blue-700" />
         </div>
@@ -120,7 +121,7 @@ const Services = () => {
     <div className="w-full min-h-screen bg-gray-50">
 
       {/* ── Hero ── */}
-      <header className="relative overflow-hidden" style={{ minHeight: 460 }}>
+      <header className="relative z-10" style={{ minHeight: 460 }}>
         <style>{`
           @keyframes marquee-left {
             0%   { transform: translateX(0); }
@@ -134,8 +135,8 @@ const Services = () => {
           .marquee-right { animation: marquee-right linear infinite; }
         `}</style>
 
-        {/* Collage rows */}
-        <div className="absolute inset-0 flex flex-col gap-1.5">
+        {/* Collage rows — overflow-hidden scoped here so the search dropdown can escape the header */}
+        <div className="absolute inset-0 flex flex-col gap-1.5 overflow-hidden">
           {[
             { row: COLLAGE_ROW1, dir: 'marquee-left',  duration: '38s' },
             { row: COLLAGE_ROW2, dir: 'marquee-right', duration: '28s' },
@@ -172,19 +173,26 @@ const Services = () => {
           <p className="text-blue-200 text-base md:text-lg mb-8">
             Find trusted professionals for any job across Ghana
           </p>
-          <form onSubmit={handleSearch} className="max-w-xl w-full mx-auto flex rounded-xl overflow-hidden shadow-lg">
+          <form
+            onSubmit={handleSearch}
+            className="max-w-2xl w-full mx-auto flex bg-white border border-gray-300 rounded-xl shadow-md"
+          >
             <input
               type="text"
               value={query}
               onChange={e => setQuery(e.target.value)}
               placeholder="What service do you need?"
-              className="flex-1 px-5 py-3 text-gray-900 outline-none text-base bg-white"
+              className="flex-1 px-5 py-3 text-gray-900 outline-none text-base bg-transparent rounded-l-xl placeholder-gray-400"
             />
+            <div className="flex items-center border-l border-gray-200">
+              <LocationPicker inline />
+            </div>
             <button
               type="submit"
-              className="bg-white px-5 py-3 text-blue-700 hover:text-blue-900 transition-colors flex items-center justify-center"
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-r-xl flex items-center gap-2 transition-colors flex-shrink-0"
             >
-              <Search size={20} />
+              <Search size={18} />
+              <span className="hidden sm:inline">Search</span>
             </button>
           </form>
         </div>

@@ -8,6 +8,7 @@ import {
 import { Link, useNavigate } from 'react-router-dom';
 import { ALL_CATEGORIES } from '../data/categories';
 import Section1 from "./home_sections.jsx";
+import LocationPicker from '../components/LocationPicker.jsx';
 import BackgroundImage from "../assets/background.png";
 import BackToTop from '../components/back_the_top_btn';
 
@@ -93,8 +94,8 @@ const SearchBar = ({ onSearch, isLoading }) => {
       transition={{ duration: 0.6, delay: 0.4 }}
     >
       <motion.div
-        className="flex w-full max-w-2xl rounded-xl shadow-lg overflow-hidden bg-white border-2 border-blue-700"
-        whileHover={{ scale: 1.02, boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)" }}
+        className="flex w-full max-w-2xl bg-white border border-gray-300 rounded-xl shadow-md"
+        whileHover={{ boxShadow: "0 20px 25px -5px rgba(0,0,0,0.1)" }}
         transition={{ duration: 0.2 }}
       >
         <input
@@ -103,18 +104,23 @@ const SearchBar = ({ onSearch, isLoading }) => {
           onChange={(e) => setSearchTerm(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="What service do you need?"
-          className="flex-grow px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base text-black bg-white placeholder-gray-500 focus:outline-none"
+          className="flex-1 px-5 py-3 text-sm sm:text-base text-gray-800 placeholder-gray-400 bg-transparent focus:outline-none rounded-l-xl"
         />
+        {/* Divider + inline location picker */}
+        <div className="flex items-center border-l border-gray-200">
+          <LocationPicker inline />
+        </div>
+        {/* Search button */}
         <motion.button
-          className="bg-white px-4 sm:px-6 py-2 sm:py-3 flex-shrink-0 flex items-center justify-center text-blue-700 hover:text-blue-900 transition-colors"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 sm:px-7 py-3 rounded-r-xl flex-shrink-0 flex items-center gap-2 transition-colors"
+          whileTap={{ scale: 0.97 }}
           onClick={() => onSearch(searchTerm)}
         >
           {isLoading
-            ? <Loader2 className="w-5 h-5 sm:w-6 sm:h-6 animate-spin" />
-            : <Search className="w-5 h-5 sm:w-6 sm:h-6" />
+            ? <Loader2 className="w-5 h-5 animate-spin" />
+            : <Search className="w-5 h-5" />
           }
+          <span className="hidden sm:inline">Search</span>
         </motion.button>
       </motion.div>
     </motion.div>
@@ -302,38 +308,38 @@ function Home() {
     <>
       <div className="flex flex-col lg:min-h-screen bg-white">
         <div
-          className="hero flex-1 w-full min-h-[29rem] relative overflow-hidden"
+          className="hero flex-1 w-full min-h-[29rem] relative z-10"
           style={{
             backgroundImage: `url(${BackgroundImage})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
         >
-          {/* Floating orbs */}
-          <motion.div
-            animate={{ y: [0, -28, 0], x: [0, 18, 0] }}
-            transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute -top-20 -right-20 w-80 h-80 bg-blue-400/20 rounded-full blur-3xl pointer-events-none"
-          />
-          <motion.div
-            animate={{ y: [0, 22, 0], x: [0, -14, 0] }}
-            transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
-            className="absolute bottom-0 -left-16 w-64 h-64 bg-orange-300/15 rounded-full blur-3xl pointer-events-none"
-          />
-          <motion.div
-            animate={{ y: [0, -16, 0] }}
-            transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-            className="absolute top-1/3 right-1/4 w-40 h-40 bg-purple-400/10 rounded-full blur-2xl pointer-events-none"
-          />
-
-          {/* Subtle dot-grid overlay */}
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              backgroundImage: 'radial-gradient(circle, rgba(0,0,0,0.06) 1px, transparent 1px)',
-              backgroundSize: '28px 28px',
-            }}
-          />
+          {/* Decorative layer — clipped independently so the location dropdown can overflow */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <motion.div
+              animate={{ y: [0, -28, 0], x: [0, 18, 0] }}
+              transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute -top-20 -right-20 w-80 h-80 bg-blue-400/20 rounded-full blur-3xl"
+            />
+            <motion.div
+              animate={{ y: [0, 22, 0], x: [0, -14, 0] }}
+              transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
+              className="absolute bottom-0 -left-16 w-64 h-64 bg-orange-300/15 rounded-full blur-3xl"
+            />
+            <motion.div
+              animate={{ y: [0, -16, 0] }}
+              transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+              className="absolute top-1/3 right-1/4 w-40 h-40 bg-purple-400/10 rounded-full blur-2xl"
+            />
+            <div
+              className="absolute inset-0"
+              style={{
+                backgroundImage: 'radial-gradient(circle, rgba(0,0,0,0.06) 1px, transparent 1px)',
+                backgroundSize: '28px 28px',
+              }}
+            />
+          </div>
 
           <div className="hero-overlay bg-transparent"></div>
           <div className="hero-content w-full text-neutral-content text-center px-4 sm:px-6">
@@ -370,8 +376,8 @@ function Home() {
               {/* Search Bar */}
               <SearchBar onSearch={handleSearch} isLoading={searchLoading} />
 
-              {/* Desktop Category Grid */}
-              <div className="hidden lg:block mt-12 lg:mt-14 pb-6 w-full">
+              {/* Desktop/Tablet Category Grid */}
+              <div className="hidden md:block mt-12 lg:mt-14 pb-6 w-full">
                 {loading ? (
                   <ServiceIconsSkeleton
                     count={6}
@@ -397,7 +403,7 @@ function Home() {
 
         {/* Mobile Category Scroll */}
         <motion.div
-          className="block lg:hidden w-full bg-white py-6"
+          className="block md:hidden w-full bg-white py-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
@@ -408,7 +414,7 @@ function Home() {
             ) : (
               <ServiceIconsGrid
                 categories={categories}
-                className="flex justify-center gap-6 px-4 pb-2"
+                className="flex gap-6 px-4 pb-2"
               />
             )}
           </div>

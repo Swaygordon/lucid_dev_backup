@@ -33,6 +33,7 @@ import {
   getTopRatedProviders,
   getAvailableProviders
 } from '../data/mockProfiles';
+import { useSearchLocation } from '../contexts/LocationContext';
 
 
 // ============================================
@@ -256,7 +257,9 @@ const BUSINESS_SERVICES = SERVICE_ICONS.flatMap(({ name, slug }) => {
 const SelectedService = () => {
   const { category: categorySlug, service: serviceSlug } = useParams();
   const [searchParams] = useSearchParams();
-  const area = searchParams.get('area');
+  const { searchLocation } = useSearchLocation();
+  // Explicit ?area= param takes priority; fall back to the active search location.
+  const area = searchParams.get('area') || searchLocation.area;
 
   // Resolve category + service from shared taxonomy
   const catData  = getCategoryBySlug(categorySlug);
@@ -286,12 +289,15 @@ const SelectedService = () => {
       filteredProviders = getAvailableProviders();
     }
 
-    // Further filter by area if specified
+    // Filter by active search area (from URL param or LocationContext).
+    // Only applies the filter when it actually returns results — prevents an
+    // empty grid when mock data doesn't have providers in every area.
     if (area) {
-      filteredProviders = filteredProviders.filter(p =>
+      const areaFiltered = filteredProviders.filter(p =>
         p.location.area.toLowerCase().includes(area.toLowerCase()) ||
         p.location.city.toLowerCase().includes(area.toLowerCase())
       );
+      if (areaFiltered.length > 0) filteredProviders = areaFiltered;
     }
 
     // Apply rating filter

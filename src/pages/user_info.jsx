@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigateBack } from "../hooks/useNavigateBack.js";
 import { useNotification } from '../contexts/NotificationContext';
+import { useSearchLocation } from '../contexts/LocationContext';
 import { useRole } from '../hooks/useRole';
 import { MOCK_PROVIDER } from '../data/mockProvider';
 import { MOCK_CLIENT } from '../data/mockClient';
@@ -30,6 +31,7 @@ const EMPTY_LOCATION  = { address: '', city: '', region: '', area: '', postalCod
 
 const UserInfo = () => {
   const { showNotification } = useNotification();
+  const { updateDefaultLocation } = useSearchLocation();
   const role = useRole(); // null while loading, then 'client' | 'service_provider'
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('personal');
@@ -89,6 +91,11 @@ const UserInfo = () => {
     // [API] PUT /users/me/location — {address, city, region, area, postalCode}
     try {
       await new Promise(resolve => setTimeout(resolve, 1200)); // [MOCK] remove when real API wired
+      updateDefaultLocation({
+        area:   locationInfo.area,
+        city:   locationInfo.city,
+        region: locationInfo.region,
+      });
       showNotification('Location information updated successfully!', 'success');
     } catch {
       setLoading(false);
