@@ -58,7 +58,7 @@ const bookingRef = bookingRefRef.current;
       setCountdown(prev => {
         if (prev <= 1) {
           clearInterval(timer);
-          navigate('/lucid/providers/me');
+          navigate('/lucid/bookings');
           return 0;
         }
         return prev - 1;

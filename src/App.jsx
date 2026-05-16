@@ -45,9 +45,11 @@ import Category from './pages/category.jsx';            // /lucid/services/:cate
 import Selected_service from './pages/selected_service.jsx'; // /lucid/services/:category/:service
 
 // ─── Provider profile flow (Phase 3) ─────────────────────────────────────────
-import GeneralProfile from './pages/general_profilePage.jsx'; // /lucid/providers/:id  (public — client view)
-import UserProfile from './pages/user_Profile.jsx';           // /lucid/account/profile  (private — provider's own view)
-import EditProfile from './pages/edit.jsx';                   // /lucid/account/profile/edit
+import GeneralProfile from './pages/general_profilePage.jsx';           // /lucid/providers/:id  (public — client view)
+import UserProfile from './pages/user_Profile.jsx';                     // /lucid/account/profile  (private — provider's own view)
+import EditProfile from './pages/edit.jsx';                             // /lucid/account/profile/edit
+import ProviderProfileSetup from './pages/provider_profile_setup.jsx';  // /lucid/account/profile/setup  (post-signup onboarding)
+import ProfileSetupBanner from './components/ProfileSetupBanner.jsx';   // sitewide incomplete-profile nudge
 
 // ─── Bookings flow (Phase 4) ──────────────────────────────────────────────────
 // BookingsPage and BookingHistoryPage are thin wrappers: they call useRole()
@@ -174,6 +176,7 @@ function Layout({ children }) {
     '/lucid/bookings/confirmation',   // BookingConfirmation
     '/lucid/bookings/new',            // BookingRequest
     '/lucid/account/profile/edit',    // EditProfile
+    '/lucid/account/profile/setup',  // ProviderProfileSetup (onboarding)
     '/lucid/help',                   // Help & Support page
   ];
 
@@ -189,6 +192,7 @@ function Layout({ children }) {
   return (
     <>
       {!shouldHideLayout && <Navbar />}   {/* shown on public pages only */}
+      <ProfileSetupBanner />              {/* visible sitewide until provider completes setup */}
       {children}                          {/* the actual page component */}
       {!shouldHideLayout && <Footer />}   {/* shown on public pages only */}
     </>
@@ -301,6 +305,10 @@ function App() {
             <Route path="/lucid/account/profile/edit"
               element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
             {/* Provider edits their profile. On save, navigates to /lucid/dashboard. */}
+
+            <Route path="/lucid/account/profile/setup"
+              element={<ProtectedRoute><ProviderProfileSetup /></ProtectedRoute>} />
+            {/* Post-signup onboarding step for providers. Back → /lucid/. Save → /lucid/dashboard. */}
 
             <Route path="/lucid/bookings"
               element={<ProtectedRoute><BookingsPage /></ProtectedRoute>} />

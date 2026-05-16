@@ -98,7 +98,7 @@ function Navbar() {
     await supabase.auth.signOut();
     showNotification('Logged out successfully', 'success');
     handleLinkClick();
-    navigate('/lucid/');
+    navigate('/lucid/', { replace: true });
   };
 
   const toggleMenu = () => { setIsOpen(!isOpen); };

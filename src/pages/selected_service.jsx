@@ -159,21 +159,6 @@ const FilterSection = React.memo(({ onFilterChange, activeFilters }) => {
             </select>
           </div>
 
-          {/* Availability Filter */}
-          {/* [API] Pass as query param: ?availability=available or ?verified=true */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Availability
-            </label>
-            <select
-              onChange={(e) => onFilterChange('availability', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-            >
-              <option value="all">All Providers</option>
-              <option value="available">Available Now</option>
-              <option value="verified">Verified Only</option>
-            </select>
-          </div>
         </div>
       )}
     </motion.div>
@@ -272,7 +257,6 @@ const SelectedService = () => {
   const [filters, setFilters] = useState({
     rating: 0,
     priceRange: 'all',
-    availability: 'all'
   });
 
   // ============================================
@@ -305,23 +289,6 @@ const SelectedService = () => {
       filteredProviders = filteredProviders.filter(p =>
         p.rating.overall >= filters.rating
       );
-    }
-
-    // Apply availability filter
-    if (filters.availability !== 'all') {
-      switch (filters.availability) {
-        case 'available':
-          filteredProviders = filteredProviders.filter(p =>
-            p.availability.status === 'available'
-          );
-          break;
-        case 'verified':
-          filteredProviders = filteredProviders.filter(p => p.isVerified);
-          break;
-        case 'premium':
-          // No premium tier in current data — show all providers
-          break;
-      }
     }
 
     return filteredProviders;
@@ -470,7 +437,7 @@ const SelectedService = () => {
               Try adjusting your filters or search in a different area
             </p>
             <button
-              onClick={() => setFilters({ rating: 0, priceRange: 'all', availability: 'all' })}
+              onClick={() => setFilters({ rating: 0, priceRange: 'all' })}
               className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
               Clear Filters

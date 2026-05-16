@@ -2,6 +2,7 @@ import React, { memo, lazy, Suspense, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useNotification } from '../contexts/NotificationContext.jsx';
+import { useNavigateBack } from '../hooks/useNavigateBack';
 import { ReviewThread } from '../components/shared';
 import {
   Star,
@@ -243,6 +244,7 @@ const LoadingSkeleton = () => (
 const UserProfile = () => {
   const navigate = useNavigate();
   const { showNotification } = useNotification();
+  const handleBack = useNavigateBack('/lucid/dashboard', 400);
 
   const PROFILE_DATA      = MOCK_PROVIDER;
   const RATING_DISTRIBUTION = MOCK_RATING_DISTRIBUTION;
@@ -301,7 +303,7 @@ const UserProfile = () => {
       >
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <button onClick={() => navigate(-1)} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+            <button onClick={handleBack} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
               <ArrowLeft className="w-6 h-6 text-gray-700" />
             </button>
             <div className="text-sm text-gray-600">
@@ -327,11 +329,6 @@ const UserProfile = () => {
           <motion.div variants={fadeInUp} initial="hidden" animate="visible" transition={{ delay: 0.2 }}>
             <div className="flex items-start justify-start space-x-3 mb-2">
               <h1 className="text-2xl font-bold text-gray-900">{PROFILE_DATA.name}</h1>
-              {PROFILE_DATA.availability === 'Available' && (
-                <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-semibold">
-                  Available
-                </span>
-              )}
               <EditButton />
             </div>
 
@@ -358,11 +355,24 @@ const UserProfile = () => {
 
             <p className="text-gray-700 mb-4">{PROFILE_DATA.description}</p>
 
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-3 mb-4">
               {PROFILE_DATA.skills.map((skill, index) => (
                 <SkillBadge key={index} skill={skill} index={index} />
               ))}
             </div>
+
+            {PROFILE_DATA.categories?.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {PROFILE_DATA.categories.map((cat, index) => (
+                  <span
+                    key={index}
+                    className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm font-medium"
+                  >
+                    {cat}
+                  </span>
+                ))}
+              </div>
+            )}
           </motion.div>
         </motion.div>
       </div>

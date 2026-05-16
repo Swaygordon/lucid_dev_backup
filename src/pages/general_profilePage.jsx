@@ -2,6 +2,7 @@ import React, { useState, memo, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useNotification } from '../contexts/NotificationContext';
+import { useNavigateBack } from '../hooks/useNavigateBack';
 import { ReviewThread } from '../components/shared';
 
 import {
@@ -279,6 +280,7 @@ const GeneralProfile = () => {
   const navigate = useNavigate();
   const { showNotification } = useNotification();
   const { id } = useParams();
+  const handleBack = useNavigateBack('/lucid/services', 400);
 
   const PROFILE_DATA = MOCK_PROVIDER;
   const RATING_DISTRIBUTION = MOCK_RATING_DISTRIBUTION;
@@ -411,7 +413,7 @@ const handlePostReply = () => {
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <button
-              onClick={() => navigate(-1)}
+              onClick={handleBack}
               className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
             >
               <ArrowLeft className="w-6 h-6 text-gray-700" />
@@ -480,11 +482,24 @@ const handlePostReply = () => {
 
             <p className="text-gray-700 mb-4">{PROFILE_DATA.description}</p>
 
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-3 mb-4">
               {PROFILE_DATA.skills.map((skill, index) => (
                 <SkillBadge key={index} skill={skill} index={index} />
               ))}
             </div>
+
+            {PROFILE_DATA.categories?.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {PROFILE_DATA.categories.map((cat, index) => (
+                  <span
+                    key={index}
+                    className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm font-medium"
+                  >
+                    {cat}
+                  </span>
+                ))}
+              </div>
+            )}
           </motion.div>
         </motion.div>
       </div>

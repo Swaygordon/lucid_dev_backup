@@ -32,14 +32,14 @@ const History = () => {
   const [viewMode, setViewMode] = useState('list'); // 'list' or 'stats'
 
 const handleBackClick = useCallback(() => {
-    showNotification('Going Back', 'info');
+    showNotification('Going Back . . .', 'info');
     setTimeout(() => {
       if (window.history.length > 2) {
         navigate(-1);
       } else {
-        navigate('/dashboard');
+        navigate('/lucid/dashboard');
       }
-    }, 800);
+    }, 600);
   }, [showNotification, navigate]);
 
   // [MOCK] historyData — replace with GET /bookings?userId={id}&status=completed,cancelled&page={n}

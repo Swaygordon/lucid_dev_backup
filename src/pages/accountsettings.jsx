@@ -186,11 +186,13 @@ const AccountSettings = () => {
         <button 
           onClick={() => {
             showNotification('Navigating back...');
-            if (window.history.length > 2) {
-              navigate(-1);
-            } else {
-              navigate('/'); // fallback home page
-            }
+            setTimeout(() => {
+              if (window.history.length > 2) {
+                navigate(-1);
+              } else {
+                navigate('/lucid/dashboard');
+              }
+            }, 600);
           }}
             className="p-2 hover:bg-gray-100 rounded-full transition-colors"
           >

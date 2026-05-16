@@ -43,12 +43,12 @@ const ProviderBookings = () => {
   const [selectedTask, setSelectedTask] = useState(null);
 
   const handleBackClick = useCallback(() => {
-    showNotification('Going Back', 'info');
+    showNotification('Going Back . . .', 'info');
     setTimeout(() => {
       if (window.history.length > 2) {
         navigate(-1);
       } else {
-        navigate('/dashboard');
+        navigate('/lucid/dashboard');
       }
     }, 600);
   }, [showNotification, navigate]);

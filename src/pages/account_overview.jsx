@@ -25,14 +25,14 @@ function AccountOverview() {
   const upload = useImageUpload();
 
   const handleBackClick = useCallback(() => {
-    showNotification('Going Back', 'info');
+    showNotification('Going Back . . .', 'info');
     setTimeout(() => {
       if (window.history.length > 2) {
         navigate(-1);
       } else {
         navigate('/lucid/dashboard');
       }
-    }, 800);
+    }, 600);
   }, [showNotification, navigate]);
 
   // Navigation items configuration

@@ -34,12 +34,12 @@ export const MOCK_PROVIDER = {
   languages:      ['English', 'Twi', 'Ga'],
   workExperience: 8,
   paymentMethods: ['mobile', 'bank'],
+  categories:     ['Home Repairs & Maintenance', 'Skilled Trades'],
   employees:      14,
   rating:         5.0,
   reviewCount:    1,
   hiredCount:     32,
   successRate:    98,
-  availability:   'Available',
   avatarUrl:      profileImg,
   heroUrl:        null,
   // Mirrors edit.jsx state shape
