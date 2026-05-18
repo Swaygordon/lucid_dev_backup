@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigateBack } from "../hooks/useNavigateBack.js";
 import { useNotification } from '../contexts/NotificationContext';
@@ -17,9 +17,63 @@ import {
   Lock,
   Shield,
   Trash2,
-  AlertCircle
+  AlertCircle,
+  ChevronDown
 } from 'lucide-react';
 import { Button, Input, Card } from '../components/ui';
+
+const GENDER_OPTIONS = [
+  { value: 'male',             label: 'Male'            },
+  { value: 'female',           label: 'Female'          },
+  { value: 'other',            label: 'Other'           },
+  { value: 'prefer-not-to-say', label: 'Prefer not to say' },
+];
+
+const GenderDropdown = ({ value, onChange }) => {
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [open]);
+
+  const selected = GENDER_OPTIONS.find(o => o.value === value) ?? GENDER_OPTIONS[0];
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen(p => !p)}
+        className={`w-full flex items-center justify-between px-4 py-3 border-2 rounded-lg bg-white text-base font-medium transition-all ${
+          open ? 'border-primary text-primary' : 'border-gray-300 text-gray-700 hover:border-gray-400'
+        }`}
+      >
+        {selected.label}
+        <ChevronDown className={`w-4 h-4 ml-2 flex-shrink-0 transition-transform ${open ? 'rotate-180' : ''}`} />
+      </button>
+
+      {open && (
+        <div className="absolute left-0 top-full mt-1.5 z-20 bg-white border border-gray-100 rounded-xl shadow-xl overflow-hidden w-full">
+          {GENDER_OPTIONS.map(opt => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => { onChange({ target: { name: 'gender', value: opt.value } }); setOpen(false); }}
+              className={`w-full text-left px-4 py-2.5 text-sm transition-colors hover:bg-gray-50 ${
+                value === opt.value ? 'text-primary font-semibold bg-primary/5' : 'text-gray-700'
+              }`}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 import { ConfirmActionModal } from '../components/shared';
 
 const fadeIn = {
@@ -321,17 +375,10 @@ const UserInfo = () => {
                     />
                     <div className="flex flex-col gap-2">
                       <label className="font-medium text-gray-700">Gender</label>
-                      <select
-                        name="gender"
+                      <GenderDropdown
                         value={personalInfo.gender}
                         onChange={handlePersonalInfoChange}
-                        className="w-full px-4 py-3 text-gray-700 bg-white border-2 rounded-lg border-gray-300 focus:border-primary focus:outline-none"
-                      >
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                        <option value="other">Other</option>
-                        <option value="prefer-not-to-say">Prefer not to say</option>
-                      </select>
+                      />
                     </div>
                   </div>
                   <Button onClick={handleSavePersonalInfo} loading={loading} className="mt-4">

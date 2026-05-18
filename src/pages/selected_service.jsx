@@ -7,10 +7,10 @@
 // URL: /services/carpentry?skill=furniture
 // Shows carpenters skilled in furniture
 
-import React, { useState, useMemo, useEffect, lazy, Suspense } from 'react';
+import React, { useState, useMemo, useEffect, useRef, lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
-import { ChevronRight, Filter, MapPin, Star } from 'lucide-react';
+import { ChevronRight, ChevronDown, Filter, MapPin, Star } from 'lucide-react';
 import BusinessCategorySection from '../components/suggested_category.jsx';
 import { DownloadSection } from '../components/download_ad.jsx';
 import Breadcrumb from '../components/Breadcrumb.jsx';
@@ -116,6 +116,60 @@ const HeroSection = React.memo(({ backgroundImage, icon: Icon, title, subtitle }
 ));
 
 
+const RATING_OPTIONS = [
+  { value: 0,   label: 'All Ratings'  },
+  { value: 4.5, label: '4.5+ Stars'   },
+  { value: 4.0, label: '4.0+ Stars'   },
+  { value: 3.5, label: '3.5+ Stars'   },
+];
+
+const RatingDropdown = ({ value, onChange }) => {
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [open]);
+
+  const selected = RATING_OPTIONS.find(o => o.value === value) ?? RATING_OPTIONS[0];
+
+  return (
+    <div ref={ref} className="relative">
+      <label className="block text-sm font-medium text-gray-700 mb-2">Minimum Rating</label>
+      <button
+        type="button"
+        onClick={() => setOpen(p => !p)}
+        className={`w-full flex items-center justify-between px-3 py-2.5 border-2 rounded-lg bg-white text-sm font-medium transition-all ${
+          open ? 'border-primary text-primary' : 'border-gray-200 text-gray-700 hover:border-gray-300'
+        }`}
+      >
+        {selected.label}
+        <ChevronDown className={`w-4 h-4 ml-2 flex-shrink-0 transition-transform ${open ? 'rotate-180' : ''}`} />
+      </button>
+
+      {open && (
+        <div className="absolute left-0 top-full mt-1.5 z-20 bg-white border border-gray-100 rounded-xl shadow-xl overflow-hidden w-full">
+          {RATING_OPTIONS.map(opt => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => { onChange(opt.value); setOpen(false); }}
+              className={`w-full text-left px-4 py-2.5 text-sm transition-colors hover:bg-gray-50 ${
+                value === opt.value ? 'text-primary font-semibold bg-primary/5' : 'text-gray-700'
+              }`}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 // Filter Section Component
 // [API] Pass filter values as query params: ?sortBy=rating&minRating=4&availability=today&verified=true
 const FilterSection = React.memo(({ onFilterChange, activeFilters }) => {
@@ -142,23 +196,8 @@ const FilterSection = React.memo(({ onFilterChange, activeFilters }) => {
 
       {showFilters && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Rating Filter */}
           {/* [API] Pass as query param: ?minRating=4.0 */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Minimum Rating
-            </label>
-            <select
-              onChange={(e) => onFilterChange('rating', parseFloat(e.target.value))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-            >
-              <option value="0">All Ratings</option>
-              <option value="4.5">4.5+ Stars</option>
-              <option value="4.0">4.0+ Stars</option>
-              <option value="3.5">3.5+ Stars</option>
-            </select>
-          </div>
-
+          <RatingDropdown value={activeFilters.rating} onChange={(v) => onFilterChange('rating', v)} />
         </div>
       )}
     </motion.div>
