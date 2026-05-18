@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import ServicesMap from '../components/ServicesMap.jsx';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
@@ -16,8 +16,60 @@ import { supabase } from '../lib/supabaseClient';
 import { mockProviders } from '../data/mockProfiles.js';
 import {
   ArrowLeft, Search, Calendar, DollarSign, Star, Clock, CheckCircle,
-  Heart, MapPin, MessageSquare, Bell, ChevronRight, Filter, User
+  Heart, MapPin, MessageSquare, Bell, ChevronRight, ChevronDown, Filter, User
 } from 'lucide-react';
+
+const PERIODS = [
+  { value: 'week',  label: 'This Week'  },
+  { value: 'month', label: 'This Month' },
+  { value: 'year',  label: 'This Year'  },
+];
+
+const PeriodDropdown = ({ value, onChange }) => {
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [open]);
+
+  const selected = PERIODS.find(p => p.value === value);
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen(p => !p)}
+        className={`flex items-center gap-2 px-4 py-2 text-sm font-medium border-2 rounded-lg bg-white transition-all ${
+          open ? 'border-primary text-primary' : 'border-gray-200 text-gray-700 hover:border-gray-300'
+        }`}
+      >
+        {selected?.label}
+        <ChevronDown className={`w-4 h-4 transition-transform ${open ? 'rotate-180' : ''}`} />
+      </button>
+
+      {open && (
+        <div className="absolute right-0 top-full mt-1.5 z-20 bg-white border border-gray-100 rounded-xl shadow-xl overflow-hidden w-full">
+          {PERIODS.map(period => (
+            <button
+              key={period.value}
+              type="button"
+              onClick={() => { onChange(period.value); setOpen(false); }}
+              className={`w-full text-center px-4 py-2.5 text-sm transition-colors hover:bg-gray-50 ${
+                value === period.value ? 'text-primary font-semibold bg-primary/5' : 'text-gray-700'
+              }`}
+            >
+              {period.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -264,16 +316,18 @@ const ClientDashboard = () => {
       <motion.header
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="bg-white shadow-sm sticky top-0 z-30"
+        className="bg-white border-b border-gray-100 sticky top-0 z-30"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
-            <button onClick={handleBackClick} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-              <ArrowLeft className="w-6 h-6 text-gray-700" />
-            </button>
-            <div>
-              <h1 className="text-3xl text-center font-bold text-gray-900">Dashboard</h1>
-              <p className="text-gray-600 text-center mt-1">Welcome back, {currentUserName}!</p>
+            <div className="flex items-center gap-2">
+              <button onClick={handleBackClick} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                <ArrowLeft className="w-5 h-5 text-gray-700" />
+              </button>
+              <div>
+                <h1 className="text-xl font-bold text-gray-900">Dashboard</h1>
+                <p className="text-sm text-gray-500">Welcome back, {currentUserName}!</p>
+              </div>
             </div>
             <div className="flex items-center gap-4">
               <Link to="/lucid/notifications" onClick={() => setNotificationCount(0)}>
@@ -303,15 +357,7 @@ const ClientDashboard = () => {
           <section>
             <motion.div variants={itemVariants} className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-gray-900">Overview</h2>
-              <select
-                value={timeframe}
-                onChange={(e) => setTimeframe(e.target.value)}
-                className="w-auto text-gray-700 bg-white px-4 py-2 border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none transition-colors"
-              >
-                <option value="week">This Week</option>
-                <option value="month">This Month</option>
-                <option value="year">This Year</option>
-              </select>
+              <PeriodDropdown value={timeframe} onChange={setTimeframe} />
             </motion.div>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
               {stats.map((stat, i) => <StatCard key={i} {...stat} />)}

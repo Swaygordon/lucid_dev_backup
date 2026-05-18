@@ -76,7 +76,7 @@ function AccountOverview() {
   ];
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center p-5 pb-20 md:pb-5 font-sans">
+    <div className="relative min-h-screen bg-white flex items-center justify-center p-5 pb-20 md:pb-5 font-sans">
       {/* Back Button - Desktop */}
       <button 
         onClick={handleBackClick}

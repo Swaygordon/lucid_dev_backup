@@ -125,18 +125,18 @@ function Navbar() {
   ];
 
   const userMenuLinks = [
+    { to: getDashboardPath(), label: "Dashboard" },
     ...(userProfile?.role === 'service_provider'
       ? [{ to: '/lucid/account/profile', label: "My Profile" }]
       : []),
-    { to: getDashboardPath(), label: "Dashboard" },
     { to: "/lucid/messages",       label: "Messages",      badge: messageCount },
     { to: "/lucid/notifications",  label: "Notifications", badge: notificationCount },
   ];
 
   const mobileUserLinks = [
+    { to: getDashboardPath(),     label: "Dashboard",     icon: LayoutDashboard },
     { to: "/lucid/messages",      label: "Messages",      icon: MessageCircle, badge: messageCount },
     { to: "/lucid/notifications", label: "Notifications", icon: Bell,          badge: notificationCount },
-    { to: getDashboardPath(),     label: "Dashboard",     icon: LayoutDashboard },
   ];
 
   return (

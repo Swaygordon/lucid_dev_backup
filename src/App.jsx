@@ -178,6 +178,8 @@ function Layout({ children }) {
     '/lucid/account/profile/edit',    // EditProfile
     '/lucid/account/profile/setup',  // ProviderProfileSetup (onboarding)
     '/lucid/help',                   // Help & Support page
+    '/lucid/account/settings',       // AccountSettings (user info edits)
+    '/lucid/providers/me',        // GeneralProfile (public provider profile)  
   ];
 
   // Prefix-based hide — catches dynamic segments like /lucid/messages/abc123

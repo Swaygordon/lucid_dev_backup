@@ -7,7 +7,7 @@
 // URL: /services/carpentry?skill=furniture
 // Shows carpenters skilled in furniture
 
-import React, { useState, useMemo, lazy, Suspense } from 'react';
+import React, { useState, useMemo, useEffect, lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { ChevronRight, Filter, MapPin, Star } from 'lucide-react';
@@ -189,14 +189,70 @@ const StatsBar = React.memo(({ totalProviders, averageRating }) => (
   </motion.div>
 ));
 
-// Loading Skeleton for Profile Cards
 const ProfileCardSkeleton = () => (
   <div className="bg-white rounded-lg shadow-sm p-4 animate-pulse">
-    <div className="w-20 h-20 bg-gray-300 rounded-full mx-auto mb-3"></div>
-    <div className="h-4 bg-gray-300 rounded mb-2"></div>
-    <div className="h-3 bg-gray-300 rounded mb-2"></div>
-    <div className="h-3 bg-gray-300 rounded mb-4"></div>
-    <div className="h-8 bg-gray-300 rounded"></div>
+    <div className="w-20 h-20 bg-gray-300 rounded-full mx-auto mb-3" />
+    <div className="h-4 bg-gray-300 rounded mb-2" />
+    <div className="h-3 bg-gray-300 rounded mb-2" />
+    <div className="h-3 bg-gray-300 rounded mb-4" />
+    <div className="h-8 bg-gray-300 rounded" />
+  </div>
+);
+
+const SelectedServiceSkeleton = () => (
+  <div className="min-h-screen bg-gray-100 pb-20 animate-pulse">
+    {/* Hero */}
+    <div className="relative w-full h-52 md:h-64 bg-gray-300">
+      <div className="absolute inset-0 bg-black/20" />
+      <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+        <div className="h-8 w-56 bg-gray-200 rounded-lg" />
+        <div className="h-4 w-36 bg-gray-200 rounded" />
+      </div>
+    </div>
+
+    {/* Breadcrumb */}
+    <div className="max-w-6xl mx-auto px-5 pt-4 pb-2 flex items-center gap-2">
+      <div className="h-4 w-10 bg-gray-200 rounded" />
+      <div className="h-3 w-3 bg-gray-200 rounded" />
+      <div className="h-4 w-20 bg-gray-200 rounded" />
+      <div className="h-3 w-3 bg-gray-200 rounded" />
+      <div className="h-4 w-16 bg-gray-200 rounded" />
+      <div className="h-3 w-3 bg-gray-200 rounded" />
+      <div className="h-4 w-24 bg-gray-200 rounded" />
+    </div>
+
+    <div className="container mx-auto px-6 pb-16">
+      {/* Stats bar */}
+      <div className="bg-blue-50 rounded-lg p-4 mb-6">
+        <div className="grid grid-cols-2 gap-4">
+          {[0, 1].map(i => (
+            <div key={i} className="flex flex-col items-center gap-2">
+              <div className="h-8 w-16 bg-gray-200 rounded" />
+              <div className="h-3 w-24 bg-gray-200 rounded" />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Filter bar */}
+      <div className="bg-white rounded-lg shadow-sm p-4 mb-6 flex items-center justify-between">
+        <div className="h-5 w-20 bg-gray-200 rounded" />
+        <div className="h-4 w-24 bg-gray-200 rounded" />
+      </div>
+
+      {/* Section heading */}
+      <div className="text-center mb-12 space-y-3">
+        <div className="h-10 w-80 bg-gray-200 rounded mx-auto" />
+        <div className="h-5 w-56 bg-gray-200 rounded mx-auto" />
+      </div>
+
+      {/* Profile card grid — matches real grid breakpoints */}
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-6">
+        {Array.from({ length: 10 }).map((_, i) => (
+          <ProfileCardSkeleton key={i} />
+        ))}
+      </div>
+    </div>
   </div>
 );
 
@@ -252,6 +308,13 @@ const SelectedService = () => {
 
   // Skill keyword for provider filtering (use service slug or name)
   const skill = svcData?.name ?? serviceSlug ?? 'service';
+
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const id = setTimeout(() => setIsLoading(false), 800);
+    return () => clearTimeout(id);
+  }, [categorySlug, serviceSlug]);
 
   // State for filters
   const [filters, setFilters] = useState({
@@ -343,6 +406,8 @@ const SelectedService = () => {
   const handleFilterChange = (filterType, value) => {
     setFilters(prev => ({ ...prev, [filterType]: value }));
   };
+
+  if (isLoading) return <SelectedServiceSkeleton />;
 
   return (
     <div className="min-h-screen bg-gray-100 pb-20">

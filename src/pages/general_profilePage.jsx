@@ -1,4 +1,4 @@
-import React, { useState, memo, lazy, Suspense } from 'react';
+import React, { useState, useEffect, memo, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useNotification } from '../contexts/NotificationContext';
@@ -268,9 +268,129 @@ const ReviewItem = memo(({ review, index }) => (
   </motion.div>
 ));
 
-// Loading Skeleton
 const LoadingSkeleton = () => (
   <div className="animate-pulse bg-gray-200 rounded-lg h-64" />
+);
+
+const GeneralProfileSkeleton = () => (
+  <div className="min-h-screen bg-gray-50 animate-pulse">
+    {/* Header */}
+    <div className="bg-white shadow-sm sticky top-0 z-40">
+      <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+        <div className="w-10 h-10 bg-gray-200 rounded-lg" />
+        <div className="flex gap-2">
+          <div className="w-10 h-10 bg-gray-200 rounded-lg" />
+          <div className="w-10 h-10 bg-gray-200 rounded-lg" />
+        </div>
+      </div>
+    </div>
+
+    {/* Hero */}
+    <div className="bg-gray-300" style={{ minHeight: 240 }} />
+
+    {/* Profile card */}
+    <div className="max-w-7xl mx-auto px-4 -mt-14">
+      <div className="bg-white rounded-lg shadow-lg p-6">
+        <div className="w-24 h-24 md:w-28 md:h-28 rounded-full bg-gray-300 border-4 border-white mb-4" />
+        <div className="h-7 w-48 bg-gray-200 rounded mb-2" />
+        <div className="flex items-center gap-2 mb-3">
+          <div className="h-5 w-5 bg-gray-200 rounded" />
+          <div className="h-5 w-36 bg-gray-200 rounded" />
+        </div>
+        <div className="flex gap-4 mb-4 flex-wrap">
+          <div className="h-4 w-24 bg-gray-200 rounded" />
+          <div className="h-4 w-28 bg-gray-200 rounded" />
+        </div>
+        <div className="space-y-2 mb-4">
+          <div className="h-4 w-full bg-gray-200 rounded" />
+          <div className="h-4 w-4/5 bg-gray-200 rounded" />
+        </div>
+        <div className="flex flex-wrap gap-3 mb-4">
+          {['w-20', 'w-24', 'w-16', 'w-28', 'w-20'].map((w, i) => (
+            <div key={i} className={`h-8 ${w} bg-gray-200 rounded-lg`} />
+          ))}
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {[0, 1, 2].map(i => (
+            <div key={i} className="h-6 w-20 bg-gray-200 rounded-full" />
+          ))}
+        </div>
+      </div>
+    </div>
+
+    {/* Main content */}
+    <div className="max-w-7xl mx-auto px-4 py-8">
+      {/* Stats */}
+      <div className="grid md:grid-cols-3 gap-4 mb-8">
+        {[0, 1, 2].map(i => (
+          <div key={i} className="bg-white rounded-lg shadow p-6 flex flex-col items-center gap-2">
+            <div className="w-8 h-8 bg-gray-200 rounded-full" />
+            <div className="h-7 w-16 bg-gray-200 rounded" />
+            <div className="h-4 w-28 bg-gray-200 rounded" />
+          </div>
+        ))}
+      </div>
+
+      {/* Info cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+        {[0, 1, 2].map(i => (
+          <div key={i} className="bg-white rounded-lg shadow p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-5 h-5 bg-gray-200 rounded" />
+              <div className="h-5 w-28 bg-gray-200 rounded" />
+            </div>
+            <div className="space-y-3">
+              {[0, 1, 2, 3].map(j => (
+                <div key={j} className="flex items-center gap-3">
+                  <div className="w-5 h-5 bg-gray-200 rounded" />
+                  <div className="h-4 w-36 bg-gray-200 rounded" />
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Certifications */}
+      <div className="bg-white rounded-lg shadow p-6 mb-8">
+        <div className="h-5 w-32 bg-gray-200 rounded mb-4" />
+        <div className="space-y-3">
+          {[0, 1, 2].map(i => (
+            <div key={i} className="flex items-center gap-2">
+              <div className="w-5 h-5 bg-gray-200 rounded-full" />
+              <div className="h-4 w-64 bg-gray-200 rounded" />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Languages */}
+      <div className="bg-white rounded-lg shadow p-6 mb-8">
+        <div className="h-5 w-24 bg-gray-200 rounded mb-4" />
+        <div className="flex flex-wrap gap-2">
+          {[0, 1, 2, 3].map(i => (
+            <div key={i} className="h-7 w-20 bg-gray-200 rounded-full" />
+          ))}
+        </div>
+      </div>
+
+      {/* Action buttons */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        {[0, 1, 2].map(i => (
+          <div key={i} className="h-14 bg-gray-200 rounded-lg" />
+        ))}
+      </div>
+
+      {/* Portfolio carousel */}
+      <div className="h-64 bg-gray-200 rounded-lg mb-8" />
+
+      {/* Reviews accordion */}
+      <div className="bg-white rounded-lg shadow p-6 flex items-center justify-between">
+        <div className="h-6 w-40 bg-gray-200 rounded" />
+        <div className="w-6 h-6 bg-gray-200 rounded" />
+      </div>
+    </div>
+  </div>
 );
 
 // ============================================
@@ -281,6 +401,12 @@ const GeneralProfile = () => {
   const { showNotification } = useNotification();
   const { id } = useParams();
   const handleBack = useNavigateBack('/lucid/services', 400);
+
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    const id = setTimeout(() => setIsLoading(false), 800);
+    return () => clearTimeout(id);
+  }, []);
 
   const PROFILE_DATA = MOCK_PROVIDER;
   const RATING_DISTRIBUTION = MOCK_RATING_DISTRIBUTION;
@@ -402,10 +528,12 @@ const handlePostReply = () => {
     showNotification(isFavorite ? 'Removed from favorites' : 'Added to favorites');
   };
 
+  if (isLoading) return <GeneralProfileSkeleton />;
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header with Back Button and Actions */}
-      <motion.header 
+      <motion.header
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         className="bg-white shadow-sm sticky top-0 z-40"

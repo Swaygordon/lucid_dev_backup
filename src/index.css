@@ -23,3 +23,50 @@ body {
   50%       { opacity: 0.4; }
 }
 .animate-pulse-dot { animation: pulse-dot 1.8s ease-in-out infinite; }
+
+/* ── Instagram / Threads-style shimmer skeleton ────────────────────────────── */
+@keyframes shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Kill the Tailwind opacity-pulse on skeleton wrappers */
+.animate-pulse { animation: none !important; }
+
+/* Give every gray placeholder block a clipping context */
+.animate-pulse .bg-gray-100,
+.animate-pulse .bg-gray-200,
+.animate-pulse .bg-gray-300 {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Slide a white highlight band across each placeholder */
+.animate-pulse .bg-gray-100::after,
+.animate-pulse .bg-gray-200::after,
+.animate-pulse .bg-gray-300::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent   0%,
+    rgba(255,255,255,0.65) 50%,
+    transparent  100%
+  );
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* Restore native browser picker icons suppressed by DaisyUI's form resets */
+input[type="date"],
+input[type="time"] {
+  color-scheme: light;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
+  display: block !important;
+  opacity: 1 !important;
+  cursor: pointer;
+  background-color: transparent;
+}

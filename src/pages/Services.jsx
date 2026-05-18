@@ -1,4 +1,4 @@
-import React, { memo, useState, useMemo } from 'react';
+import React, { memo, useState, useMemo, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Search, Zap, Sparkles, Truck, Droplets, Car, Scissors, Shirt, PaintRoller, ChevronRight } from 'lucide-react';
 import ServicesCarousel from '../components/servicePage_carousel.jsx';
@@ -66,6 +66,62 @@ const COLLAGE_ROW1 = _collagePool.slice(0, 16);
 const COLLAGE_ROW2 = _collagePool.slice(16, 32);
 const COLLAGE_ROW3 = _collagePool.slice(32, 48);
 
+const ServicesSkeleton = () => (
+  <div className="w-full min-h-screen bg-gray-50 animate-pulse">
+    {/* Hero — 3 stacked rows mimicking the marquee collage */}
+    <div className="relative flex flex-col gap-1.5 overflow-hidden" style={{ minHeight: 460 }}>
+      <div className="flex-1 bg-gray-300" />
+      <div className="flex-1 bg-gray-200" />
+      <div className="flex-1 bg-gray-300" />
+      <div className="absolute inset-0 bg-blue-950/30" />
+      <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 px-5 text-center">
+        <div className="h-10 w-64 bg-white/20 rounded-xl" />
+        <div className="h-5 w-72 bg-white/20 rounded-lg" />
+        <div className="max-w-2xl w-full h-12 bg-white/25 rounded-xl" />
+      </div>
+    </div>
+
+    {/* Popular Services */}
+    <div className="max-w-6xl mx-auto px-5 py-14">
+      <div className="flex items-center justify-between mb-8">
+        <div className="h-8 w-56 bg-gray-200 rounded-lg" />
+        <div className="h-4 w-16 bg-gray-200 rounded" />
+      </div>
+      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <div key={i} className="h-24 bg-gray-200 rounded-2xl" />
+        ))}
+      </div>
+    </div>
+
+    {/* Carousel strip 1 */}
+    <div className="bg-white px-5 py-8">
+      <div className="h-5 w-40 bg-gray-200 rounded mb-5" />
+      <div className="flex gap-4 overflow-hidden">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="flex-shrink-0 w-64 h-44 bg-gray-200 rounded-xl" />
+        ))}
+      </div>
+    </div>
+
+    {/* Featured category tabs + card grid */}
+    <div className="bg-white px-5 pb-16 pt-10">
+      <div className="max-w-6xl mx-auto">
+        <div className="flex gap-3 mb-8 flex-wrap">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="h-10 w-32 bg-gray-200 rounded-full" />
+          ))}
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="h-44 bg-gray-200 rounded-xl" />
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
 const ServiceCard = memo(({ service }) => {
   const Icon = service.icon;
   return (
@@ -102,7 +158,13 @@ const shuffle = (arr) => {
 
 const Services = () => {
   const [query, setQuery] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const id = setTimeout(() => setIsLoading(false), 800);
+    return () => clearTimeout(id);
+  }, []);
 
   // Shuffle once per mount and split into two distinct groups of 5
   const [carousel1, carousel2] = useMemo(() => {
@@ -116,6 +178,8 @@ const Services = () => {
       navigate(`/lucid/services/all?q=${encodeURIComponent(query.trim())}`);
     }
   };
+
+  if (isLoading) return <ServicesSkeleton />;
 
   return (
     <div className="w-full min-h-screen bg-gray-50">

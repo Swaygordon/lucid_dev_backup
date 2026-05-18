@@ -1,4 +1,5 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
+import html2pdf from 'html2pdf.js';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   X, Download, Printer, Share2, Mail, CheckCircle,
@@ -11,6 +12,7 @@ import {
  */
 const ReceiptModalComponent = ({ booking, onClose, userType = 'provider' }) => {
   const receiptRef = useRef();
+  const [downloading, setDownloading] = useState(false);
 
   if (!booking) return null;
 
@@ -44,12 +46,23 @@ const ReceiptModalComponent = ({ booking, onClose, userType = 'provider' }) => {
   // Client's total payment (just the service charge, no additional fees)
   const totalPaid = serviceCharge.toFixed(2);
 
-  // [API] GET /receipts/:bookingId?format=pdf  — backend returns a pre-rendered PDF blob.
-  // Option A (server-rendered): backend uses puppeteer/wkhtmltopdf, returns blob — simplest.
-  // Option B (client-rendered): install html2pdf.js, pass receiptRef.current to html2pdf().save()
-  const handleDownload = () => {
-    alert('PDF download would trigger here. Integrate html2pdf.js library.');
-    console.log('Downloading receipt as PDF...');
+  const handleDownload = async () => {
+    if (!receiptRef.current || downloading) return;
+    setDownloading(true);
+    try {
+      await html2pdf()
+        .set({
+          margin: 0.5,
+          filename: `receipt-${receiptNumber}.pdf`,
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true },
+          jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
+        })
+        .from(receiptRef.current)
+        .save();
+    } finally {
+      setDownloading(false);
+    }
   };
 
   const handlePrint = () => {
@@ -108,8 +121,13 @@ const ReceiptModalComponent = ({ booking, onClose, userType = 'provider' }) => {
           <div className="sticky top-0 bg-white border-b border-gray-200 p-4 flex items-center justify-between z-10 print:hidden">
             <h2 className="text-xl font-bold text-gray-900">Service Receipt</h2>
             <div className="flex items-center gap-2">
-              <button onClick={handleDownload} className="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="Download PDF">
-                <Download className="w-5 h-5 text-gray-700" />
+              <button
+                onClick={handleDownload}
+                disabled={downloading}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50"
+                title="Download PDF"
+              >
+                <Download className={`w-5 h-5 text-gray-700 ${downloading ? 'animate-bounce' : ''}`} />
               </button>
               <button onClick={handlePrint} className="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="Print">
                 <Printer className="w-5 h-5 text-gray-700" />

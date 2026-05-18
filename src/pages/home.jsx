@@ -295,7 +295,12 @@ const ProviderCTA = () => (
 
 function Home() {
   const [categories] = useState(FALLBACK_CATEGORIES);
-  const [loading] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const id = setTimeout(() => setLoading(false), 800);
+    return () => clearTimeout(id);
+  }, []);
   const [searchLoading, setSearchLoading] = useState(false);
   const navigate = useNavigate();
 

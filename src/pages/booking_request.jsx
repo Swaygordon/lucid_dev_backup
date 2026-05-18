@@ -3,7 +3,7 @@
 // File: src/pages/booking_request.jsx
 // ============================================
 
-import React, { useState,useCallback } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useNotification } from '../contexts/NotificationContext';
@@ -19,13 +19,105 @@ import {
   X,
   CheckCircle,
   AlertCircle,
+  ChevronDown,
   Image as ImageIcon
 } from 'lucide-react';
 import { Button, Card, Input } from '../components/ui';
+import { GHANA_LOCATIONS } from '../contexts/LocationContext';
+import { MOCK_CLIENT } from '../data/mockClient';
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0 }
+};
+
+const LocationDropdown = ({ value, onChange }) => {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState('');
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    if (!open) return;
+    function handleOutside(e) {
+      if (containerRef.current && !containerRef.current.contains(e.target)) {
+        setOpen(false);
+        setQuery('');
+      }
+    }
+    document.addEventListener('mousedown', handleOutside);
+    return () => document.removeEventListener('mousedown', handleOutside);
+  }, [open]);
+
+  const filteredGroups = query.trim()
+    ? GHANA_LOCATIONS.map(g => ({
+        ...g,
+        areas: g.areas.filter(a => a.toLowerCase().includes(query.toLowerCase())),
+      })).filter(g => g.areas.length > 0)
+    : GHANA_LOCATIONS;
+
+  function handleSelect(area, region) {
+    onChange(area, region);
+    setOpen(false);
+    setQuery('');
+  }
+
+  return (
+    <div ref={containerRef} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen(prev => !prev)}
+        className={`w-full flex items-center justify-between px-3 py-2.5 border-2 rounded-lg bg-white text-sm transition-all duration-200 ${
+          open ? 'border-blue-500' : 'border-gray-200 hover:border-gray-300'
+        }`}
+      >
+        <span className={value ? 'text-gray-700' : 'text-gray-400'}>
+          {value || 'Select area / neighbourhood'}
+        </span>
+        <ChevronDown className={`w-4 h-4 text-gray-400 ml-2 flex-shrink-0 transition-transform ${open ? 'rotate-180' : ''}`} />
+      </button>
+
+      {open && (
+        <div className="absolute top-full mt-1.5 z-50 w-full bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden">
+          <div className="p-2 border-b border-gray-100">
+            <input
+              type="text"
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && e.preventDefault()}
+              placeholder="Search locations..."
+              className="w-full px-3 py-1.5 text-sm text-gray-700 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400"
+              autoFocus
+            />
+          </div>
+          <div className="max-h-64 overflow-y-auto">
+            {filteredGroups.length === 0 ? (
+              <p className="px-4 py-4 text-sm text-gray-400 text-center">No locations found</p>
+            ) : (
+              filteredGroups.map(group => (
+                <div key={group.region}>
+                  <p className="px-3 pt-2 pb-1 text-xs font-semibold text-gray-400 uppercase tracking-wide">
+                    {group.region}
+                  </p>
+                  {group.areas.map(area => (
+                    <button
+                      key={area}
+                      type="button"
+                      onClick={() => handleSelect(area, group.region)}
+                      className={`w-full text-left px-4 py-2 text-sm transition-colors hover:bg-gray-50 ${
+                        value === area ? 'text-blue-600 font-semibold bg-blue-50' : 'text-gray-700'
+                      }`}
+                    >
+                      {area}
+                    </button>
+                  ))}
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
 };
 
 const BookingRequest = () => {
@@ -38,7 +130,7 @@ const BookingRequest = () => {
   const handleBackClick = useNavigateBack('/lucid/providers/me', 600);
 
 
-  // Form state
+  // Form state — contact and location fields pre-filled from the client's account profile
   const [formData, setFormData] = useState({
     serviceType: '',
     customService: '',
@@ -48,17 +140,17 @@ const BookingRequest = () => {
     preferredTime: '',
     alternateDate: '',
     alternateTime: '',
-    address: '',
-    city: 'Accra',
-    area: '',
-    landmark: '',
-    postalCode: '',
+    address:    MOCK_CLIENT.address    ?? '',
+    city:       MOCK_CLIENT.region     ?? '',
+    area:       MOCK_CLIENT.area       ?? '',
+    landmark:   '',
+    postalCode: MOCK_CLIENT.postalCode ?? '',
     estimatedDuration: '',
     budgetMin: '',
     budgetMax: '',
-    contactName: '',
-    contactPhone: '',
-    contactEmail: '',
+    contactName:  MOCK_CLIENT.name  ?? '',
+    contactPhone: MOCK_CLIENT.phone ?? '',
+    contactEmail: MOCK_CLIENT.email ?? '',
     additionalNotes: ''
   });
 
@@ -84,7 +176,6 @@ const BookingRequest = () => {
   const urgencyLevels = [
     { value: 'normal', label: 'Normal', description: 'Within 3-5 days' },
     { value: 'urgent', label: 'Urgent', description: 'Within 24 hours' },
-    { value: 'emergency', label: 'Emergency', description: 'Immediate (within 2 hours)', extra: '+50% fee' }
   ];
 
   const handleChange = (e) => {
@@ -588,33 +679,15 @@ const BookingRequest = () => {
                       required
                     />
 
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          City <span className="text-red-500">*</span>
-                        </label>
-                        {/* [API] Consider GET /cities or GET /locations to populate city options dynamically */}
-                        <select
-                          name="city"
-                          value={formData.city}
-                          onChange={handleChange}
-                          className="w-full px-4 py-3 text-gray-700 bg-white border-2 border-gray-300 rounded-lg focus:border-blue-600 focus:outline-none"
-                          required
-                        >
-                          <option value="Accra">Accra</option>
-                          <option value="Tema">Tema</option>
-                          <option value="Kumasi">Kumasi</option>
-                          <option value="Takoradi">Takoradi</option>
-                        </select>
-                      </div>
-
-                      <Input
-                        label="Area/Neighborhood"
-                        name="area"
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Area / Neighbourhood <span className="text-red-500">*</span>
+                      </label>
+                      <LocationDropdown
                         value={formData.area}
-                        onChange={handleChange}
-                        placeholder="e.g., Achimota, Osu"
-                        required
+                        onChange={(area, region) =>
+                          setFormData(prev => ({ ...prev, area, city: region }))
+                        }
                       />
                     </div>
 
@@ -763,6 +836,7 @@ const BookingRequest = () => {
 
           {/* Navigation Buttons */}
           <motion.div
+            key={currentStep}
             initial="hidden"
             animate="visible"
             variants={fadeIn}

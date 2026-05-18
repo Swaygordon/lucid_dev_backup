@@ -20,6 +20,7 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { Button, Input, Card } from '../components/ui';
+import { ConfirmActionModal } from '../components/shared';
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
@@ -35,6 +36,7 @@ const UserInfo = () => {
   const role = useRole(); // null while loading, then 'client' | 'service_provider'
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('personal');
+  const [confirmModal, setConfirmModal] = useState({ open: false, type: null });
   const handleBackClick = useNavigateBack('/lucid/account', 400);
 
   // [MOCK] Populated from centralized mock once role resolves.
@@ -127,19 +129,23 @@ const UserInfo = () => {
     }
   };
 
-  const handleDeactivateAccount = () => {
-    // [API] POST /users/me/deactivate — server sends confirmation email
-    if (window.confirm('Are you sure you want to deactivate your account? You can reactivate within 30 days by logging in again.')) {
-      showNotification('Account deactivation requested. Check your email for confirmation.', 'warning');
-    }
-  };
+  const openConfirmModal = (type) => setConfirmModal({ open: true, type });
+  const closeConfirmModal = () => setConfirmModal({ open: false, type: null });
 
-  const handleDeleteAccount = () => {
-    // [API] DELETE /users/me — server sends confirmation email before hard delete
-    if (window.confirm('WARNING: This will permanently delete your account and all data. This action CANNOT be undone.')) {
+  const handleConfirmAction = async () => {
+    const { type } = confirmModal;
+    closeConfirmModal();
+    if (type === 'deactivate') {
+      // [API] POST /users/me/deactivate — server sends confirmation email
+      showNotification('Account deactivation requested. Check your email for confirmation.', 'warning');
+    } else if (type === 'delete') {
+      // [API] DELETE /users/me — server sends confirmation email before hard delete
       showNotification('Account deletion initiated. Check your email to complete the process.', 'error');
     }
   };
+
+  const handleDeactivateAccount = () => openConfirmModal('deactivate');
+  const handleDeleteAccount     = () => openConfirmModal('delete');
 
   const tabs = [
     { id: 'personal', label: 'Personal Info', icon: User },
@@ -195,6 +201,7 @@ const UserInfo = () => {
   }
 
   return (
+    <>
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <motion.header
@@ -475,6 +482,15 @@ const UserInfo = () => {
         </div>
       </div>
     </div>
+
+    {confirmModal.open && (
+      <ConfirmActionModal
+        type={confirmModal.type}
+        onConfirm={handleConfirmAction}
+        onClose={closeConfirmModal}
+      />
+    )}
+    </>
   );
 };
 

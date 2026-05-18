@@ -34,24 +34,6 @@ const BookingConfirmation = () => {
   // [MOCK] Replace with GET /bookings/:id using bookingId from navigation state; remove reliance on location.state for direct-URL access
   const { bookingData, provider } = location.state || {};
 
-  // [MOCK] paymentInfo should come from GET /bookings/:id response; price and fee breakdown computed server-side
-  // Add payment info to booking flow
-const paymentInfo = {
-  amount: bookingData.price,
-  platformFee: (bookingData.price * 0.18).toFixed(2),
-  providerReceives: (bookingData.price * 0.82).toFixed(2)
-};
-
-  // Generate booking reference
-  const bookingRefRef = React.useRef(null);
-
-// [DB] Generate bookingReference server-side on POST /bookings; do not derive client-side from Date.now()
-if (!bookingRefRef.current) {
-  bookingRefRef.current = `BK${Date.now().toString().slice(-8)}`;
-}
-
-const bookingRef = bookingRefRef.current;
-
   useEffect(() => {
     // Auto-redirect countdown
     const timer = setInterval(() => {
@@ -111,9 +93,8 @@ const bookingRef = bookingRefRef.current;
           <p className="text-xl text-gray-600 mb-2">
             Your booking request has been successfully submitted to {provider.name}
           </p>
-          {/* [DB] Display bookingReference returned from POST /bookings response, not locally generated */}
           <p className="text-gray-600">
-            Booking Reference: <span className="font-bold text-primary">{bookingRef}</span>
+            Booking Reference: <span className="font-bold text-primary">{bookingData.bookingReference}</span>
           </p>
         </motion.div>
 
@@ -200,11 +181,7 @@ const bookingRef = bookingRefRef.current;
                   <FileText className="w-5 h-5 text-primary mt-1" />
                   <div>
                     <p className="text-sm text-gray-600">Service Type</p>
-                    <p className="font-semibold text-gray-900">
-                      {bookingData.serviceType === 'Other (Specify)'
-                        ? bookingData.customService
-                        : bookingData.serviceType}
-                    </p>
+                    <p className="font-semibold text-gray-900">{bookingData.serviceType}</p>
                   </div>
                 </div>
 
@@ -212,12 +189,8 @@ const bookingRef = bookingRefRef.current;
                   <Calendar className="w-5 h-5 text-primary mt-1" />
                   <div>
                     <p className="text-sm text-gray-600">Preferred Date & Time</p>
-                    <p className="font-semibold text-gray-900">
-                      {bookingData.preferredDate}
-                    </p>
-                    <p className="font-semibold text-gray-900">
-                      {bookingData.preferredTime}
-                    </p>
+                    <p className="font-semibold text-gray-900">{bookingData.date}</p>
+                    <p className="font-semibold text-gray-900">{bookingData.time}</p>
                   </div>
                 </div>
 
@@ -225,8 +198,8 @@ const bookingRef = bookingRefRef.current;
                   <MapPin className="w-5 h-5 text-primary mt-1" />
                   <div>
                     <p className="text-sm text-gray-600">Location</p>
-                    <p className="font-semibold text-gray-900">{bookingData.address}</p>
-                    <p className="text-gray-600">{bookingData.area}, {bookingData.city}</p>
+                    <p className="font-semibold text-gray-900">{bookingData.location.address}</p>
+                    <p className="text-gray-600">{bookingData.location.area}, {bookingData.location.city}</p>
                   </div>
                 </div>
               </div>
@@ -236,7 +209,7 @@ const bookingRef = bookingRefRef.current;
                   <User className="w-5 h-5 text-primary mt-1" />
                   <div>
                     <p className="text-sm text-gray-600">Contact Person</p>
-                    <p className="font-semibold text-gray-900">{bookingData.contactName}</p>
+                    <p className="font-semibold text-gray-900">{bookingData.client.name}</p>
                   </div>
                 </div>
 
@@ -244,16 +217,16 @@ const bookingRef = bookingRefRef.current;
                   <Phone className="w-5 h-5 text-primary mt-1" />
                   <div>
                     <p className="text-sm text-gray-600">Phone Number</p>
-                    <p className="font-semibold text-gray-900">{bookingData.contactPhone}</p>
+                    <p className="font-semibold text-gray-900">{bookingData.client.phone}</p>
                   </div>
                 </div>
 
-                {bookingData.contactEmail && (
+                {bookingData.client.email && (
                   <div className="flex items-start gap-3">
                     <Mail className="w-5 h-5 text-primary mt-1" />
                     <div>
                       <p className="text-sm text-gray-600">Email</p>
-                      <p className="font-semibold text-gray-900">{bookingData.contactEmail}</p>
+                      <p className="font-semibold text-gray-900">{bookingData.client.email}</p>
                     </div>
                   </div>
                 )}
@@ -291,7 +264,7 @@ const bookingRef = bookingRefRef.current;
                   <li>• The service provider typically responds within {provider.responseTime || '2 hours'}</li>
                   <li>• You can message the provider directly if you have questions</li>
                   {/* [API] POST /notifications/email — {bookingId, recipientEmail, templateId: 'booking_confirmation'} triggered server-side after booking creation */}
-                  <li>• A confirmation email has been sent to {bookingData.contactEmail || 'your email'}</li>
+                  <li>• A confirmation email has been sent to {bookingData.client.email || 'your email'}</li>
                 </ul>
               </div>
             </div>
