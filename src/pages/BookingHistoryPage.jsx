@@ -5,9 +5,9 @@ import ProviderHistory from './provider_history';
 
 function HistorySkeleton() {
   return (
-    <div className="min-h-screen bg-gray-50 animate-pulse">
+    <div className="min-h-screen bg-gray-50 dark:bg-[#0f1117] animate-pulse">
       {/* Header */}
-      <div className="bg-white border-b px-6 py-5 flex items-center gap-4">
+      <div className="bg-white dark:bg-[#1a1f2e] border-b dark:border-[#1e293b] px-6 py-5 flex items-center gap-4">
         <div className="w-8 h-8 rounded-lg bg-gray-200" />
         <div className="space-y-2">
           <div className="h-6 bg-gray-200 rounded-lg w-40" />
@@ -25,7 +25,7 @@ function HistorySkeleton() {
 
         {/* History cards */}
         {[1, 2, 3, 4].map(i => (
-          <div key={i} className="bg-white rounded-2xl border p-5 flex gap-4">
+          <div key={i} className="bg-white dark:bg-[#1a1f2e] rounded-2xl border dark:border-[#1e293b] p-5 flex gap-4">
             <div className="w-12 h-12 rounded-full bg-gray-200 flex-shrink-0" />
             <div className="flex-1 space-y-3">
               <div className="flex justify-between">

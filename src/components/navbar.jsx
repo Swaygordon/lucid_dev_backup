@@ -8,7 +8,9 @@ import {
 import { Button } from './ui/Button.jsx';
 import { Avatar } from './ui/Avatar.jsx';
 import { useNotification } from '../contexts/NotificationContext';
+import { useTheme } from '../contexts/ThemeContext';
 import { supabase } from '../lib/supabaseClient';
+import { Sun, Moon } from 'lucide-react';
 import Logo from "../assets/Lucid.png";
 
 const NotificationBadge = ({ count = 0, className = "" }) => {
@@ -36,6 +38,7 @@ function Navbar() {
   const [notificationCount, setNotificationCount] = useState(0);
   const [messageCount, setMessageCount] = useState(0);
   const { showNotification } = useNotification();
+  const { isDark, toggle: toggleTheme } = useTheme();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -141,7 +144,7 @@ function Navbar() {
 
   return (
     <>
-      <nav className="navbar bg-white h-20 border-b border-gray-200 sticky top-0 z-30">
+      <nav className="navbar bg-white dark:bg-[#1a1f2e] h-20 border-b border-gray-200 dark:border-[#1e293b] sticky top-0 z-30" style={{ willChange: 'transform' }}>
         {/* Logo */}
         <div className="navbar-start ml-4 md:ml-12">
           <Link to="/lucid/" className="flex items-center">
@@ -157,7 +160,7 @@ function Navbar() {
               <Link
                 key={index}
                 to={link.to}
-                className="px-4 py-2 text-gray-700 hover:text-secondary font-medium transition-colors rounded-lg hover:bg-secondary-50 whitespace-nowrap"
+                className="px-4 py-2 text-gray-700 dark:text-slate-300 hover:text-secondary font-medium transition-colors rounded-lg hover:bg-secondary-50 dark:hover:bg-secondary/10 whitespace-nowrap"
               >
                 {link.label}
               </Link>
@@ -170,7 +173,7 @@ function Navbar() {
               <div
                 tabIndex={0}
                 role="button"
-                className="relative flex items-center space-x-2 cursor-pointer hover:bg-gray-100 p-2 rounded-lg transition-colors"
+                className="relative flex items-center space-x-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-[#252b3b] p-2 rounded-lg transition-colors"
               >
                 <NotificationBadge count={totalNotifications} className="top-1 right-20" />
                 {userProfile?.avatar_url ? (
@@ -182,29 +185,29 @@ function Navbar() {
                 ) : (
                   <Avatar name={getFullName()} size="md" />
                 )}
-                <span className="font-medium text-gray-800">{getUserDisplayName()}</span>
+                <span className="font-medium text-gray-800 dark:text-slate-100">{getUserDisplayName()}</span>
                 <ChevronDown className="w-4 h-4 text-gray-600" />
               </div>
 
               <ul
                 tabIndex={0}
-                className="dropdown-content menu bg-white rounded-lg z-50 w-52 p-2 shadow-lg border border-gray-200 mt-2"
+                className="dropdown-content menu bg-white dark:bg-[#1a1f2e] rounded-lg z-50 w-52 p-2 shadow-lg border border-gray-200 dark:border-[#1e293b] mt-2"
               >
                 {userMenuLinks.map((link, index) => (
                   <li key={index}>
                     <Link
                       to={link.to}
-                      className="text-gray-700 hover:bg-secondary-50 hover:text-secondary rounded-md transition-colors relative flex items-center justify-between"
+                      className="text-gray-700 dark:text-slate-300 hover:bg-secondary-50 dark:hover:bg-secondary/10 hover:text-secondary rounded-md transition-colors relative flex items-center justify-between"
                     >
                       <span>{link.label}</span>
                       <NotificationBadge count={link.badge} className="relative top-0 right-0 w-4 h-4 p-2" />
                     </Link>
                   </li>
                 ))}
-                <li className="border-t border-gray-200 mt-2 pt-2">
+                <li className="border-t border-gray-200 dark:border-[#1e293b] mt-2 pt-2">
                   <button
                     onClick={handleLogout}
-                    className="text-error hover:bg-error-50 rounded-md transition-colors w-full text-left"
+                    className="text-error hover:bg-error-50 dark:hover:bg-red-900/20 rounded-md transition-colors w-full text-left"
                   >
                     <LogOut className="w-4 h-4 inline mr-2" />
                     Logout
@@ -219,6 +222,15 @@ function Navbar() {
               </Button>
             </Link>
           )}
+
+          {/* Theme Toggle */}
+          <button
+            onClick={toggleTheme}
+            className="p-2 ml-2 rounded-lg text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-[#252b3b] transition-colors"
+            aria-label="Toggle dark mode"
+          >
+            {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+          </button>
 
           {/* Mobile Menu Button */}
           <button
@@ -247,7 +259,7 @@ function Navbar() {
 
       {/* Mobile Drawer — always mounted, toggled via CSS translate (GPU compositor thread) */}
       <div
-        className={`fixed top-0 left-0 h-dvh w-72 bg-white shadow-2xl z-50 transition-transform duration-200 ease-out ${
+        className={`fixed top-0 left-0 h-dvh w-72 bg-white dark:bg-[#1a1f2e] shadow-2xl z-50 transition-transform duration-200 ease-out ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -259,7 +271,7 @@ function Navbar() {
 
           {/* User Profile (Mobile) */}
           {isLoggedIn && (
-            <div className="mb-6 pb-6 border-b border-gray-200">
+            <div className="mb-6 pb-6 border-b border-gray-200 dark:border-[#1e293b]">
               <div className="flex items-center space-x-3">
                 {userProfile?.avatar_url ? (
                   <img src={userProfile.avatar_url} alt={getFullName()} className="w-12 h-12 rounded-full object-cover" />
@@ -267,7 +279,7 @@ function Navbar() {
                   <Avatar name={getFullName()} size="lg" />
                 )}
                 <div>
-                  <p className="font-semibold text-gray-900">{getUserDisplayName()}</p>
+                  <p className="font-semibold text-gray-900 dark:text-slate-100">{getUserDisplayName()}</p>
                   {userProfile?.role === 'service_provider' && (
                     <Link
                       to="/lucid/account/profile"
@@ -291,7 +303,7 @@ function Navbar() {
                   key={index}
                   to={link.to}
                   onClick={handleLinkClick}
-                  className="flex items-center space-x-3 text-gray-700 hover:text-secondary hover:bg-secondary-50 p-3 rounded-lg transition-colors"
+                  className="flex items-center space-x-3 text-gray-700 dark:text-slate-300 hover:text-secondary hover:bg-secondary-50 dark:hover:bg-secondary/10 p-3 rounded-lg transition-colors"
                 >
                   <Icon className="w-5 h-5" />
                   <span className="font-medium">{link.label}</span>
@@ -306,7 +318,7 @@ function Navbar() {
                   key={index}
                   to={link.to}
                   onClick={handleLinkClick}
-                  className="flex items-center justify-between text-gray-700 hover:text-secondary hover:bg-secondary-50 p-3 rounded-lg transition-colors"
+                  className="flex items-center justify-between text-gray-700 dark:text-slate-300 hover:text-secondary hover:bg-secondary-50 dark:hover:bg-secondary/10 p-3 rounded-lg transition-colors"
                 >
                   <div className="flex items-center space-x-3 relative">
                     <div className="relative">
@@ -321,7 +333,7 @@ function Navbar() {
           </nav>
 
           {/* Auth Button */}
-          <div className="mt-4 pt-4 border-t border-gray-200">
+          <div className="mt-4 pt-4 border-t border-gray-200 dark:border-[#1e293b]">
             {isLoggedIn ? (
               <Button variant="danger" fullWidth onClick={handleLogout}>
                 <LogOut className="w-4 h-4" />

@@ -57,10 +57,46 @@ const ClientBookings = () => {
     showNotification('Completion request sent! Awaiting confirmation.', 'success');
   };
 
-  // [API] PATCH /bookings/:id/completion-requests/:requestId — {status: 'approved'} → {bookingId, status: 'completed'}
+  // [API] POST /payments — {bookingId, amount, paymentMethod, phoneNumber} → {reference, status}
+  // Called by BookingDetailsModal after client confirms payment in PaymentModal.
+  // Backend Paystack webhook fires on success and credits provider's account (82% of amount).
+  const handleProcessPayment = async (paymentData) => {
+    // [MOCK] Simulate API call; replace with fetch('/api/payments', { method: 'POST', body: JSON.stringify(paymentData) })
+    await new Promise(r => setTimeout(r, 1000));
+    showNotification('Payment processed successfully!', 'success');
+  };
+
+  // [API] PATCH /bookings/:id/price-adjustment — {action: 'approved'} → updates bookings.agreedPrice
+  // Backend must: set agreedPrice = newPrice, status = 'approved', notify provider.
+  const handleApprovePriceAdjustment = (booking) => {
+    setSelectedBooking(prev => prev ? {
+      ...prev,
+      originalPrice: prev.agreedPrice || prev.price,
+      agreedPrice: prev.priceAdjustment.newPrice,
+      price: prev.priceAdjustment.newPrice,
+      priceAdjustment: { ...prev.priceAdjustment, status: 'approved' }
+    } : null);
+    showNotification('Price adjustment approved. Updated amount will be used for payment.', 'success');
+  };
+
+  // [API] PATCH /bookings/:id/price-adjustment — {action: 'rejected'} → reverts to original price
+  const handleRejectPriceAdjustment = (booking) => {
+    setSelectedBooking(prev => prev ? { ...prev, priceAdjustment: null } : null);
+    showNotification('Price adjustment rejected. Original price remains.', 'info');
+  };
+
+  // [API] PATCH /bookings/:id/status — {status: 'completed', paymentStatus: 'paid', paymentData}
+  // Called immediately after handleProcessPayment resolves; marks booking complete in local state.
   const handleApproveCompletion = (booking) => {
-    setSelectedBooking(null);
-    showNotification('Work confirmed as complete!', 'success');
+    setSelectedBooking(prev => prev ? {
+      ...prev,
+      status: 'completed',
+      paymentStatus: 'paid',
+      completionRequest: prev.completionRequest
+        ? { ...prev.completionRequest, status: 'approved' }
+        : undefined,
+    } : null);
+    showNotification('Booking marked as complete!', 'success');
   };
 
   // [API] PATCH /bookings/:id/completion-requests/:requestId — {status: 'rejected'} → {requestId, status: 'rejected'}
@@ -99,7 +135,7 @@ const ClientBookings = () => {
   }, [bookings, activeFilter, searchQuery]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-[#0f1117]">
       <PageHeader
         title="My Bookings"
         subtitle="Track and manage all your service bookings"
@@ -121,7 +157,7 @@ const ClientBookings = () => {
               placeholder="Search by service, provider, or location..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 text-gray-700 bg-white border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none text-base"
+              className="w-full pl-12 pr-4 py-3 text-gray-700 dark:text-slate-200 bg-white dark:bg-[#252b3b] border-2 border-gray-200 dark:border-[#2d3748] rounded-lg focus:border-primary focus:outline-none text-base"
             />
           </div>
 
@@ -164,6 +200,10 @@ const ClientBookings = () => {
           onRequestCompletion={handleRequestCompletion}
           onApproveCompletion={handleApproveCompletion}
           onRejectCompletion={handleRejectCompletion}
+          onMarkComplete={handleApproveCompletion}
+          onProcessPayment={handleProcessPayment}
+          onApprovePriceAdjustment={handleApprovePriceAdjustment}
+          onRejectPriceAdjustment={handleRejectPriceAdjustment}
           onSubmitReview={(reviewData) => {
             // [API] POST /bookings/:id/reviews — {rating, reviewText} → {reviewId, bookingId}
             setSelectedBooking((prev) => ({

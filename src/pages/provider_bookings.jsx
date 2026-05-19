@@ -98,8 +98,25 @@ const ProviderBookings = () => {
     showNotification('Completion request sent! Awaiting confirmation.', 'success');
   };
 
+  // [API] POST /bookings/:id/price-adjustment — {originalPrice, newPrice, reason} → {adjustmentId, status: 'pending'}
+  // Backend must notify client to approve/reject. agreedPrice only updates on client approval.
+  const handleSubmitPriceAdjustment = (adjustmentData) => {
+    setSelectedTask(prev => prev ? {
+      ...prev,
+      priceAdjustment: {
+        status: 'pending',
+        originalPrice: adjustmentData.originalPrice,
+        newPrice: adjustmentData.newPrice,
+        reason: adjustmentData.reason,
+        requestedBy: 'provider',
+        timestamp: adjustmentData.timestamp,
+      }
+    } : null);
+    showNotification('Price adjustment request sent to client.', 'success');
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-[#0f1117]">
       <PageHeader
         title="My Bookings"
         subtitle="Manage all your bookings and appointments"
@@ -121,7 +138,7 @@ const ProviderBookings = () => {
               placeholder="Search by title, client, or location..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 text-gray-700 bg-white border-2 border-gray-200 rounded-lg focus:border-primary focus:outline-none text-base"
+              className="w-full pl-12 pr-4 py-3 text-gray-700 dark:text-slate-200 bg-white dark:bg-[#252b3b] border-2 border-gray-200 dark:border-[#2d3748] rounded-lg focus:border-primary focus:outline-none text-base"
             />
           </div>
 
@@ -163,6 +180,7 @@ const ProviderBookings = () => {
           onCancel={handleCancel}
           onMarkComplete={handleMarkComplete}
           onRequestCompletion={handleRequestCompletion}
+          onSubmitPriceAdjustment={handleSubmitPriceAdjustment}
         />
       )}
 

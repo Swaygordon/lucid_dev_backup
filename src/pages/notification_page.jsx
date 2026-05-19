@@ -80,25 +80,25 @@ const ConfirmationModal = memo(({ isOpen, onClose, onConfirm, title, message, pr
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.9, opacity: 0 }}
           onClick={(e) => e.stopPropagation()}
-          className="bg-white rounded-lg shadow-xl p-6 max-w-md mx-4"
+          className="bg-white dark:bg-[#1a1f2e] rounded-lg shadow-xl p-6 max-w-md mx-4"
         >
           <div className="flex items-center space-x-3 mb-4">
-            <div className={`${confirmColor === 'red' ? 'bg-red-100' : 'bg-blue-100'} p-3 rounded-full`}>
+            <div className={`${confirmColor === 'red' ? 'bg-red-100 dark:bg-red-900/30' : 'bg-blue-100 dark:bg-blue-900/30'} p-3 rounded-full`}>
               <Trash2 className={`w-6 h-6 ${confirmColor === 'red' ? 'text-red-600' : 'text-blue-600'}`} />
             </div>
-            <h2 className="text-xl font-semibold text-gray-900">{title}</h2>
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-slate-100">{title}</h2>
           </div>
-          <p className="text-gray-600 mb-2">{message}</p>
+          <p className="text-gray-600 dark:text-slate-400 mb-2">{message}</p>
           {preview && (
-            <div className="bg-gray-50 p-3 rounded-lg mb-6 border border-gray-200">
-              <p className="text-sm text-gray-700 font-semibold">{preview.title}</p>
-              <p className="text-sm text-gray-600 mt-1">{preview.message}</p>
+            <div className="bg-gray-50 dark:bg-[#252b3b] p-3 rounded-lg mb-6 border border-gray-200 dark:border-[#1e293b]">
+              <p className="text-sm text-gray-700 dark:text-slate-300 font-semibold">{preview.title}</p>
+              <p className="text-sm text-gray-600 dark:text-slate-400 mt-1">{preview.message}</p>
             </div>
           )}
           <div className="flex space-x-3 mt-6">
             <button
               onClick={onClose}
-              className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-medium"
+              className="flex-1 px-4 py-2 bg-gray-200 dark:bg-[#252b3b] text-gray-700 dark:text-slate-300 rounded-lg hover:bg-gray-300 dark:hover:bg-[#2d3448] transition-colors font-medium"
             >
               Cancel
             </button>
@@ -121,12 +121,12 @@ const ActionsMenu = memo(({ notification, onMarkAsRead, onMarkAsUnread, onBookma
     initial={{ opacity: 0, scale: 0.95 }}
     animate={{ opacity: 1, scale: 1 }}
     exit={{ opacity: 0, scale: 0.95 }}
-    className="absolute right-0 mt-2 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden z-20 min-w-48 notification-actions-menu"
+    className="absolute right-0 mt-2 bg-white dark:bg-[#1a1f2e] rounded-lg shadow-xl border border-gray-200 dark:border-[#1e293b] overflow-hidden z-20 min-w-48 notification-actions-menu"
   >
     {notification.read ? (
       <button
         onClick={() => onMarkAsUnread(notification.id)}
-        className="w-full px-4 py-3 text-left hover:bg-gray-100 text-blue-600 flex items-center space-x-3 text-sm"
+        className="w-full px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-[#252b3b] text-blue-600 flex items-center space-x-3 text-sm"
       >
         <EyeOff className="w-4 h-4" />
         <span>Mark as Unread</span>
@@ -134,27 +134,27 @@ const ActionsMenu = memo(({ notification, onMarkAsRead, onMarkAsUnread, onBookma
     ) : (
       <button
         onClick={() => onMarkAsRead(notification.id)}
-        className="w-full px-4 py-3 text-left hover:bg-gray-100 text-blue-600 flex items-center space-x-3 text-sm"
+        className="w-full px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-[#252b3b] text-blue-600 flex items-center space-x-3 text-sm"
       >
         <Eye className="w-4 h-4" />
         <span>Mark as Read</span>
       </button>
     )}
-    
+
     <button
       onClick={() => onBookmark(notification.id)}
-      className="w-full px-4 py-3 text-left hover:bg-gray-100 text-orange-600 flex items-center space-x-3 text-sm"
+      className="w-full px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-[#252b3b] text-orange-600 flex items-center space-x-3 text-sm"
     >
       <Bookmark className={`w-4 h-4 ${notification.bookmarked ? 'fill-orange-600' : ''}`} />
       <span>{notification.bookmarked ? 'Remove Bookmark' : 'Bookmark'}</span>
     </button>
-    
+
     <button
       onClick={() => {
         onDelete(notification);
         onClose();
       }}
-      className="w-full px-4 py-3 text-left hover:bg-red-50 text-red-600 flex items-center space-x-3 text-sm"
+      className="w-full px-4 py-3 text-left hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 flex items-center space-x-3 text-sm"
     >
       <Trash2 className="w-4 h-4" />
       <span>Delete</span>
@@ -200,7 +200,7 @@ const NotificationItem = memo(({ notification, onDelete, onMarkAsRead, onMarkAsU
       onTouchStart={startLongPress}
       onTouchEnd={cancelLongPress}
       className={`flex items-start gap-4 p-4 rounded-lg border transition-all duration-200 hover:shadow-md relative group cursor-pointer ${
-        notification.read ? 'bg-white border-gray-200' : 'bg-blue-50 border-blue-200'
+        notification.read ? 'bg-white dark:bg-[#1a1f2e] border-gray-200 dark:border-[#1e293b]' : 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700/40'
       } ${notification.bookmarked ? 'ring-2 ring-orange-400' : ''}`}
     >
       {/* Icon */}
@@ -212,10 +212,10 @@ const NotificationItem = memo(({ notification, onDelete, onMarkAsRead, onMarkAsU
       <Link to={notification.loc}>
       <div className="flex-1 min-w-0">
         <div className="flex items-start justify-between gap-2 mb-1">
-          <h4 className="font-semibold text-gray-900 text-sm">{notification.title}</h4>
-          <span className="absolute bottom-2 right-2 text-xs text-gray-500 whitespace-nowrap">{notification.time}</span>
+          <h4 className="font-semibold text-gray-900 dark:text-slate-100 text-sm">{notification.title}</h4>
+          <span className="absolute bottom-2 right-2 text-xs text-gray-500 dark:text-slate-500 whitespace-nowrap">{notification.time}</span>
         </div>
-        <p className="text-sm text-gray-600 leading-relaxed truncate max-w-[260px] sm:max-w-full">{notification.message}</p>
+        <p className="text-sm text-gray-600 dark:text-slate-400 leading-relaxed truncate max-w-[260px] sm:max-w-full">{notification.message}</p>
       </div>
       </Link>
 
@@ -227,7 +227,7 @@ const NotificationItem = memo(({ notification, onDelete, onMarkAsRead, onMarkAsU
         }}
         className="absolute top-2 right-8 p-1 hover:bg-red-50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
       >
-        <span className="text-sm text-gray-500 hover:text-red-600">Delete</span>
+        <span className="text-sm text-gray-500 dark:text-slate-500 hover:text-red-600">Delete</span>
       </button>
 
       {/* Bookmark Indicator */}
@@ -261,8 +261,8 @@ const EmptyState = memo(() => (
       animate={{ scale: 1, opacity: 1 }}
       transition={{ delay: 0.2 }}
     />
-    <h2 className="text-2xl font-bold text-gray-900 mb-2">No Notification Yet</h2>
-    <p className="text-gray-600 text-center max-w-xs">
+    <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100 mb-2">No Notification Yet</h2>
+    <p className="text-gray-600 dark:text-slate-400 text-center max-w-xs">
       You don't have any notification at the moment, check back later
     </p>
   </motion.div>
@@ -275,7 +275,7 @@ const FilterButton = memo(({ filter, isActive, badgeCount, onClick }) => (
     className={`relative my-2 px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-200 ${
       isActive
         ? 'bg-blue-600 text-white shadow-md'
-        : 'bg-white text-gray-700 border border-gray-300 hover:border-blue-600'
+        : 'bg-white dark:bg-[#1a1f2e] text-gray-700 dark:text-slate-300 border border-gray-300 dark:border-[#2d3748] hover:border-blue-600'
     }`}
   >
     {filter.label}
@@ -524,7 +524,7 @@ const NotificationsPage = () => {
   const hasNotifications = Object.keys(filteredNotifications).length > 0;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-[#0f1117]">
       {/* Delete Confirmation Modal */}
       <ConfirmationModal
         isOpen={!!confirmDelete}
@@ -555,26 +555,26 @@ const NotificationsPage = () => {
       <motion.div
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="bg-white border-b border-gray-200 sticky top-0 z-10"
+        className="bg-white dark:bg-[#1a1f2e] border-b border-gray-200 dark:border-[#1e293b] sticky top-0 z-10"
       >
         <div className="w-full mx-auto px-10 py-4">
           <div className="flex items-center justify-between mb-4">
             <motion.button
               onClick={handleBackClick}
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-full transition-colors"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
             >
-              <ArrowLeft className="w-6 h-6 text-gray-700" />
+              <ArrowLeft className="w-6 h-6 text-gray-700 dark:text-slate-300" />
             </motion.button>
-            <h1 className="text-3xl font-bold text-gray-900">Notifications</h1>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-slate-100">Notifications</h1>
             <Link to='/lucid/notifications/settings'>
             <motion.button
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-full transition-colors"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
             >
-              <Settings className="w-6 h-6 text-gray-700" />
+              <Settings className="w-6 h-6 text-gray-700 dark:text-slate-300" />
             </motion.button>
             </Link>
           </div>

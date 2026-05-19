@@ -47,8 +47,8 @@ const GenderDropdown = ({ value, onChange }) => {
       <button
         type="button"
         onClick={() => setOpen(p => !p)}
-        className={`w-full flex items-center justify-between px-4 py-3 border-2 rounded-lg bg-white text-base font-medium transition-all ${
-          open ? 'border-primary text-primary' : 'border-gray-300 text-gray-700 hover:border-gray-400'
+        className={`w-full flex items-center justify-between px-4 py-3 border-2 rounded-lg bg-white dark:bg-[#252b3b] text-base font-medium transition-all ${
+          open ? 'border-primary text-primary' : 'border-gray-300 dark:border-[#2d3748] text-gray-700 dark:text-slate-300 hover:border-gray-400'
         }`}
       >
         {selected.label}
@@ -56,14 +56,14 @@ const GenderDropdown = ({ value, onChange }) => {
       </button>
 
       {open && (
-        <div className="absolute left-0 top-full mt-1.5 z-20 bg-white border border-gray-100 rounded-xl shadow-xl overflow-hidden w-full">
+        <div className="absolute left-0 top-full mt-1.5 z-20 bg-white dark:bg-[#1a1f2e] border border-gray-100 dark:border-[#1e293b] rounded-xl shadow-xl overflow-hidden w-full">
           {GENDER_OPTIONS.map(opt => (
             <button
               key={opt.value}
               type="button"
               onClick={() => { onChange({ target: { name: 'gender', value: opt.value } }); setOpen(false); }}
-              className={`w-full text-left px-4 py-2.5 text-sm transition-colors hover:bg-gray-50 ${
-                value === opt.value ? 'text-primary font-semibold bg-primary/5' : 'text-gray-700'
+              className={`w-full text-left px-4 py-2.5 text-sm transition-colors hover:bg-gray-50 dark:hover:bg-[#252b3b] ${
+                value === opt.value ? 'text-primary font-semibold bg-primary/5' : 'text-gray-700 dark:text-slate-300'
               }`}
             >
               {opt.label}
@@ -211,14 +211,14 @@ const UserInfo = () => {
   // Show skeleton while role resolves from Supabase
   if (role === null) {
     return (
-      <div className="min-h-screen bg-gray-50 animate-pulse">
+      <div className="min-h-screen bg-gray-50 dark:bg-[#252b3b] animate-pulse">
         {/* Header */}
-        <div className="bg-white shadow-sm px-4 sm:px-6 lg:px-8 py-6 mb-2">
+        <div className="bg-white dark:bg-[#1a1f2e] shadow-sm px-4 sm:px-6 lg:px-8 py-6 mb-2">
           <div className="flex items-center gap-4">
-            <div className="w-10 h-10 rounded-lg bg-gray-200" />
+            <div className="w-10 h-10 rounded-lg bg-gray-200 dark:bg-[#252b3b]" />
             <div className="space-y-2">
-              <div className="h-7 bg-gray-200 rounded-lg w-52" />
-              <div className="h-4 bg-gray-100 rounded-lg w-80" />
+              <div className="h-7 bg-gray-200 dark:bg-[#252b3b] rounded-lg w-52" />
+              <div className="h-4 bg-gray-100 dark:bg-[#252b3b] rounded-lg w-80" />
             </div>
           </div>
         </div>
@@ -226,27 +226,27 @@ const UserInfo = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid lg:grid-cols-4 gap-6">
             {/* Sidebar tabs */}
-            <div className="bg-white rounded-xl border p-3 space-y-2">
+            <div className="bg-white dark:bg-[#1a1f2e] rounded-xl border p-3 space-y-2">
               {[1, 2, 3, 4].map(i => (
-                <div key={i} className="h-11 bg-gray-100 rounded-lg" />
+                <div key={i} className="h-11 bg-gray-100 dark:bg-[#252b3b] rounded-lg" />
               ))}
             </div>
 
             {/* Form content */}
-            <div className="lg:col-span-3 bg-white rounded-xl border p-6 space-y-5">
-              <div className="h-7 bg-gray-200 rounded w-52 mb-2" />
+            <div className="lg:col-span-3 bg-white dark:bg-[#1a1f2e] rounded-xl border p-6 space-y-5">
+              <div className="h-7 bg-gray-200 dark:bg-[#252b3b] rounded w-52 mb-2" />
               <div className="grid md:grid-cols-2 gap-4">
-                <div className="h-12 bg-gray-100 rounded-lg" />
-                <div className="h-12 bg-gray-100 rounded-lg" />
+                <div className="h-12 bg-gray-100 dark:bg-[#252b3b] rounded-lg" />
+                <div className="h-12 bg-gray-100 dark:bg-[#252b3b] rounded-lg" />
               </div>
-              <div className="h-12 bg-gray-100 rounded-lg" />
-              <div className="h-12 bg-gray-100 rounded-lg" />
-              <div className="h-12 bg-gray-100 rounded-lg" />
+              <div className="h-12 bg-gray-100 dark:bg-[#252b3b] rounded-lg" />
+              <div className="h-12 bg-gray-100 dark:bg-[#252b3b] rounded-lg" />
+              <div className="h-12 bg-gray-100 dark:bg-[#252b3b] rounded-lg" />
               <div className="grid md:grid-cols-2 gap-4">
-                <div className="h-12 bg-gray-100 rounded-lg" />
-                <div className="h-12 bg-gray-100 rounded-lg" />
+                <div className="h-12 bg-gray-100 dark:bg-[#252b3b] rounded-lg" />
+                <div className="h-12 bg-gray-100 dark:bg-[#252b3b] rounded-lg" />
               </div>
-              <div className="h-10 bg-gray-200 rounded-lg w-36 mt-2" />
+              <div className="h-10 bg-gray-200 dark:bg-[#252b3b] rounded-lg w-36 mt-2" />
             </div>
           </div>
         </div>
@@ -256,24 +256,24 @@ const UserInfo = () => {
 
   return (
     <>
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-[#0f1117]">
       {/* Header */}
       <motion.header
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="bg-white shadow-sm sticky top-0 z-30"
+        className="bg-white dark:bg-[#1a1f2e] shadow-sm sticky top-0 z-30"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center gap-4">
             <button
               onClick={handleBackClick}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-lg transition-colors"
             >
-              <ArrowLeft className="w-6 h-6 text-gray-700" />
+              <ArrowLeft className="w-6 h-6 text-gray-700 dark:text-slate-300" />
             </button>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Account Settings</h1>
-              <p className="text-gray-600 mt-1">Manage your account information and preferences</p>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-slate-100">Account Settings</h1>
+              <p className="text-gray-600 dark:text-slate-400 mt-1">Manage your account information and preferences</p>
             </div>
           </div>
         </div>
@@ -299,7 +299,7 @@ const UserInfo = () => {
                       className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                         activeTab === tab.id
                           ? 'bg-primary text-white'
-                          : 'text-gray-700 hover:bg-gray-100'
+                          : 'text-gray-700 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-[#252b3b]'
                       }`}
                     >
                       <Icon className="w-5 h-5" />
@@ -322,7 +322,7 @@ const UserInfo = () => {
             {/* Personal Information */}
             {activeTab === 'personal' && (
               <Card>
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Personal Information</h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100 mb-6">Personal Information</h2>
                 <div className="space-y-4">
                   <div className="grid md:grid-cols-2 gap-4">
                     <Input
@@ -374,7 +374,7 @@ const UserInfo = () => {
                       onChange={handlePersonalInfoChange}
                     />
                     <div className="flex flex-col gap-2">
-                      <label className="font-medium text-gray-700">Gender</label>
+                      <label className="font-medium text-gray-700 dark:text-slate-300">Gender</label>
                       <GenderDropdown
                         value={personalInfo.gender}
                         onChange={handlePersonalInfoChange}
@@ -392,7 +392,7 @@ const UserInfo = () => {
             {/* Location Information */}
             {activeTab === 'location' && (
               <Card>
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Location Information</h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100 mb-6">Location Information</h2>
                 <div className="space-y-4">
                   <Input
                     label="Street Address"
@@ -444,7 +444,7 @@ const UserInfo = () => {
             {activeTab === 'security' && (
               <div className="space-y-6">
                 <Card>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Change Password</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100 mb-6">Change Password</h2>
                   <div className="space-y-4">
                     <Input
                       label="Current Password"
@@ -482,8 +482,8 @@ const UserInfo = () => {
                 </Card>
 
                 <Card>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Two-Factor Authentication</h2>
-                  <p className="text-gray-600 mb-4">
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100 mb-4">Two-Factor Authentication</h2>
+                  <p className="text-gray-600 dark:text-slate-400 mb-4">
                     Add an extra layer of security to your account by enabling two-factor authentication.
                   </p>
                   {/* [API] POST /users/me/2fa/enable — {} → {qrCodeUrl, secret} */}
@@ -496,8 +496,8 @@ const UserInfo = () => {
             {activeTab === 'danger' && (
               <div className="space-y-6">
                 <Card className="border-2 border-yellow-200 bg-yellow-50">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4">Deactivate Account</h2>
-                  <p className="text-gray-700 mb-4">
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100 mb-4">Deactivate Account</h2>
+                  <p className="text-gray-700 dark:text-slate-300 mb-4">
                     Temporarily deactivate your account. You can reactivate it within 30 days by logging in again.
                   </p>
                   <Button variant="secondary" onClick={handleDeactivateAccount}>

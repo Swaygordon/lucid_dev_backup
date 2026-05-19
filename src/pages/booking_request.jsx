@@ -66,36 +66,36 @@ const LocationDropdown = ({ value, onChange }) => {
       <button
         type="button"
         onClick={() => setOpen(prev => !prev)}
-        className={`w-full flex items-center justify-between px-3 py-2.5 border-2 rounded-lg bg-white text-sm transition-all duration-200 ${
-          open ? 'border-blue-500' : 'border-gray-200 hover:border-gray-300'
+        className={`w-full flex items-center justify-between px-3 py-2.5 border-2 rounded-lg bg-white dark:bg-[#252b3b] text-sm transition-all duration-200 ${
+          open ? 'border-blue-500' : 'border-gray-200 dark:border-[#2d3748] hover:border-gray-300'
         }`}
       >
-        <span className={value ? 'text-gray-700' : 'text-gray-400'}>
+        <span className={value ? 'text-gray-700 dark:text-slate-300' : 'text-gray-400 dark:text-slate-500'}>
           {value || 'Select area / neighbourhood'}
         </span>
         <ChevronDown className={`w-4 h-4 text-gray-400 ml-2 flex-shrink-0 transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
 
       {open && (
-        <div className="absolute top-full mt-1.5 z-50 w-full bg-white border border-gray-200 rounded-xl shadow-xl overflow-hidden">
-          <div className="p-2 border-b border-gray-100">
+        <div className="absolute top-full mt-1.5 z-50 w-full bg-white dark:bg-[#252b3b] border border-gray-200 dark:border-[#1e293b] rounded-xl shadow-xl overflow-hidden">
+          <div className="p-2 border-b border-gray-100 dark:border-[#1e293b]">
             <input
               type="text"
               value={query}
               onChange={e => setQuery(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && e.preventDefault()}
               placeholder="Search locations..."
-              className="w-full px-3 py-1.5 text-sm text-gray-700 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-blue-400"
+              className="w-full px-3 py-1.5 text-sm text-gray-700 dark:text-slate-300 bg-gray-50 dark:bg-[#1a1f2e] border border-gray-200 dark:border-[#2d3748] rounded-lg focus:outline-none focus:border-blue-400"
               autoFocus
             />
           </div>
           <div className="max-h-64 overflow-y-auto">
             {filteredGroups.length === 0 ? (
-              <p className="px-4 py-4 text-sm text-gray-400 text-center">No locations found</p>
+              <p className="px-4 py-4 text-sm text-gray-400 dark:text-slate-500 text-center">No locations found</p>
             ) : (
               filteredGroups.map(group => (
                 <div key={group.region}>
-                  <p className="px-3 pt-2 pb-1 text-xs font-semibold text-gray-400 uppercase tracking-wide">
+                  <p className="px-3 pt-2 pb-1 text-xs font-semibold text-gray-400 dark:text-slate-500 uppercase tracking-wide">
                     {group.region}
                   </p>
                   {group.areas.map(area => (
@@ -103,8 +103,8 @@ const LocationDropdown = ({ value, onChange }) => {
                       key={area}
                       type="button"
                       onClick={() => handleSelect(area, group.region)}
-                      className={`w-full text-left px-4 py-2 text-sm transition-colors hover:bg-gray-50 ${
-                        value === area ? 'text-blue-600 font-semibold bg-blue-50' : 'text-gray-700'
+                      className={`w-full text-left px-4 py-2 text-sm transition-colors hover:bg-gray-50 dark:hover:bg-[#1a1f2e] ${
+                        value === area ? 'text-blue-600 font-semibold bg-blue-50 dark:bg-primary/10' : 'text-gray-700 dark:text-slate-300'
                       }`}
                     >
                       {area}
@@ -362,24 +362,24 @@ const BookingRequest = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-[#0f1117]">
       {/* Header */}
       <motion.header
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="bg-white shadow-sm sticky top-0 z-30"
+        className="bg-white dark:bg-[#1a1f2e] shadow-sm sticky top-0 z-30"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center gap-4">
             <button
               onClick={handleBackClick}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-lg transition-colors"
             >
-              <ArrowLeft className="w-6 h-6 text-gray-700" />
+              <ArrowLeft className="w-6 h-6 text-gray-700 dark:text-slate-300" />
             </button>
             <div className="flex-1">
-              <h1 className="text-3xl font-bold text-gray-900">Request Booking</h1>
-              <p className="text-gray-600 mt-1">
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-slate-100">Request Booking</h1>
+              <p className="text-gray-600 dark:text-slate-400 mt-1">
                 Book service from <span className="font-semibold">{provider.name}</span>
               </p>
             </div>
@@ -418,7 +418,7 @@ const BookingRequest = () => {
                       )}
                     </div>
                     <span className={`text-sm font-medium text-center ${
-                      isActive ? 'text-primary' : 'text-gray-600'
+                      isActive ? 'text-primary' : 'text-gray-600 dark:text-slate-400'
                     }`}>
                       {step.title}
                     </span>
@@ -447,11 +447,11 @@ const BookingRequest = () => {
                 variants={fadeIn}
               >
                 <Card>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Service Details</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100 mb-6">Service Details</h2>
 
                   <div className="space-y-6">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-3">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-3">
                         Select Service Type <span className="text-red-500">*</span>
                       </label>
                       <div className="grid md:grid-cols-2 gap-3">
@@ -462,11 +462,11 @@ const BookingRequest = () => {
                             onClick={() => setFormData(prev => ({ ...prev, serviceType: service }))}
                             className={`p-4 rounded-lg border-2 transition-all text-left ${
                               formData.serviceType === service
-                                ? 'border-blue-600 bg-blue-50'
-                                : 'border-gray-200 hover:border-blue-300'
+                                ? 'border-blue-600 bg-blue-50 dark:bg-primary/10'
+                                : 'border-gray-200 dark:border-[#2d3748] hover:border-blue-300'
                             }`}
                           >
-                            <span className="text-gray-700 font-medium">{service}</span>
+                            <span className="text-gray-700 dark:text-slate-300 font-medium">{service}</span>
                           </button>
                         ))}
                       </div>
@@ -484,7 +484,7 @@ const BookingRequest = () => {
                     )}
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">
                         Detailed Description <span className="text-red-500">*</span>
                       </label>
                       <textarea
@@ -492,14 +492,14 @@ const BookingRequest = () => {
                         value={formData.description}
                         onChange={handleChange}
                         rows="6"
-                        className="w-full px-4 py-3 text-gray-700 bg-white border-2 border-gray-300 rounded-lg focus:border-blue-600 focus:outline-none"
+                        className="w-full px-4 py-3 text-gray-700 dark:text-slate-200 bg-white dark:bg-[#252b3b] border-2 border-gray-300 dark:border-[#2d3748] rounded-lg focus:border-blue-600 focus:outline-none"
                         placeholder="Please provide detailed description of the work needed, any specific requirements, materials needed, etc."
                         required
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-3">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-3">
                         Urgency Level <span className="text-red-500">*</span>
                       </label>
                       <div className="space-y-3">
@@ -510,14 +510,14 @@ const BookingRequest = () => {
                             onClick={() => setFormData(prev => ({ ...prev, urgency: level.value }))}
                             className={`w-full p-4 rounded-lg border-2 transition-all text-left ${
                               formData.urgency === level.value
-                                ? 'border-blue-600 bg-blue-50'
-                                : 'border-gray-200 hover:border-blue-300'
+                                ? 'border-blue-600 bg-blue-50 dark:bg-primary/10'
+                                : 'border-gray-200 dark:border-[#2d3748] hover:border-blue-300'
                             }`}
                           >
                             <div className="flex items-center justify-between">
                               <div>
-                                <div className="font-semibold text-gray-900">{level.label}</div>
-                                <div className="text-sm text-gray-600">{level.description}</div>
+                                <div className="font-semibold text-gray-900 dark:text-slate-100">{level.label}</div>
+                                <div className="text-sm text-gray-600 dark:text-slate-400">{level.description}</div>
                               </div>
                               {level.extra && (
                                 <span className="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm font-semibold">
@@ -531,10 +531,10 @@ const BookingRequest = () => {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-3">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-3">
                         Upload Images (Optional, max 5)
                       </label>
-                      <div className="border-2 border-dashed border-gray-300 hover:border-blue-600 transition-colors rounded-lg p-6">
+                      <div className="border-2 border-dashed border-gray-300 dark:border-[#2d3748] hover:border-blue-600 transition-colors rounded-lg p-6">
                         <input
                           type="file"
                           multiple
@@ -548,8 +548,8 @@ const BookingRequest = () => {
                           className="flex flex-col items-center cursor-pointer"
                         >
                           <ImageIcon className="w-12 h-12 text-gray-400 hover:text-primary transition-colors mb-2" />
-                          <span className="text-sm text-gray-600">Click to upload images</span>
-                          <span className="text-xs text-gray-500 mt-1">
+                          <span className="text-sm text-gray-600 dark:text-slate-400">Click to upload images</span>
+                          <span className="text-xs text-gray-500 dark:text-slate-500 mt-1">
                             PNG, JPG up to 5MB each
                           </span>
                         </label>
@@ -591,13 +591,13 @@ const BookingRequest = () => {
                 variants={fadeIn}
               >
                 <Card>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Schedule</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100 mb-6">Schedule</h2>
 
                   <div className="space-y-6">
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div className="bg-blue-50 dark:bg-primary/10 border border-blue-200 dark:border-blue-700/40 rounded-lg p-4">
                       <div className="flex gap-3">
                         <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                        <div className="text-sm text-blue-900">
+                        <div className="text-sm text-blue-900 dark:text-blue-300">
                           <p className="font-semibold mb-1">Important</p>
                           <p>The service provider will confirm availability after reviewing your request. You can provide alternate dates to increase chances of quick confirmation.</p>
                         </div>
@@ -666,7 +666,7 @@ const BookingRequest = () => {
                 variants={fadeIn}
               >
                 <Card>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Location Details</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100 mb-6">Location Details</h2>
 
                   <div className="space-y-6">
                     {/* [API] Consider GET /geocode?q={address} for coordinate storage after address entry */}
@@ -680,7 +680,7 @@ const BookingRequest = () => {
                     />
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">
                         Area / Neighbourhood <span className="text-red-500">*</span>
                       </label>
                       <LocationDropdown
@@ -723,7 +723,7 @@ const BookingRequest = () => {
                 className="space-y-6"
               >
                 <Card>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Contact Information</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100 mb-6">Contact Information</h2>
 
                   {/* [AUTH] Pre-fill contactName, contactPhone, contactEmail from authenticated user profile: GET /users/me */}
                   <div className="space-y-6">
@@ -776,7 +776,7 @@ const BookingRequest = () => {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">
                         Additional Notes
                       </label>
                       <textarea
@@ -784,7 +784,7 @@ const BookingRequest = () => {
                         value={formData.additionalNotes}
                         onChange={handleChange}
                         rows="4"
-                        className="w-full px-4 py-3 text-gray-700 bg-white border-2 border-gray-300 rounded-lg focus:border-blue-600 focus:outline-none"
+                        className="w-full px-4 py-3 text-gray-700 dark:text-slate-200 bg-white dark:bg-[#252b3b] border-2 border-gray-300 dark:border-[#2d3748] rounded-lg focus:border-blue-600 focus:outline-none"
                         placeholder="Any other information the service provider should know..."
                       />
                     </div>
@@ -793,37 +793,37 @@ const BookingRequest = () => {
 
                 {/* Review Summary */}
                 <Card className="bg-gray-50">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Booking Summary</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100 mb-6">Booking Summary</h2>
 
                   <div className="space-y-4">
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
-                        <p className="text-sm text-gray-600 mb-1">Service Provider</p>
-                        <p className="font-semibold text-gray-900">{provider.name}</p>
+                        <p className="text-sm text-gray-600 dark:text-slate-400 mb-1">Service Provider</p>
+                        <p className="font-semibold text-gray-900 dark:text-slate-100">{provider.name}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-600 mb-1">Service Type</p>
-                        <p className="font-semibold text-gray-900">
+                        <p className="text-sm text-gray-600 dark:text-slate-400 mb-1">Service Type</p>
+                        <p className="font-semibold text-gray-900 dark:text-slate-100">
                           {formData.serviceType === 'Other (Specify)'
                             ? formData.customService
                             : formData.serviceType}
                         </p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-600 mb-1">Preferred Date & Time</p>
-                        <p className="font-semibold text-gray-900">
+                        <p className="text-sm text-gray-600 dark:text-slate-400 mb-1">Preferred Date & Time</p>
+                        <p className="font-semibold text-gray-900 dark:text-slate-100">
                           {formData.preferredDate} at {formData.preferredTime}
                         </p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-600 mb-1">Location</p>
-                        <p className="font-semibold text-gray-900">
+                        <p className="text-sm text-gray-600 dark:text-slate-400 mb-1">Location</p>
+                        <p className="font-semibold text-gray-900 dark:text-slate-100">
                           {formData.area}, {formData.city}
                         </p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-600 mb-1">Urgency</p>
-                        <p className="font-semibold text-gray-900 capitalize">
+                        <p className="text-sm text-gray-600 dark:text-slate-400 mb-1">Urgency</p>
+                        <p className="font-semibold text-gray-900 dark:text-slate-100 capitalize">
                           {formData.urgency}
                         </p>
                       </div>

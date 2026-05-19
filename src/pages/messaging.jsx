@@ -336,15 +336,15 @@ export default function ChatMessagingPage() {
   };
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden bg-gray-50">
+    <div className="flex flex-col h-screen overflow-hidden bg-gray-50 dark:bg-[#0f1117]">
       {/* Header */}
-      <div className="bg-white shadow-sm px-4 py-4 flex items-center justify-between">
+      <div className="bg-white dark:bg-[#1a1f2e] shadow-sm dark:border-b dark:border-[#1e293b] px-4 py-4 flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <button
             onClick={handleBackClick}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-full transition-colors"
           >
-            <ArrowLeft className="w-6 h-6 text-gray-700" />
+            <ArrowLeft className="w-6 h-6 text-gray-700 dark:text-slate-300" />
           </button>
 
           <div className="flex items-center space-x-3 min-w-0">
@@ -354,10 +354,10 @@ export default function ChatMessagingPage() {
               className="w-10 h-10 rounded-full object-cover flex-shrink-0"
             />
             <div className="min-w-0">
-              <h1 className="text-lg font-semibold text-gray-900 truncate max-w-[140px] sm:max-w-[180px]">
+              <h1 className="text-lg font-semibold text-gray-900 dark:text-slate-100 truncate max-w-[140px] sm:max-w-[180px]">
                 Gabriel A. Gordon-Mensah
               </h1>
-              <p className="text-sm text-gray-500 truncate max-w-[120px] sm:max-w-[170px]">
+              <p className="text-sm text-gray-500 dark:text-slate-400 truncate max-w-[120px] sm:max-w-[170px]">
                 Online - Last seen, 2:02pm
               </p>
             </div>
@@ -367,14 +367,14 @@ export default function ChatMessagingPage() {
         <div className="flex items-center space-x-2">
           <button
             onClick={() => handleCall('voice')}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-full transition-colors"
           >
             <Phone className="w-6 h-6 text-orange-500" />
           </button>
 
           <button
             onClick={() => handleCall('video')}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-full transition-colors"
           >
             <Video className="w-6 h-6 text-orange-500" />
           </button>
@@ -382,20 +382,20 @@ export default function ChatMessagingPage() {
           <div className="relative">
             <button
               onClick={() => setShowMoreMenu(prev => !prev)}
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors header-more-btn"
+              className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-full transition-colors header-more-btn"
             >
               <MoreVertical className="w-6 h-6 text-orange-500" />
             </button>
 
             {showMoreMenu && (
-              <div className="absolute right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden z-10 min-w-48 header-more-menu">
+              <div className="absolute right-0 mt-2 bg-white dark:bg-[#252b3b] rounded-lg shadow-lg border border-gray-200 dark:border-[#1e293b] overflow-hidden z-10 min-w-48 header-more-menu">
                 <button
                   onClick={() => {
                     setIsMuted(!isMuted);
                     showNotification(isMuted ? 'Notifications enabled' : 'Notifications muted');
                     setShowMoreMenu(false);
                   }}
-                  className="w-full px-4 py-3 text-left hover:bg-gray-100 text-blue-600 flex items-center space-x-3"
+                  className="w-full px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-[#2d3748] text-blue-600 flex items-center space-x-3"
                 >
                   {isMuted ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
                   <span>{isMuted ? 'Unmute' : 'Mute'} Notifications</span>
@@ -405,7 +405,7 @@ export default function ChatMessagingPage() {
                     setConfirmClearChat(true);
                     setShowMoreMenu(false);
                   }}
-                  className="w-full px-4 py-3 text-left hover:bg-gray-100 text-blue-600 flex items-center space-x-3"
+                  className="w-full px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-[#2d3748] text-blue-600 flex items-center space-x-3"
                 >
                   <Trash2 className="w-5 h-5" />
                   <span>Clear Chat</span>
@@ -416,7 +416,7 @@ export default function ChatMessagingPage() {
                     setConfirmBlockUser(true);
                     setShowMoreMenu(false);
                   }}
-                  className="w-full px-4 py-3 text-left hover:bg-red-50 text-red-600 flex items-center space-x-3"
+                  className="w-full px-4 py-3 text-left hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 flex items-center space-x-3"
                 >
                   <X className="w-5 h-5" />
                   <span>Block User</span>
@@ -468,21 +468,21 @@ export default function ChatMessagingPage() {
       {/* Delete Confirmation Modal */}
       {confirmDelete && (
         <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-xl p-6 max-w-md mx-4">
+          <div className="bg-white dark:bg-[#1a1f2e] rounded-lg shadow-xl p-6 max-w-md mx-4">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="bg-red-100 p-3 rounded-full">
-                <Trash2 className="w-6 h-6 text-red-600" />
+              <div className="bg-red-100 dark:bg-red-900/20 p-3 rounded-full">
+                <Trash2 className="w-6 h-6 text-red-600 dark:text-red-400" />
               </div>
-              <h2 className="text-xl font-semibold text-gray-900">Delete Message?</h2>
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-slate-100">Delete Message?</h2>
             </div>
-            <p className="text-gray-600 mb-2">Are you sure you want to delete this message?</p>
-            <div className="bg-gray-50 p-3 rounded-lg mb-6 border border-gray-200">
-              <p className="text-sm text-gray-700 italic">"{confirmDelete.text}"</p>
+            <p className="text-gray-600 dark:text-slate-400 mb-2">Are you sure you want to delete this message?</p>
+            <div className="bg-gray-50 dark:bg-[#252b3b] p-3 rounded-lg mb-6 border border-gray-200 dark:border-[#1e293b]">
+              <p className="text-sm text-gray-700 dark:text-slate-300 italic">"{confirmDelete.text}"</p>
             </div>
             <div className="flex space-x-3">
               <button
                 onClick={() => setConfirmDelete(null)}
-                className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-medium"
+                className="flex-1 px-4 py-2 bg-gray-200 dark:bg-[#252b3b] text-gray-700 dark:text-slate-300 rounded-lg hover:bg-gray-300 dark:hover:bg-[#2d3748] transition-colors font-medium"
               >
                 Cancel
               </button>
@@ -500,22 +500,22 @@ export default function ChatMessagingPage() {
       {/* Edit Confirmation Modal */}
       {confirmEdit && (
         <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-xl p-6 max-w-md mx-4">
+          <div className="bg-white dark:bg-[#1a1f2e] rounded-lg shadow-xl p-6 max-w-md mx-4">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="bg-blue-100 p-3 rounded-full">
-                <Edit2 className="w-6 h-6 text-blue-600" />
+              <div className="bg-blue-100 dark:bg-blue-900/20 p-3 rounded-full">
+                <Edit2 className="w-6 h-6 text-blue-600 dark:text-blue-400" />
               </div>
-              <h2 className="text-xl font-semibold text-gray-900">Edit Message?</h2>
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-slate-100">Edit Message?</h2>
             </div>
-            <p className="text-gray-600 mb-2">You're about to edit this message:</p>
-            <div className="bg-gray-50 p-3 rounded-lg mb-6 border border-gray-200">
-              <p className="text-sm text-gray-700 italic">"{confirmEdit.text}"</p>
+            <p className="text-gray-600 dark:text-slate-400 mb-2">You're about to edit this message:</p>
+            <div className="bg-gray-50 dark:bg-[#252b3b] p-3 rounded-lg mb-6 border border-gray-200 dark:border-[#1e293b]">
+              <p className="text-sm text-gray-700 dark:text-slate-300 italic">"{confirmEdit.text}"</p>
             </div>
-            <p className="text-xs text-gray-500 mb-6">The recipient will see that this message has been edited.</p>
+            <p className="text-xs text-gray-500 dark:text-slate-500 mb-6">The recipient will see that this message has been edited.</p>
             <div className="flex space-x-3">
               <button
                 onClick={() => setConfirmEdit(null)}
-                className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-medium"
+                className="flex-1 px-4 py-2 bg-gray-200 dark:bg-[#252b3b] text-gray-700 dark:text-slate-300 rounded-lg hover:bg-gray-300 dark:hover:bg-[#2d3748] transition-colors font-medium"
               >
                 Cancel
               </button>
@@ -533,22 +533,22 @@ export default function ChatMessagingPage() {
       {/* Clear chat Confirmation Modal */}
       {confirmClearChat && (
         <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-xl p-6 max-w-md mx-4">
+          <div className="bg-white dark:bg-[#1a1f2e] rounded-lg shadow-xl p-6 max-w-md mx-4">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="bg-blue-100 p-3 rounded-full">
-                <Trash2 className="w-6 h-6 text-blue-600" />
+              <div className="bg-blue-100 dark:bg-blue-900/20 p-3 rounded-full">
+                <Trash2 className="w-6 h-6 text-blue-600 dark:text-blue-400" />
               </div>
-              <h2 className="text-xl font-semibold text-gray-900">Clear Chat?</h2>
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-slate-100">Clear Chat?</h2>
             </div>
 
-            <p className="text-gray-600 mb-2">
+            <p className="text-gray-600 dark:text-slate-400 mb-2">
               This will delete ALL messages in this conversation.
             </p>
 
             <div className="flex space-x-3 mt-6">
               <button
                 onClick={() => setConfirmClearChat(false)}
-                className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-medium"
+                className="flex-1 px-4 py-2 bg-gray-200 dark:bg-[#252b3b] text-gray-700 dark:text-slate-300 rounded-lg hover:bg-gray-300 dark:hover:bg-[#2d3748] transition-colors font-medium"
               >
                 Cancel
               </button>
@@ -566,22 +566,22 @@ export default function ChatMessagingPage() {
       {/* Block user Confirmation Modal */}
       {confirmBlockUser && (
         <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-xl p-6 max-w-md mx-4">
+          <div className="bg-white dark:bg-[#1a1f2e] rounded-lg shadow-xl p-6 max-w-md mx-4">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="bg-red-100 p-3 rounded-full">
-                <X className="w-6 h-6 text-red-600" />
+              <div className="bg-red-100 dark:bg-red-900/20 p-3 rounded-full">
+                <X className="w-6 h-6 text-red-600 dark:text-red-400" />
               </div>
-              <h2 className="text-xl font-semibold text-gray-900">Block User?</h2>
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-slate-100">Block User?</h2>
             </div>
 
-            <p className="text-gray-600 mb-2">
+            <p className="text-gray-600 dark:text-slate-400 mb-2">
               You will no longer receive messages, calls, or notifications from this user.
             </p>
 
             <div className="flex space-x-3 mt-6">
               <button
                 onClick={() => setConfirmBlockUser(false)}
-                className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-medium"
+                className="flex-1 px-4 py-2 bg-gray-200 dark:bg-[#252b3b] text-gray-700 dark:text-slate-300 rounded-lg hover:bg-gray-300 dark:hover:bg-[#2d3748] transition-colors font-medium"
               >
                 Cancel
               </button>
@@ -598,13 +598,13 @@ export default function ChatMessagingPage() {
 
       {/* Emoji Picker */}
       {showEmojiPicker && (
-        <div ref={emojiMenuRef} className="absolute bottom-24 right-20 bg-white rounded-lg shadow-xl border border-gray-200 p-4 z-10">
+        <div ref={emojiMenuRef} className="absolute bottom-24 right-20 bg-white dark:bg-[#252b3b] rounded-lg shadow-xl border border-gray-200 dark:border-[#1e293b] p-4 z-10">
           <div className="grid grid-cols-5 gap-2">
             {emojis.map((emoji, idx) => (
               <button
                 key={idx}
                 onClick={() => handleEmojiClick(emoji)}
-                className="text-2xl hover:bg-gray-100 rounded p-2 transition-colors"
+                className="text-2xl hover:bg-gray-100 dark:hover:bg-[#2d3748] rounded p-2 transition-colors"
               >
                 {emoji}
               </button>
@@ -644,7 +644,7 @@ export default function ChatMessagingPage() {
                       className={`px-4 py-3 rounded-3xl cursor-pointer transition-all max-w-[75vw] break-words whitespace-pre-wrap overflow-hidden ${
                         msg.sender === 'user'
                           ? 'bg-orange-500 text-white rounded-br-sm hover:bg-orange-600'
-                          : 'bg-gray-200 text-gray-900 rounded-bl-sm'
+                          : 'bg-gray-200 dark:bg-[#252b3b] text-gray-900 dark:text-slate-200 rounded-bl-sm'
                       } ${selectedMessage === msg.id ? 'ring-2 ring-blue-500' : ''}`}
                     >
                       <p className="text-base">{msg.text}</p>
@@ -653,24 +653,24 @@ export default function ChatMessagingPage() {
 
                     {/* Message Actions Menu */}
                     {selectedMessage === msg.id && msg.sender === 'user' && (
-                      <div className="absolute right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden z-10 min-w-32 message-actions-menu">
+                      <div className="absolute right-0 mt-2 bg-white dark:bg-[#252b3b] rounded-lg shadow-lg border border-gray-200 dark:border-[#1e293b] overflow-hidden z-10 min-w-32 message-actions-menu">
                         <button
                           onClick={() => handleEditMessage(msg)}
-                          className="w-full px-4 py-2 text-left hover:bg-gray-100 text-blue-600 flex items-center space-x-2 text-sm"
+                          className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-[#2d3748] text-blue-600 flex items-center space-x-2 text-sm"
                         >
                           <Edit2 className="w-4 h-4" />
                           <span>Edit</span>
                         </button>
                         <button
                           onClick={() => handleCopyMessage(msg)}
-                          className="w-full px-4 py-2 text-left hover:bg-gray-100 text-blue-600 flex items-center space-x-2 text-sm"
+                          className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-[#2d3748] text-blue-600 flex items-center space-x-2 text-sm"
                         >
                           <Copy className="w-4 h-4" />
                           <span>Copy</span>
                         </button>
                         <button
                           onClick={() => handleDeleteMessage(msg)}
-                          className="w-full px-4 py-2 text-left hover:bg-red-50 text-red-600 flex items-center space-x-2 text-sm"
+                          className="w-full px-4 py-2 text-left hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 flex items-center space-x-2 text-sm"
                         >
                           <Trash2 className="w-4 h-4" />
                           <span>Delete</span>
@@ -685,7 +685,7 @@ export default function ChatMessagingPage() {
 
               {showTime && (
                 <div className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} mt-1`}>
-                  <p className={`text-xs text-gray-400 ${msg.sender === 'other' ? 'ml-6' : 'mr-6'}`}>
+                  <p className={`text-xs text-gray-400 dark:text-slate-500 ${msg.sender === 'other' ? 'ml-6' : 'mr-6'}`}>
                     {msg.time}
                   </p>
                 </div>
@@ -698,14 +698,14 @@ export default function ChatMessagingPage() {
 
       {/* Editing Indicator */}
       {editingMessage && (
-        <div className="bg-blue-50 px-4 py-2 border-t border-blue-200 flex items-center justify-between">
+        <div className="bg-blue-50 dark:bg-blue-900/20 px-4 py-2 border-t border-blue-200 dark:border-blue-700/40 flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <Edit2 className="w-4 h-4 text-blue-600" />
-            <span className="text-sm text-blue-600">Editing message...</span>
+            <Edit2 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+            <span className="text-sm text-blue-600 dark:text-blue-400">Editing message...</span>
           </div>
           <button
             onClick={cancelEdit}
-            className="text-sm text-blue-600 hover:text-blue-800 flex items-center space-x-1"
+            className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 flex items-center space-x-1"
           >
             <X className="w-4 h-4" />
             <span>Cancel</span>
@@ -715,14 +715,14 @@ export default function ChatMessagingPage() {
 
       {/* Recording Indicator */}
       {isRecording && (
-        <div className="bg-red-50 px-4 py-2 border-t border-red-200 flex items-center justify-between">
+        <div className="bg-red-50 dark:bg-red-900/20 px-4 py-2 border-t border-red-200 dark:border-red-700/40 flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <div className="w-3 h-3 bg-red-600 rounded-full animate-pulse"></div>
-            <span className="text-sm text-red-600">Recording: {formatTime(recordingTime)}</span>
+            <span className="text-sm text-red-600 dark:text-red-400">Recording: {formatTime(recordingTime)}</span>
           </div>
           <button
             onClick={stopRecording}
-            className="text-sm text-red-600 hover:text-red-800 flex items-center space-x-1"
+            className="text-sm text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 flex items-center space-x-1"
           >
             <Check className="w-4 h-4" />
             <span>Send</span>
@@ -732,7 +732,7 @@ export default function ChatMessagingPage() {
 
       {/* Message Input */}
       {/* Outer wrapper is relative so the floating attachment menu can be positioned above the bar */}
-      <div className="bg-white px-4 py-4 border-t border-gray-200">
+      <div className="bg-white dark:bg-[#1a1f2e] px-4 py-4 border-t border-gray-200 dark:border-[#1e293b]">
         <div className="relative w-full">
           <div className="flex items-center space-x-3 w-full overflow-hidden">
             <div className="flex-1 flex items-center bg-blue-700 rounded-full px-3 py-2 min-w-0">
@@ -807,45 +807,45 @@ export default function ChatMessagingPage() {
               showAttachmentMenu ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-2 pointer-events-none'
             }`}
           >
-            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-2">
+            <div className="bg-white dark:bg-[#252b3b] rounded-xl shadow-lg border border-gray-200 dark:border-[#1e293b] p-2">
               <button
                 onClick={() => { handleAttachment('image'); setShowAttachmentMenu(false); }}
-                className="w-full px-3 py-2 text-left hover:bg-gray-50 rounded-md flex items-center space-x-3"
+                className="w-full px-3 py-2 text-left hover:bg-gray-50 dark:hover:bg-[#2d3748] rounded-md flex items-center space-x-3"
               >
                 <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center">
                   <Image className="w-4 h-4 text-white" />
                 </div>
-                <span className="text-sm text-gray-700">Photo</span>
+                <span className="text-sm text-gray-700 dark:text-slate-300">Photo</span>
               </button>
 
               <button
                 onClick={() => { handleAttachment('document'); setShowAttachmentMenu(false); }}
-                className="w-full px-3 py-2 text-left hover:bg-gray-50 rounded-md flex items-center space-x-3 mt-1"
+                className="w-full px-3 py-2 text-left hover:bg-gray-50 dark:hover:bg-[#2d3748] rounded-md flex items-center space-x-3 mt-1"
               >
                 <div className="w-8 h-8 rounded-full bg-green-600 flex items-center justify-center">
                   <FileText className="w-4 h-4 text-white" />
                 </div>
-                <span className="text-sm text-gray-700">Document</span>
+                <span className="text-sm text-gray-700 dark:text-slate-300">Document</span>
               </button>
 
               <button
                 onClick={() => { handleAttachment('audio'); setShowAttachmentMenu(false); }}
-                className="w-full px-3 py-2 text-left hover:bg-gray-50 rounded-md flex items-center space-x-3 mt-1"
+                className="w-full px-3 py-2 text-left hover:bg-gray-50 dark:hover:bg-[#2d3748] rounded-md flex items-center space-x-3 mt-1"
               >
                 <div className="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center">
                   <Music className="w-4 h-4 text-white" />
                 </div>
-                <span className="text-sm text-gray-700">Audio</span>
+                <span className="text-sm text-gray-700 dark:text-slate-300">Audio</span>
               </button>
 
               <button
                 onClick={() => { handleAttachment('video'); setShowAttachmentMenu(false); }}
-                className="w-full px-3 py-2 text-left hover:bg-gray-50 rounded-md flex items-center space-x-3 mt-1"
+                className="w-full px-3 py-2 text-left hover:bg-gray-50 dark:hover:bg-[#2d3748] rounded-md flex items-center space-x-3 mt-1"
               >
                 <div className="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center">
                   <Film className="w-4 h-4 text-white" />
                 </div>
-                <span className="text-sm text-gray-700">Video</span>
+                <span className="text-sm text-gray-700 dark:text-slate-300">Video</span>
               </button>
             </div>
           </div>

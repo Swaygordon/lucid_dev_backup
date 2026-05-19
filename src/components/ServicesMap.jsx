@@ -148,12 +148,12 @@ const ProviderInfoWindow = ({ provider, distance, onClose, onBookNow }) => {
   const isAvailable = provider.availability?.status === 'available';
   
   return (
-    <div className="bg-white rounded-lg p-4 min-w-[320px] max-w-[320px]">
+    <div className="bg-white dark:bg-[#1a1f2e] rounded-lg p-4 min-w-[320px] max-w-[320px]">
       <button
         onClose={() => setSelectedProvider(null)}
-        className="absolute top-2 right-2 p-1 hover:bg-gray-100 rounded-full transition-colors z-10"
+        className="absolute top-2 right-2 p-1 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-full transition-colors z-10"
       >
-        <X className="w-4 h-4 text-gray-500" />
+        <X className="w-4 h-4 text-gray-500 dark:text-slate-400" />
       </button>
 
       {/* Header */}
@@ -161,24 +161,24 @@ const ProviderInfoWindow = ({ provider, distance, onClose, onBookNow }) => {
         <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
           {provider.fullName.split(' ').map(n => n[0]).join('')}
         </div>
-        
+
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
-            <h3 className="font-bold text-gray-900 text-sm line-clamp-1">
+            <h3 className="font-bold text-gray-900 dark:text-slate-100 text-sm line-clamp-1">
               {provider.fullName}
             </h3>
           </div>
-          <p className="text-xs text-gray-600 line-clamp-1">{provider.occupation}</p>
-          
+          <p className="text-xs text-gray-600 dark:text-slate-400 line-clamp-1">{provider.occupation}</p>
+
           <div className="flex items-center gap-2 mt-1">
             <div className="flex items-center gap-1">
               <Star className="w-3 h-3 fill-blue-600 text-blue-600" />
-              <span className="text-xs font-semibold text-gray-900">
+              <span className="text-xs font-semibold text-gray-900 dark:text-slate-100">
                 {provider.rating.overall}
               </span>
             </div>
-            <span className="text-gray-400">•</span>
-            <span className="text-xs text-gray-600">
+            <span className="text-gray-400 dark:text-slate-500">•</span>
+            <span className="text-xs text-gray-600 dark:text-slate-400">
               {provider.workExperience.totalJobs} jobs
             </span>
           </div>
@@ -191,13 +191,13 @@ const ProviderInfoWindow = ({ provider, distance, onClose, onBookNow }) => {
           {provider.skills.slice(0, 3).map((skill, idx) => (
             <span
               key={idx}
-              className="px-2 py-1 bg-blue-50 text-blue-700 rounded text-xs font-medium"
+              className="px-2 py-1 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded text-xs font-medium"
             >
               {skill}
             </span>
           ))}
           {provider.skills.length > 3 && (
-            <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs font-medium">
+            <span className="px-2 py-1 bg-gray-100 dark:bg-[#252b3b] text-gray-600 dark:text-slate-400 rounded text-xs font-medium">
               +{provider.skills.length - 3}
             </span>
           )}
@@ -205,21 +205,21 @@ const ProviderInfoWindow = ({ provider, distance, onClose, onBookNow }) => {
       </div>
 
       {/* Details Grid */}
-      <div className="space-y-2 mb-3 pb-3 border-b border-gray-200">
+      <div className="space-y-2 mb-3 pb-3 border-b border-gray-200 dark:border-[#1e293b]">
         <div className="flex items-center justify-between text-xs">
-          <div className="flex items-center gap-1 text-gray-600">
+          <div className="flex items-center gap-1 text-gray-600 dark:text-slate-400">
             <Navigation className="w-3 h-3" />
             <span>Distance</span>
           </div>
-          <span className="font-semibold text-gray-900">{distance} km</span>
+          <span className="font-semibold text-gray-900 dark:text-slate-100">{distance} km</span>
         </div>
-        
+
         <div className="flex items-center justify-between text-xs">
-          <span className="text-gray-600">Status</span>
+          <span className="text-gray-600 dark:text-slate-400">Status</span>
           <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-            isAvailable 
-              ? 'bg-green-100 text-green-700' 
-              : 'bg-gray-100 text-gray-700'
+            isAvailable
+              ? 'bg-green-100 text-green-700'
+              : 'bg-gray-100 dark:bg-[#252b3b] text-gray-700 dark:text-slate-400'
           }`}>
             {isAvailable ? 'Available' : 'Busy'}
           </span>
@@ -230,19 +230,19 @@ const ProviderInfoWindow = ({ provider, distance, onClose, onBookNow }) => {
       <div className="flex gap-2">
         <a
           href={`tel:${provider.phone}`}
-          className="flex-1 py-2 px-3 border-2 border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-semibold text-xs flex items-center justify-center gap-2"
+          className="flex-1 py-2 px-3 border-2 border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors font-semibold text-xs flex items-center justify-center gap-2"
         >
           <Phone className="w-3 h-3" />
           Call
         </a>
-        
+
         <button
           onClick={() => onBookNow(provider)}
           disabled={!isAvailable}
           className={`flex-1 py-2 px-3 rounded-lg font-semibold text-xs transition-colors ${
             isAvailable
               ? 'bg-blue-600 text-white hover:bg-blue-700'
-              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              : 'bg-gray-300 dark:bg-[#252b3b] text-gray-500 dark:text-slate-500 cursor-not-allowed'
           }`}
         >
           Book Now
@@ -340,8 +340,8 @@ const ServicesMap = ({ userLocation = [5.6037, -0.1870] }) => {
         >
           <Popup>
             <div className="p-2 text-center">
-              <p className="font-semibold text-gray-900">Your Location</p>
-              <p className="text-xs text-gray-600">Accra, Ghana</p>
+              <p className="font-semibold text-gray-900 dark:text-slate-100">Your Location</p>
+              <p className="text-xs text-gray-600 dark:text-slate-400">Accra, Ghana</p>
             </div>
           </Popup>
         </Marker>
@@ -353,48 +353,48 @@ const ServicesMap = ({ userLocation = [5.6037, -0.1870] }) => {
       <div className="absolute top-4 right-4 flex flex-col gap-2 z-[1000]">
         <button
           onClick={() => mapRef.current?.zoomIn()}
-          className="w-10 h-10 bg-white rounded-lg shadow-lg hover:bg-gray-50 transition-colors flex items-center justify-center font-bold text-gray-700"
+          className="w-10 h-10 bg-white dark:bg-[#252b3b] rounded-lg shadow-lg hover:bg-gray-50 dark:hover:bg-[#2d3748] transition-colors flex items-center justify-center font-bold text-gray-700 dark:text-slate-300"
         >
           +
         </button>
         <button
           onClick={() => mapRef.current?.zoomOut()}
-          className="w-10 h-10 bg-white rounded-lg shadow-lg hover:bg-gray-50 transition-colors flex items-center justify-center font-bold text-gray-700"
+          className="w-10 h-10 bg-white dark:bg-[#252b3b] rounded-lg shadow-lg hover:bg-gray-50 dark:hover:bg-[#2d3748] transition-colors flex items-center justify-center font-bold text-gray-700 dark:text-slate-300"
         >
           −
         </button>
         <button
           onClick={handleRecenter}
-          className="w-10 h-10 bg-white rounded-lg shadow-lg hover:bg-gray-50 transition-colors flex items-center justify-center"
+          className="w-10 h-10 bg-white dark:bg-[#252b3b] rounded-lg shadow-lg hover:bg-gray-50 dark:hover:bg-[#2d3748] transition-colors flex items-center justify-center"
           title="Recenter map"
         >
-          <Locate className="w-5 h-5 text-gray-700" />
+          <Locate className="w-5 h-5 text-gray-700 dark:text-slate-300" />
         </button>
       </div>
 
       {/* Legend */}
-      <div className="absolute bottom-4 left-4 bg-white rounded-lg shadow-lg p-3 z-[1000]">
+      <div className="absolute bottom-4 left-4 bg-white dark:bg-[#1a1f2e] rounded-lg shadow-lg p-3 z-[1000]">
         <div className="flex items-center gap-4 text-sm">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-blue-600"></div>
-            <span className="text-gray-700">Available</span>
+            <span className="text-gray-700 dark:text-slate-300">Available</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-gray-500"></div>
-            <span className="text-gray-700">Busy</span>
+            <span className="text-gray-700 dark:text-slate-300">Busy</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-full bg-red-600"></div>
-            <span className="text-gray-700">You</span>
+            <span className="text-gray-700 dark:text-slate-300">You</span>
           </div>
         </div>
       </div>
 
       {/* Provider count badge */}
-      <div className="absolute top-4 left-4 bg-white rounded-lg shadow-lg px-4 py-2 z-[1000]">
+      <div className="absolute top-4 left-4 bg-white dark:bg-[#1a1f2e] rounded-lg shadow-lg px-4 py-2 z-[1000]">
         <div className="flex items-center gap-2">
           <MapPin className="w-4 h-4 text-blue-600" />
-          <span className="text-sm font-semibold text-gray-900">
+          <span className="text-sm font-semibold text-gray-900 dark:text-slate-100">
             {availableCount} available • {mappedProviders.length} total
           </span>
         </div>

@@ -28,7 +28,7 @@ export default function ServicesCarousel({ services = [] }) {
     <div className="px-8 lg:px-10 py-10">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl md:text-3xl font-bold">
-          <span className="text-gray-900">Services you might </span>
+          <span className="text-gray-900 dark:text-slate-100">Services you might </span>
           <span className="text-blue-600">also like</span>
         </h2>
       </div>
@@ -46,7 +46,7 @@ export default function ServicesCarousel({ services = [] }) {
                 style={{ width: `${100 / visibleCards}%` }}
               >
                 <Link to={service.slug}>
-                  <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group cursor-pointer">
+                  <div className="bg-white dark:bg-[#1a1f2e] rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group cursor-pointer">
                     <div className="relative overflow-hidden h-48">
                       <img
                         src={service.image}
@@ -57,7 +57,7 @@ export default function ServicesCarousel({ services = [] }) {
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     </div>
                     <div className="p-4 text-center">
-                      <h3 className="text-base font-semibold text-gray-900">{service.name}</h3>
+                      <h3 className="text-base font-semibold text-gray-900 dark:text-slate-100">{service.name}</h3>
                     </div>
                   </div>
                 </Link>
@@ -68,17 +68,17 @@ export default function ServicesCarousel({ services = [] }) {
 
         <button
           onClick={prev}
-          className="absolute -left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors"
+          className="absolute -left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white dark:bg-[#252b3b] rounded-full shadow-md flex items-center justify-center hover:bg-gray-50 dark:hover:bg-[#2d3748] transition-colors"
           aria-label="Previous"
         >
-          <ChevronLeft size={20} className="text-gray-700" />
+          <ChevronLeft size={20} className="text-gray-700 dark:text-slate-300" />
         </button>
         <button
           onClick={next}
-          className="absolute -right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors"
+          className="absolute -right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white dark:bg-[#252b3b] rounded-full shadow-md flex items-center justify-center hover:bg-gray-50 dark:hover:bg-[#2d3748] transition-colors"
           aria-label="Next"
         >
-          <ChevronRight size={20} className="text-gray-700" />
+          <ChevronRight size={20} className="text-gray-700 dark:text-slate-300" />
         </button>
 
         <div className="flex justify-center gap-2 mt-6">
@@ -87,7 +87,7 @@ export default function ServicesCarousel({ services = [] }) {
               key={i}
               onClick={() => setCurrentIndex(i)}
               className={`h-2 rounded-full transition-all duration-300 ${
-                currentIndex === i ? 'bg-blue-600 w-6' : 'bg-gray-300 w-2'
+                currentIndex === i ? 'bg-blue-600 w-6' : 'bg-gray-300 dark:bg-slate-600 w-2'
               }`}
               aria-label={`Slide ${i + 1}`}
             />

@@ -68,7 +68,7 @@ const AllCategories = () => {
   if (isLoading) return <AllCategoriesSkeleton />;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-[#0f1117]">
       {/* Hero — background updates with active search location */}
       <div className="relative z-10 py-14 px-5 text-center" style={heroStyle}>
         {/* Subtle dark overlay for text legibility */}
@@ -83,15 +83,15 @@ const AllCategories = () => {
           </p>
 
           {/* Search bar + inline location picker */}
-          <div className="max-w-xl mx-auto flex bg-white border border-gray-300 rounded-xl shadow-md">
+          <div className="max-w-xl mx-auto flex bg-white dark:bg-[#252b3b] border border-gray-300 dark:border-[#2d3748] rounded-xl shadow-md">
             <input
               type="text"
               value={query}
               onChange={e => setQuery(e.target.value)}
               placeholder="Search services..."
-              className="flex-1 px-5 py-3 text-gray-900 outline-none text-base bg-transparent rounded-l-xl placeholder-gray-400"
+              className="flex-1 px-5 py-3 text-gray-900 dark:text-slate-200 outline-none text-base bg-transparent rounded-l-xl placeholder-gray-400 dark:placeholder-slate-500"
             />
-            <div className="flex items-center border-l border-gray-200">
+            <div className="flex items-center border-l border-gray-200 dark:border-[#1e293b]">
               <LocationPicker inline />
             </div>
             <button
@@ -116,7 +116,7 @@ const AllCategories = () => {
       {/* Grid */}
       <div className="max-w-6xl mx-auto px-5 py-8">
         {filtered.length === 0 ? (
-          <div className="text-center py-20 text-gray-500">
+          <div className="text-center py-20 text-gray-500 dark:text-slate-500">
             No services match &ldquo;{query}&rdquo;
           </div>
         ) : (
@@ -125,7 +125,7 @@ const AllCategories = () => {
               const Icon = cat.icon;
               return (
                 <Link key={cat.id} to={`/lucid/services/${cat.slug}`}>
-                  <div className="rounded-2xl overflow-hidden shadow-sm hover:shadow-xl border border-gray-100 transition-all duration-300 group bg-white">
+                  <div className="rounded-2xl overflow-hidden shadow-sm hover:shadow-xl border border-gray-100 dark:border-[#1e293b] transition-all duration-300 group bg-white dark:bg-[#1a1f2e]">
                     {/* Image */}
                     <div className="relative h-44 overflow-hidden">
                       <img
@@ -140,8 +140,8 @@ const AllCategories = () => {
                     </div>
                     {/* Text */}
                     <div className="p-5">
-                      <h3 className="text-base font-bold text-gray-900 mb-1">{cat.name}</h3>
-                      <p className="text-sm text-gray-500 mb-3">{cat.description}</p>
+                      <h3 className="text-base font-bold text-gray-900 dark:text-slate-100 mb-1">{cat.name}</h3>
+                      <p className="text-sm text-gray-500 dark:text-slate-500 mb-3">{cat.description}</p>
                       <p className="text-xs text-blue-600 font-medium">
                         {cat.services.length} services available
                       </p>

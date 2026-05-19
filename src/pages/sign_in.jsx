@@ -5,7 +5,6 @@ import { Eye, EyeOff } from 'lucide-react';
 import { Button, Input } from '../components/ui';
 import { useNotification } from '../contexts/NotificationContext';
 import { supabase } from '../lib/supabaseClient';
-import BackgroundImage from '../assets/background.png';
 
 const Signin = () => {
   const [formData, setFormData] = useState({ email: '', password: '', role: 'client' });
@@ -143,22 +142,15 @@ const Signin = () => {
   );
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-300">
-      <div
-        className="hero flex-1 w-full"
-        style={{
-          backgroundImage: `url(${BackgroundImage})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      >
+    <div className="flex flex-col min-h-screen bg-white dark:bg-[#0f1117]">
+      <div className="hero flex-1 w-full bg-white dark:bg-[#0f1117]">
         <div className="items-center text-center">
-          <h1 className="text-black font-semibold text-3xl my-10">
+          <h1 className="text-gray-900 dark:text-slate-100 font-semibold text-3xl my-10">
             Sign in to your account
           </h1>
 
           <div className="flex justify-center px-4 mb-14 mt-6">
-            <div className="w-full min-w-96 max-w-[26rem] bg-white rounded-lg shadow-2xl p-8">
+            <div className="w-full min-w-96 max-w-[26rem] bg-white dark:bg-[#1a1f2e] rounded-lg shadow-2xl p-8">
               <form onSubmit={handleSubmit} className="space-y-4">
                 <Input
                   label="Email"
@@ -183,7 +175,7 @@ const Signin = () => {
 
                 {/* Account Type */}
                 <div>
-                  <label className="text-left block font-medium text-gray-700 mb-2">
+                  <label className="text-left block font-medium text-gray-700 dark:text-slate-300 mb-2">
                     Account Type <span className="text-red-500">*</span>
                   </label>
                   <div className="flex gap-6">
@@ -196,7 +188,7 @@ const Signin = () => {
                         onChange={handleChange}
                         className="bg-white accent-blue-600 w-4 h-4"
                       />
-                      <span className="text-black font-medium">Client</span>
+                      <span className="text-gray-900 dark:text-slate-200 font-medium">Client</span>
                     </label>
                     <label className="flex items-center gap-2 cursor-pointer">
                       <input
@@ -207,7 +199,7 @@ const Signin = () => {
                         onChange={handleChange}
                         className="bg-white accent-blue-600 w-4 h-4"
                       />
-                      <span className="text-black font-medium">Service Provider</span>
+                      <span className="text-gray-900 dark:text-slate-200 font-medium">Service Provider</span>
                     </label>
                   </div>
                 </div>
@@ -217,7 +209,7 @@ const Signin = () => {
                 </Button>
 
                 {showResend && (
-                  <p className="text-sm text-center text-gray-600">
+                  <p className="text-sm text-center text-gray-600 dark:text-slate-400">
                     Didn't receive a verification email?{' '}
                     <button
                       type="button"
@@ -231,9 +223,9 @@ const Signin = () => {
 
                 {/* OR Divider */}
                 <div className="flex items-center my-6">
-                  <div className="flex-1 border-t border-gray-300" />
-                  <span className="px-4 text-gray-500 text-sm">OR</span>
-                  <div className="flex-1 border-t border-gray-300" />
+                  <div className="flex-1 border-t border-gray-300 dark:border-[#2d3748]" />
+                  <span className="px-4 text-gray-500 dark:text-slate-500 text-sm">OR</span>
+                  <div className="flex-1 border-t border-gray-300 dark:border-[#2d3748]" />
                 </div>
 
                 {/* Social Login Buttons */}
@@ -261,7 +253,7 @@ const Signin = () => {
             </div>
           </div>
 
-          <div className="mb-6 mt-2 text-black">
+          <div className="mb-6 mt-2 text-gray-900 dark:text-slate-300">
             Don't have an account?
             <Link to="/lucid/signup" className="text-blue-700 hover:text-orange-600 ml-2">
               Sign Up

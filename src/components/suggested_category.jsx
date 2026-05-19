@@ -94,7 +94,7 @@ const CategoryButton = memo(({ category, isActive, onClick, index }) => {
       viewport={{ once: true }}
       transition={{ delay: index * 0.1 }}
     >
-      <div className="relative w-14 h-14 flex items-center justify-center">
+      <div className="relative w-14 h-14 mt-6 flex items-center justify-center">
         <motion.div
           className={`absolute top-0 left-5 right-2 w-12 h-12 rounded-lg transition-colors duration-300 ${
             isActive ? 'bg-orange-300' : 'bg-blue-300'
@@ -122,7 +122,7 @@ const CategoryButton = memo(({ category, isActive, onClick, index }) => {
 
       <p
         className={`text-center text-xs mt-3 transition-colors duration-300 ${
-          isActive ? 'text-orange-600 font-semibold' : 'text-black'
+          isActive ? 'text-orange-600 font-semibold' : 'text-black dark:text-slate-200'
         }`}
       >
         {category.name}
@@ -137,7 +137,7 @@ const MobileCategoryButton = memo(({ category, isActive, onClick }) => {
   
   return (
     <div className="flex flex-col items-center gap-2 snap-center">
-      <div className="relative w-16 h-16">
+      <div className="relative mt-6 w-16 h-16">
         <motion.div
           className={`absolute top-0 left-6 right-2 w-12 h-12 rounded-lg transition-colors duration-300 ${
             isActive ? 'bg-orange-300' : 'bg-blue-300'
@@ -160,7 +160,7 @@ const MobileCategoryButton = memo(({ category, isActive, onClick }) => {
       </div>
       <p
         className={`text-center text-xs mt-2 transition-colors duration-300 ${
-          isActive ? 'text-orange-600 font-semibold' : 'text-black'
+          isActive ? 'text-orange-600 font-semibold' : 'text-black dark:text-slate-200'
         }`}
       >
         {category.name}
@@ -172,7 +172,7 @@ const MobileCategoryButton = memo(({ category, isActive, onClick }) => {
 // Memoized More Button Component
 const MoreButton = memo(({ isMobile = false }) => (
   <div className="flex flex-col items-center gap-2 snap-center">
-    <div className={`relative ${isMobile ? 'w-16 h-16' : 'w-14 h-14'} flex items-center justify-center`}>
+    <div className={`relative ${isMobile ? 'w-16 h-16' : 'w-14 h-14'} mt-6 flex items-center justify-center`}>
       <div className={`absolute top-0 ${isMobile ? 'left-6' : 'left-5'} right-2 w-12 h-12 bg-blue-300 rounded-lg`} />
       <Link to="/lucid/services/all">
         <motion.div
@@ -184,7 +184,7 @@ const MoreButton = memo(({ isMobile = false }) => (
         </motion.div>
       </Link>
     </div>
-    <p className={`text-center ${isMobile ? 'text-xs mt-2' : 'text-sm mt-3'} text-black`}>More</p>
+    <p className={`text-center ${isMobile ? 'text-xs mt-2' : 'text-sm mt-3'} text-black dark:text-slate-200`}>More</p>
   </div>
 ));
 
@@ -204,7 +204,7 @@ const ServiceCard = memo(({ service, index }) => {
     >
       <Link to={to}>
         <motion.div
-          className={`card bg-white transition-all duration-300 rounded-none overflow-hidden
+          className={`card bg-white dark:bg-[#1a1f2e] transition-all duration-300 rounded-none overflow-hidden
             ${index === 0 ? 'md:rounded-bl-xl' : index === 2 ? 'md:rounded-br-xl' : ''}`}
           whileHover={{
             y: -8,
@@ -222,10 +222,10 @@ const ServiceCard = memo(({ service, index }) => {
             />
           </figure>
           <div className="card-body p-4">
-            <h4 className="card-title text-lg font-semibold text-black">
+            <h4 className="card-title text-lg font-semibold text-black dark:text-slate-100">
               {service.title}
             </h4>
-            <div className="flex items-center gap-2 text-sm text-black">
+            <div className="flex items-center gap-2 text-sm text-black dark:text-slate-300">
               <MapPin className="w-4 h-4 text-blue-600" />
               <span>{service.subtitle}</span>
             </div>
@@ -273,8 +273,8 @@ const BusinessCategorySection = ({
       </motion.div>
 
       {/* Category Buttons - Small screens (Carousel) */}
-      <div className="block md:hidden mt-10 pb-4 overflow-x-auto">
-        <div className="flex gap-6 px-4 min-w-max snap-x snap-mandatory scroll-smooth">
+      <div className="block md:hidden mt-16 pt-6 pb-6 overflow-x-auto">
+        <div className="flex gap-16 px-8 min-w-max mx-auto snap-x snap-mandatory scroll-smooth">
           {serviceIcons.map((category) => (
             <MobileCategoryButton
               key={category.id}
@@ -289,7 +289,7 @@ const BusinessCategorySection = ({
 
       {/* Divider */}
       <motion.div
-        className="divider max-w-7xl mx-auto mb-10 max-h-px bg-gray-300"
+        className="divider max-w-7xl mx-auto mb-10 max-h-px bg-gray-300 dark:bg-[#1e293b]"
         initial={{ scaleX: 0 }}
         whileInView={{ scaleX: 1 }}
         viewport={{ once: true }}

@@ -171,7 +171,7 @@ const ProfileAvatar = memo(({ hasImage }) => (
 
 const InputField = memo(({ label, ...props }) => (
   <div className="flex flex-col">
-    <label className="mb-2 font-medium text-gray-700">{label}</label>
+    <label className="mb-2 font-medium text-gray-700 dark:text-slate-300">{label}</label>
     <Input
       type="text"
       {...props}
@@ -182,14 +182,14 @@ const InputField = memo(({ label, ...props }) => (
 const CounterInput = memo(({ label, value, onChange, icon: Icon, min = 0 }) => (
   <div>
     <div className="flex justify-between items-center mb-3">
-      <span className="font-medium text-gray-900">{label}</span>
+      <span className="font-medium text-gray-900 dark:text-slate-100">{label}</span>
       {Icon && <Icon size={20} className="text-blue-600" />}
     </div>
     <div className="flex items-center max-w-[120px]">
       <button
         type="button"
         onClick={() => onChange(Math.max(min, value - 1))}
-        className="px-3 py-2 border-2 border-gray-300 bg-white hover:bg-gray-100 rounded-l-md transition-all focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+        className="px-3 py-2 border-2 border-gray-300 dark:border-[#2d3748] bg-white dark:bg-[#252b3b] hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-l-md transition-all focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/40"
       >
         <Minus size={20} className="text-blue-600"/>
       </button>
@@ -197,13 +197,13 @@ const CounterInput = memo(({ label, value, onChange, icon: Icon, min = 0 }) => (
         type="number"
         value={value}
         onChange={(e) => onChange(Math.max(min, parseInt(e.target.value) || min))}
-        className="w-16 px-2 py-2 border-t-2 border-b-2 border-gray-300 text-center bg-white text-gray-900 transition-all focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+        className="w-16 px-2 py-2 border-t-2 border-b-2 border-gray-300 dark:border-[#2d3748] text-center bg-white dark:bg-[#252b3b] text-gray-900 dark:text-slate-200 transition-all focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/40 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
         min={min}
       />
       <button
         type="button"
         onClick={() => onChange(value + 1)}
-        className="px-3 py-2 border-2 border-gray-300 bg-white hover:bg-gray-100 rounded-r-md transition-all focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+        className="px-3 py-2 border-2 border-gray-300 dark:border-[#2d3748] bg-white dark:bg-[#252b3b] hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-r-md transition-all focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/40"
       >
         <Plus size={20} className="text-blue-600" />
       </button>
@@ -217,24 +217,24 @@ const DayCard = memo(({ selected, label, description, onClick }) => (
     className={`cursor-pointer rounded-xl p-5 border-2 transition-all duration-300 transform hover:scale-102 ${
       selected
         ? 'border-blue-600 bg-blue-50 shadow-lg scale-105'
-        : 'border-gray-300 bg-white hover:border-blue-400 hover:shadow-md'
+        : 'border-gray-300 dark:border-[#2d3748] bg-white dark:bg-[#1a1f2e] hover:border-blue-400 hover:shadow-md'
     }`}
   >
     <div className="flex items-center justify-between mb-2">
-      <span className="font-semibold text-gray-900">{label}</span>
+      <span className="font-semibold text-gray-900 dark:text-slate-100">{label}</span>
       <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
         selected ? 'border-blue-600 bg-blue-600' : 'border-gray-300'
       }`}>
         {selected && <CheckCircle size={16} className="text-white" />}
       </div>
     </div>
-    <p className="text-sm text-gray-600">{description}</p>
+    <p className="text-sm text-gray-600 dark:text-slate-400">{description}</p>
   </div>
 ));
 
 const TimeInput = memo(({ label, value, onChange }) => (
   <div className="flex-1">
-    <label className="block text-sm font-medium text-gray-700 mb-2">{label}</label>
+    <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">{label}</label>
     <Input
       type="time"
       value={value}
@@ -258,13 +258,13 @@ const ArrayInputSection = memo(({ title, items, onAdd, onRemove, icon: Icon, pla
     <div className="animate-fade-in">
       <div className="flex items-center gap-2 mb-4">
         {Icon && <Icon className="w-5 h-5 text-blue-600" />}
-        <h3 className="text-gray-900 text-base font-semibold">{title}</h3>
+        <h3 className="text-gray-900 dark:text-slate-100 text-base font-semibold">{title}</h3>
       </div>
       
       <div className="space-y-3">
         {items.map((item, index) => (
-          <div key={index} className="flex items-center gap-2 bg-blue-100 px-4 py-2.5 rounded-lg group hover:bg-blue-50 transition-colors">
-            <span className="flex-1 text-gray-900">{item}</span>
+          <div key={index} className="flex items-center gap-2 bg-blue-100 dark:bg-blue-900/30 px-4 py-2.5 rounded-lg group hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">
+            <span className="flex-1 text-gray-900 dark:text-slate-100">{item}</span>
             <button
               type="button"
               onClick={() => onRemove(index)}
@@ -282,7 +282,7 @@ const ArrayInputSection = memo(({ title, items, onAdd, onRemove, icon: Icon, pla
             onChange={(e) => setNewItem(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleAdd()}
             placeholder={placeholder}
-            className="flex-1 px-3 py-2.5 border-2 border-gray-300 rounded-md text-sm focus:outline-none bg-white text-gray-900 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all"
+            className="flex-1 px-3 py-2.5 border-2 border-gray-300 dark:border-[#2d3748] rounded-md text-sm focus:outline-none bg-white dark:bg-[#252b3b] text-gray-900 dark:text-slate-200 placeholder:dark:text-slate-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/40 transition-all"
           />
           <button
             type="button"
@@ -310,8 +310,8 @@ const CategoryChipSelector = memo(({ selectedCategories, onChange }) => {
 
   return (
     <div className="animate-fade-in">
-      <h3 className="text-gray-900 text-base font-semibold mb-1">Service Categories</h3>
-      <p className="text-sm text-gray-500 mb-4">
+      <h3 className="text-gray-900 dark:text-slate-100 text-base font-semibold mb-1">Service Categories</h3>
+      <p className="text-sm text-gray-500 dark:text-slate-500 mb-4">
         Select all categories that match your work. Clients use these to find you.
       </p>
       <div className="flex flex-wrap gap-2">
@@ -325,7 +325,7 @@ const CategoryChipSelector = memo(({ selectedCategories, onChange }) => {
               className={`flex items-center gap-2 px-3 py-2 rounded-full border-2 text-sm font-medium transition-all ${
                 selected
                   ? 'border-blue-600 bg-blue-50 text-blue-700'
-                  : 'border-gray-300 bg-white text-gray-700 hover:border-blue-400 hover:text-blue-600'
+                  : 'border-gray-300 dark:border-[#2d3748] bg-white dark:bg-[#252b3b] text-gray-700 dark:text-slate-300 hover:border-blue-400 hover:text-blue-600'
               }`}
             >
               <Icon size={14} />
@@ -352,10 +352,10 @@ const WorkingHoursSection = memo(({ profile, onDaySelect, onTimeChange, onCustom
 
   return (
     <div className="md:col-span-2 animate-fade-in">
-      <h3 className="text-gray-900 mb-6 text-lg font-bold">Working Hours</h3>
+      <h3 className="text-gray-900 dark:text-slate-100 mb-6 text-lg font-bold">Working Hours</h3>
       <div className="max-w-5xl mx-auto">
         <div className="mb-6">
-          <h4 className="text-base font-semibold mb-4 text-gray-800">Select Working Days</h4>
+          <h4 className="text-base font-semibold mb-4 text-gray-800 dark:text-slate-200">Select Working Days</h4>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <DayCard
               selected={profile.selectedDays.weekdays}
@@ -381,7 +381,7 @@ const WorkingHoursSection = memo(({ profile, onDaySelect, onTimeChange, onCustom
         {profile.selectedDays.custom && (
           <div className="mb-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border-2 border-blue-200">
             <div className="flex items-center justify-between mb-4">
-              <h4 className="text-base font-semibold text-gray-800">Select Custom Days</h4>
+              <h4 className="text-base font-semibold text-gray-800 dark:text-slate-200">Select Custom Days</h4>
               <button onClick={onToggleCustom} className="text-blue-600 hover:text-blue-700 font-medium text-sm flex items-center gap-1 transition-colors">
                 {profile.showCustomDays ? 'Hide' : 'Show'} Days
                 {profile.showCustomDays ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
@@ -396,7 +396,7 @@ const WorkingHoursSection = memo(({ profile, onDaySelect, onTimeChange, onCustom
                     className={`cursor-pointer rounded-lg p-3 border-2 transition-all ${
                       profile.customDays[day].selected
                         ? 'border-blue-600 bg-blue-100 shadow-md'
-                        : 'border-gray-300 bg-white hover:border-blue-400'
+                        : 'border-gray-300 dark:border-[#2d3748] bg-white dark:bg-[#252b3b] hover:border-blue-400'
                     }`}
                   >
                     <div className="flex items-center gap-2">
@@ -405,7 +405,7 @@ const WorkingHoursSection = memo(({ profile, onDaySelect, onTimeChange, onCustom
                       }`}>
                         {profile.customDays[day].selected && <CheckCircle size={14} className="text-white" />}
                       </div>
-                      <span className="text-sm font-medium text-gray-900">{dayLabels[day]}</span>
+                      <span className="text-sm font-medium text-gray-900 dark:text-slate-100">{dayLabels[day]}</span>
                     </div>
                   </div>
                 ))}
@@ -415,16 +415,16 @@ const WorkingHoursSection = memo(({ profile, onDaySelect, onTimeChange, onCustom
         )}
 
         <div>
-          <h4 className="text-base font-semibold mb-4 text-gray-800">Set Working Hours</h4>
+          <h4 className="text-base font-semibold mb-4 text-gray-800 dark:text-slate-200">Set Working Hours</h4>
           <div className="space-y-4">
             {profile.selectedDays.weekdays && (
-              <div className="bg-white rounded-xl p-5 border-2 border-blue-200 shadow-sm">
+              <div className="bg-white dark:bg-[#1a1f2e] rounded-xl p-5 border-2 border-blue-200 dark:border-blue-900/50 shadow-sm">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full bg-blue-600"></div>
-                    <h5 className="font-semibold text-gray-900">Weekdays Hours</h5>
+                    <h5 className="font-semibold text-gray-900 dark:text-slate-100">Weekdays Hours</h5>
                   </div>
-                  <span className="text-sm text-gray-600">Mon - Fri</span>
+                  <span className="text-sm text-gray-600 dark:text-slate-400">Mon - Fri</span>
                 </div>
                 <div className="flex gap-4">
                   <TimeInput label="Start Time" value={profile.weekdaysTime.start} onChange={(v) => onTimeChange('weekdaysTime', 'start', v)} />
@@ -434,13 +434,13 @@ const WorkingHoursSection = memo(({ profile, onDaySelect, onTimeChange, onCustom
             )}
 
             {profile.selectedDays.weekend && (
-              <div className="bg-white rounded-xl p-5 border-2 border-blue-200 shadow-sm">
+              <div className="bg-white dark:bg-[#1a1f2e] rounded-xl p-5 border-2 border-blue-200 dark:border-blue-900/50 shadow-sm">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full bg-blue-600"></div>
-                    <h5 className="font-semibold text-gray-900">Weekend Hours</h5>
+                    <h5 className="font-semibold text-gray-900 dark:text-slate-100">Weekend Hours</h5>
                   </div>
-                  <span className="text-sm text-gray-600">Sat - Sun</span>
+                  <span className="text-sm text-gray-600 dark:text-slate-400">Sat - Sun</span>
                 </div>
                 <div className="flex gap-4">
                   <TimeInput label="Start Time" value={profile.weekendTime.start} onChange={(v) => onTimeChange('weekendTime', 'start', v)} />
@@ -451,14 +451,14 @@ const WorkingHoursSection = memo(({ profile, onDaySelect, onTimeChange, onCustom
 
             {profile.selectedDays.custom && hasCustomDaysSelected && (
               <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-5 border-2 border-blue-200">
-                <h5 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <h5 className="font-semibold text-gray-900 dark:text-slate-100 mb-4 flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full bg-blue-600"></div>
                   Custom Days Hours
                 </h5>
                 <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
                   {daysOfWeek.map(day => profile.customDays[day].selected && (
-                    <div key={day} className="bg-white rounded-lg p-4 border border-blue-200 shadow-sm">
-                      <div className="font-medium text-gray-900 mb-3 flex items-center gap-2">
+                    <div key={day} className="bg-white dark:bg-[#1a1f2e] rounded-lg p-4 border border-blue-200 dark:border-blue-900/50 shadow-sm">
+                      <div className="font-medium text-gray-900 dark:text-slate-100 mb-3 flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-blue-600"></span>
                         {dayLabels[day]}
                       </div>
@@ -473,9 +473,9 @@ const WorkingHoursSection = memo(({ profile, onDaySelect, onTimeChange, onCustom
             )}
 
             {!profile.selectedDays.weekdays && !profile.selectedDays.weekend && !profile.selectedDays.custom && (
-              <div className="bg-gray-50 rounded-xl p-8 text-center border-2 border-dashed border-gray-300">
-                <Clock className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                <p className="text-gray-600 font-medium">Please select working days above to set hours</p>
+              <div className="bg-gray-50 dark:bg-[#252b3b] rounded-xl p-8 text-center border-2 border-dashed border-gray-300 dark:border-[#2d3748]">
+                <Clock className="w-12 h-12 text-gray-400 dark:text-slate-500 mx-auto mb-3" />
+                <p className="text-gray-600 dark:text-slate-400 font-medium">Please select working days above to set hours</p>
               </div>
             )}
           </div>
@@ -540,7 +540,7 @@ const EditProfile = () => {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen pb-32">
+    <div className="bg-gray-50 dark:bg-[#0f1117] min-h-screen pb-32">
       <style>{`
         @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
         .animate-fade-in { animation: fade-in 0.5s ease-out; }
@@ -558,7 +558,7 @@ const EditProfile = () => {
         <div className="absolute inset-0 bg-black/30 flex items-center justify-center gap-3">
           <button
             onClick={() => openUpload('hero')}
-            className="flex items-center gap-2 bg-white/90 hover:bg-white text-gray-800 text-sm font-medium px-4 py-2 rounded-lg shadow transition-colors"
+            className="flex items-center gap-2 bg-white/90 hover:bg-white text-gray-800 dark:text-gray-800 text-sm font-medium px-4 py-2 rounded-lg shadow transition-colors"
           >
             <ImageIcon size={16} />
             {heroUrl ? 'Change banner' : 'Add banner'}
@@ -579,7 +579,7 @@ const EditProfile = () => {
       <div className="flex justify-center -mt-14 mb-6 relative z-10">
         <div className="flex flex-col items-center gap-3">
           <div className="relative group">
-            <div className="w-24 h-24 md:w-28 md:h-28 rounded-full border-4 border-white shadow-lg overflow-hidden bg-gray-200 flex items-center justify-center">
+            <div className="w-24 h-24 md:w-28 md:h-28 rounded-full border-4 border-white shadow-lg overflow-hidden bg-gray-200 dark:bg-[#252b3b] flex items-center justify-center">
               {avatarUrl ? (
                 <img src={avatarUrl} alt="Profile" className="w-full h-full object-cover" />
               ) : (
@@ -604,7 +604,7 @@ const EditProfile = () => {
             {avatarUrl && (
               <button
                 onClick={() => setAvatarUrl(null)}
-                className="bg-white hover:bg-red-50 border border-red-300 text-red-600 text-xs font-medium px-4 py-2 rounded-lg shadow transition-colors"
+                className="bg-white dark:bg-[#1a1f2e] hover:bg-red-50 border border-red-300 text-red-600 text-xs font-medium px-4 py-2 rounded-lg shadow transition-colors"
               >
                 Remove
               </button>
@@ -646,7 +646,7 @@ const EditProfile = () => {
           <div className="animate-fade-in">
             <div className="flex items-center gap-2 mb-2">
               <MapPin className="w-5 h-5 text-blue-600" />
-              <label className="font-medium text-gray-700">Location</label>
+              <label className="font-medium text-gray-700 dark:text-slate-300">Location</label>
             </div>
             <InputField
               value={formMethods.profile.location}
@@ -667,29 +667,29 @@ const EditProfile = () => {
 
               {/* Description */}
               <div>
-                <label className="block mb-2 text-lg font-bold text-gray-900">Description</label>
+                <label className="block mb-2 text-lg font-bold text-gray-900 dark:text-slate-100">Description</label>
                 <textarea
                   placeholder="Write a brief description about yourself..."
                   value={formMethods.profile.description}
                   onChange={(e) => formMethods.handleInputChange('description', e.target.value)}
-                  className="w-full px-3 py-3 border-2 border-gray-300 rounded-md text-sm resize-y min-h-[120px] bg-white text-gray-900 transition-all focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+                  className="w-full px-3 py-3 border-2 border-gray-300 dark:border-[#2d3748] rounded-md text-sm resize-y min-h-[120px] bg-white dark:bg-[#252b3b] text-gray-900 dark:text-slate-200 placeholder:dark:text-slate-500 transition-all focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/40"
                   rows="4"
                 />
               </div>
 
               {/* Overview */}
               <div>
-                <h3 className="text-gray-900 mb-4 text-lg font-bold">Overview</h3>
+                <h3 className="text-gray-900 dark:text-slate-100 mb-4 text-lg font-bold">Overview</h3>
 
-                <div className="mb-5 pb-4 border-b border-gray-200">
-                  <div className="flex justify-between items-center mb-2 font-medium text-gray-900">
+                <div className="mb-5 pb-4 border-b border-gray-200 dark:border-[#1e293b]">
+                  <div className="flex justify-between items-center mb-2 font-medium text-gray-900 dark:text-slate-100">
                     <span>Verification Status</span>
                     <CheckCircle size={20} className="text-blue-600" />
                   </div>
-                  <span className="text-gray-600 text-sm">Verified</span>
+                  <span className="text-gray-600 dark:text-slate-400 text-sm">Verified</span>
                 </div>
 
-                <div className="mb-5 pb-4 border-b border-gray-200">
+                <div className="mb-5 pb-4 border-b border-gray-200 dark:border-[#1e293b]">
                   <CounterInput
                     label="Number of Employees"
                     value={formMethods.profile.employees}
@@ -712,8 +712,8 @@ const EditProfile = () => {
 
               {/* Payment Methods */}
               <div>
-                <h3 className="text-gray-900 mb-1 text-base font-semibold">Payment Methods</h3>
-                <p className="text-gray-500 text-sm mb-4">Select all that apply</p>
+                <h3 className="text-gray-900 dark:text-slate-100 mb-1 text-base font-semibold">Payment Methods</h3>
+                <p className="text-gray-500 dark:text-slate-500 text-sm mb-4">Select all that apply</p>
                 <div className="flex flex-col gap-3">
                   {[
                     { key: 'mobile', label: 'Mobile Money' },
@@ -726,7 +726,7 @@ const EditProfile = () => {
                         onChange={() => formMethods.handlePaymentToggle(key)}
                         className="accent-blue-600 w-4 h-4"
                       />
-                      <span className="text-gray-900">{label}</span>
+                      <span className="text-gray-900 dark:text-slate-100">{label}</span>
                     </label>
                   ))}
                 </div>
@@ -763,11 +763,11 @@ const EditProfile = () => {
 
               {/* Portfolio Projects */}
               <div>
-                <h3 className="text-gray-900 mb-2 text-base font-semibold">Portfolio Projects</h3>
-                <p className="text-gray-600 text-sm mb-4">Upload pictures of previous work done</p>
+                <h3 className="text-gray-900 dark:text-slate-100 mb-2 text-base font-semibold">Portfolio Projects</h3>
+                <p className="text-gray-600 dark:text-slate-400 text-sm mb-4">Upload pictures of previous work done</p>
                 <div
                   onClick={() => openUpload('portfolio')}
-                  className="border-2 border-dashed border-gray-300 rounded-lg p-10 bg-white hover:border-blue-600 transition-colors flex justify-center cursor-pointer"
+                  className="border-2 border-dashed border-gray-300 dark:border-[#2d3748] rounded-lg p-10 bg-white dark:bg-[#252b3b] hover:border-blue-600 transition-colors flex justify-center cursor-pointer"
                 >
                   <SquarePlus size={38} className="text-gray-400 hover:text-blue-600 transition-colors" />
                 </div>
@@ -785,7 +785,7 @@ const EditProfile = () => {
           />
 
           {/* Action Buttons */}
-          <div className="flex gap-4 justify-center mt-8 pt-8 border-t border-gray-200">
+          <div className="flex gap-4 justify-center mt-8 pt-8 border-t border-gray-200 dark:border-[#1e293b]">
             <Button fullWidth variant='danger' size="md" onClick={handleCancel}>Cancel</Button>
             <Button fullWidth size="md" onClick={handleSave} loading={loading}>Save</Button>
           </div>

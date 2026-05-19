@@ -76,11 +76,11 @@ function AccountOverview() {
   ];
 
   return (
-    <div className="relative min-h-screen bg-white flex items-center justify-center p-5 pb-20 md:pb-5 font-sans">
+    <div className="relative min-h-screen bg-white dark:bg-[#0f1117] flex items-center justify-center p-5 pb-20 md:pb-5 font-sans">
       {/* Back Button - Desktop */}
       <button 
         onClick={handleBackClick}
-        className="absolute hidden md:inline-flex items-center top-4 left-4 md:top-6 md:left-10 p-2 text-primary hover:bg-gray-100 rounded-lg transition-colors"
+        className="absolute hidden md:inline-flex items-center top-4 left-4 md:top-6 md:left-10 p-2 text-primary hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-lg transition-colors"
       >
         <ArrowLeft size={22} className="text-primary" />
         <span className="ml-1 text-lg">Go back</span>
@@ -98,7 +98,7 @@ function AccountOverview() {
       <div className="w-full mt-16 md:mt-0 max-w-5xl grid grid-cols-1 md:grid-cols-5 gap-6 md:gap-8">
         {/* Profile Card */}
         <div 
-          className="md:col-span-2 bg-white rounded-3xl p-8 shadow-custom border text-center backdrop-blur-sm animate-fade-in"
+          className="md:col-span-2 bg-white dark:bg-[#1a1f2e] rounded-3xl p-8 shadow-custom border dark:border-[#1e293b] text-center backdrop-blur-sm animate-fade-in"
         >
           {/* Profile Picture with Hover Effect */}
           <div 
@@ -124,26 +124,26 @@ function AccountOverview() {
 
           {/* User Info */}
           {/* [MOCK] Replace with GET /users/:id/overview — {name, email, location, completedProjects, activeProjects} */}
-          <h2 className="text-2xl font-bold text-gray-800 mb-1">
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-slate-200 mb-1">
             Gabriel Gordon-Mensah {/* [MOCK] Replace with authenticated user's name */}
           </h2>
-          <p className="text-gray-500 mb-2 text-base">
+          <p className="text-gray-500 dark:text-slate-500 mb-2 text-base">
             gordongabriel2004@gmail.com {/* [AUTH] Replace with authenticated user's email from session/token */}
           </p>
-          <p className="text-gray-400 text-sm flex items-center justify-center gap-2 mb-6">
+          <p className="text-gray-400 dark:text-slate-500 text-sm flex items-center justify-center gap-2 mb-6">
             <MapPin className="w-4 h-4" />
             Achimota, Accra {/* [MOCK] Replace with user location from profile */}
           </p>
 
           {/* Stats */}
-          <div className="flex justify-around items-center bg-slate-50 rounded-2xl p-5 mt-4 border border-slate-200">
+          <div className="flex justify-around items-center bg-slate-50 dark:bg-[#252b3b] rounded-2xl p-5 mt-4 border border-slate-200 dark:border-[#1e293b]">
             <div className="text-center flex-1">
-              <p className="text-gray-500 text-sm mb-1">Completed Projects</p>
+              <p className="text-gray-500 dark:text-slate-500 text-sm mb-1">Completed Projects</p>
               <p className="text-indigo-500 text-2xl font-bold">10</p>{/* [DB] Aggregate query on bookings table WHERE status='completed' */}
             </div>
-            <div className="w-px h-10 bg-slate-200"></div>
+            <div className="w-px h-10 bg-slate-200 dark:bg-[#1e293b]"></div>
             <div className="text-center flex-1">
-              <p className="text-gray-500 text-sm mb-1">Active Projects</p>
+              <p className="text-gray-500 dark:text-slate-500 text-sm mb-1">Active Projects</p>
               <p className="text-indigo-500 text-2xl font-bold">1</p>{/* [DB] Aggregate query on bookings table WHERE status='active' */}
             </div>
           </div>
@@ -160,17 +160,17 @@ function AccountOverview() {
               <Link 
                 key={index}
                 to={item.to} 
-                className="bg-white w-full border-2 border-slate-200 rounded-2xl p-5 cursor-pointer transition-all duration-300 flex items-center justify-between text-left hover:border-indigo-500 hover:-translate-y-0.5 hover:shadow-xl group"
+                className="bg-white dark:bg-[#1a1f2e] w-full border-2 border-slate-200 dark:border-[#1e293b] rounded-2xl p-5 cursor-pointer transition-all duration-300 flex items-center justify-between text-left hover:border-indigo-500 hover:-translate-y-0.5 hover:shadow-xl group"
               >
                 <div className="flex items-center gap-4">
                   <div className="p-3 bg-primary/10 rounded-xl group-hover:bg-primary/20 transition-colors">
                     <Icon className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <span className="text-gray-800 font-semibold text-base block mb-1">
+                    <span className="text-gray-800 dark:text-slate-200 font-semibold text-base block mb-1">
                       {item.label}
                     </span>
-                    <span className="text-gray-500 text-sm">
+                    <span className="text-gray-500 dark:text-slate-500 text-sm">
                       {item.description}
                     </span>
                   </div>

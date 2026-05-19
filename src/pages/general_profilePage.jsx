@@ -2,6 +2,7 @@ import React, { useState, useEffect, memo, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useNotification } from '../contexts/NotificationContext';
+import { useFavourites } from '../contexts/FavouritesContext';
 import { useNavigateBack } from '../hooks/useNavigateBack';
 import { ReviewThread } from '../components/shared';
 
@@ -123,18 +124,18 @@ const SkillBadge = memo(({ skill, index }) => (
 
 // Info Card
 const InfoCard = memo(({ title, children, icon: Icon, delay = 0 }) => (
-  <motion.div 
-    className="bg-white rounded-lg shadow p-6"
+  <motion.div
+    className="bg-white dark:bg-[#1a1f2e] rounded-lg shadow p-6 hover:shadow-xl transition-shadow duration-200"
     variants={scaleIn}
     initial="hidden"
     whileInView="visible"
     viewport={{ once: true }}
     transition={{ delay }}
-    whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)" }}
+    whileHover={{ y: -5 }}
   >
     <div className="flex items-center space-x-2 mb-4">
       {Icon && <Icon className="w-5 h-5 text-blue-600" />}
-      <h2 className="text-xl text-black font-bold">{title}</h2>
+      <h2 className="text-xl text-black dark:text-slate-100 font-bold">{title}</h2>
     </div>
     {children}
   </motion.div>
@@ -162,13 +163,13 @@ const WorkingHoursDisplay = memo(({ selectedDays, weekdaysTime, weekendTime, cus
   }
 
   if (rows.length === 0) {
-    return <p className="text-gray-500 text-sm">Not specified</p>;
+    return <p className="text-gray-500 dark:text-slate-500 text-sm">Not specified</p>;
   }
 
   return (
     <div className="space-y-2">
       {rows.map(({ label, start, end }) => (
-        <div key={label} className="flex items-center justify-between text-gray-700">
+        <div key={label} className="flex items-center justify-between text-gray-700 dark:text-slate-300">
           <span className="font-medium">{label}</span>
           <span className="text-sm">{formatTime(start)} – {formatTime(end)}</span>
         </div>
@@ -185,7 +186,7 @@ const InfoItem = memo(({ icon: Icon, text }) => (
     transition={{ duration: 0.2 }}
   >
     <Icon className="w-6 h-6 text-blue-600" />
-    <span className="text-gray-700">{text}</span>
+    <span className="text-gray-700 dark:text-slate-300">{text}</span>
   </motion.div>
 ));
 
@@ -193,9 +194,9 @@ const InfoItem = memo(({ icon: Icon, text }) => (
 const ActionButton = memo(({ icon: Icon, text, onClick, variant = 'primary' }) => (
   <motion.button
     className={`py-4 rounded-lg flex items-center justify-center space-x-2 transition-colors font-semibold ${
-      variant === 'primary' 
-        ? 'bg-blue-600 text-white hover:bg-blue-700' 
-        : 'bg-white text-blue-600 border-2 border-blue-600 hover:bg-blue-50'
+      variant === 'primary'
+        ? 'bg-blue-600 text-white hover:bg-blue-700'
+        : 'bg-white dark:bg-[#1a1f2e] text-blue-600 border-2 border-blue-600 hover:bg-blue-50 dark:hover:bg-primary/10'
     }`}
     whileHover={{ scale: 1.02 }}
     whileTap={{ scale: 0.98 }}
@@ -214,9 +215,9 @@ const RatingBar = memo(({ rating, index }) => (
     animate={{ opacity: 1, x: 0 }}
     transition={{ delay: index * 0.05 }}
   >
-    <span className="w-8 text-right">{rating.stars}</span>
+    <span className="w-8 text-right dark:text-slate-300">{rating.stars}</span>
     <Star className="w-4 h-4 fill-blue-600 text-blue-600" />
-    <div className="flex-1 bg-gray-200 rounded-full h-2 overflow-hidden">
+    <div className="flex-1 bg-gray-200 dark:bg-[#252b3b] rounded-full h-2 overflow-hidden">
       <motion.div
         className="bg-blue-600 h-2 rounded-full"
         initial={{ width: 0 }}
@@ -224,7 +225,7 @@ const RatingBar = memo(({ rating, index }) => (
         transition={{ duration: 0.8, delay: index * 0.1 }}
       />
     </div>
-    <span className="w-12 text-right text-sm text-gray-600">
+    <span className="w-12 text-right text-sm text-gray-600 dark:text-slate-400">
       {rating.percentage}%
     </span>
   </motion.div>
@@ -233,22 +234,22 @@ const RatingBar = memo(({ rating, index }) => (
 // Review Item
 const ReviewItem = memo(({ review, index }) => (
   <motion.div 
-    className="border-t pt-6"
+    className="border-t dark:border-[#1e293b] pt-6"
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ delay: index * 0.1 }}
   >
     <div className="flex items-start space-x-4">
-      <div className="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center">
-        <User size={32} className="text-gray-400" />
+      <div className="w-12 h-12 bg-gray-300 dark:bg-[#252b3b] rounded-full flex items-center justify-center">
+        <User size={32} className="text-gray-400 dark:text-slate-500" />
       </div>
       <div className="flex-1">
         <div className="flex items-start justify-between mb-2">
           <div>
-            <div className="font-semibold text-gray-900">{review.name}</div>
-            <p className="text-sm text-gray-600">{review.jobType}</p>
+            <div className="font-semibold text-gray-900 dark:text-slate-100">{review.name}</div>
+            <p className="text-sm text-gray-600 dark:text-slate-400">{review.jobType}</p>
           </div>
-          <span className="text-sm text-gray-500">{review.date}</span>
+          <span className="text-sm text-gray-500 dark:text-slate-500">{review.date}</span>
         </div>
         <div className="flex space-x-1 my-2">
           {[...Array(5)].map((_, i) => (
@@ -257,12 +258,12 @@ const ReviewItem = memo(({ review, index }) => (
               className={`w-4 h-4 ${
                 i < review.rating
                   ? 'fill-blue-600 text-blue-600'
-                  : 'text-gray-300'
+                  : 'text-gray-300 dark:text-slate-600'
               }`}
             />
           ))}
         </div>
-        <p className="text-gray-700 mt-2">{review.text}</p>
+        <p className="text-gray-700 dark:text-slate-300 mt-2">{review.text}</p>
       </div>
     </div>
   </motion.div>
@@ -411,10 +412,12 @@ const GeneralProfile = () => {
   const PROFILE_DATA = MOCK_PROVIDER;
   const RATING_DISTRIBUTION = MOCK_RATING_DISTRIBUTION;
 
+  const { isFavourite, toggleFavourite } = useFavourites();
+  const isFavorite = isFavourite(PROFILE_DATA.id);
+
   const [reviewsOpen, setReviewsOpen] = useState(false);
   const [showCallModal, setShowCallModal] = useState(null);
   const [notification, setNotification] = useState('');
-  const [isFavorite, setIsFavorite] = useState(false);
   const [replyTarget, setReplyTarget] = useState(null);
   const [replyText, setReplyText] = useState("");
 
@@ -522,42 +525,49 @@ const handlePostReply = () => {
     showNotification('Profile link copied to clipboard!');
   };
 
-  // [API] POST /users/:id/favorites — {providerId} → {saved: true} / DELETE for removal
+  // [API] POST /users/:id/favourites — {providerId} → {saved: true} / DELETE for removal
   const toggleFavorite = () => {
-    setIsFavorite(!isFavorite);
-    showNotification(isFavorite ? 'Removed from favorites' : 'Added to favorites');
+    toggleFavourite({
+      id: PROFILE_DATA.id,
+      name: PROFILE_DATA.name,
+      role: PROFILE_DATA.occupation,
+      location: PROFILE_DATA.location,
+      rating: PROFILE_DATA.rating?.overall ?? 0,
+      image: PROFILE_DATA.profileImage ?? null,
+    });
+    showNotification(isFavorite ? 'Removed from favourites' : 'Added to favourites');
   };
 
   if (isLoading) return <GeneralProfileSkeleton />;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-[#0f1117]">
       {/* Header with Back Button and Actions */}
       <motion.header
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="bg-white shadow-sm sticky top-0 z-40"
+        className="bg-white dark:bg-[#1a1f2e] shadow-sm sticky top-0 z-40"
       >
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <button
               onClick={handleBack}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-lg transition-colors"
             >
-              <ArrowLeft className="w-6 h-6 text-gray-700" />
+              <ArrowLeft className="w-6 h-6 text-gray-700 dark:text-slate-300" />
             </button>
             <div className="flex gap-2">
               <button
                 onClick={handleShare}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-lg transition-colors"
               >
-                <Share2 className="w-5 h-5 text-gray-700" />
+                <Share2 className="w-5 h-5 text-gray-700 dark:text-slate-300" />
               </button>
               <button
                 onClick={toggleFavorite}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-lg transition-colors"
               >
-                <Heart className={`w-5 h-5 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-700'}`} />
+                <Heart className={`w-5 h-5 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-700 dark:text-slate-300'}`} />
               </button>
             </div>
           </div>
@@ -568,9 +578,9 @@ const handlePostReply = () => {
       <HeroSection heroUrl={PROFILE_DATA.heroUrl} />
 
       {/* Profile Card */}
-      <div className="max-w-7xl mx-auto px-4 -mt-14">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 -mt-14">
         <motion.div 
-          className="bg-white rounded-lg shadow-lg p-6"
+          className="bg-white dark:bg-[#1a1f2e] rounded-lg shadow-lg p-6"
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
@@ -586,29 +596,29 @@ const handlePostReply = () => {
             transition={{ delay: 0.2 }}
           >
             <div className="flex items-center gap-2 mb-2">
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-slate-100">
                 {PROFILE_DATA.name}
               </h1>
             </div>
 
             <div className="flex items-center space-x-2">
                           <BriefcaseBusiness className="mb-2 w-6 h-6 text-blue-600" />
-                        <span className="text-lg text-gray-700 mb-3">{PROFILE_DATA.occupation}</span>
+                        <span className="text-lg text-gray-700 dark:text-slate-300 mb-3">{PROFILE_DATA.occupation}</span>
                         </div>
 
            <div className="flex items-center space-x-4 mb-4 flex-wrap gap-2">
                          <div className="flex items-center space-x-1">
                            <Star className="w-4 h-4 fill-blue-600 text-blue-600" />
                            <span className="font-semibold text-blue-600">{PROFILE_DATA.rating}</span>
-                           <span className="text-gray-500 text-sm">({PROFILE_DATA.reviewCount} reviews)</span>
+                           <span className="text-gray-500 dark:text-slate-500 text-sm">({PROFILE_DATA.reviewCount} reviews)</span>
                          </div>
-                         <div className="flex items-center space-x-2 text-gray-600">
+                         <div className="flex items-center space-x-2 text-gray-600 dark:text-slate-400">
                            <MapPin className="w-4 h-4 text-blue-600" />
                            <span>{PROFILE_DATA.location}</span>
                          </div>
                        </div>
 
-            <p className="text-gray-700 mb-4">{PROFILE_DATA.description}</p>
+            <p className="text-gray-700 dark:text-slate-300 mb-4">{PROFILE_DATA.description}</p>
 
             <div className="flex flex-wrap gap-3 mb-4">
               {PROFILE_DATA.skills.map((skill, index) => (
@@ -621,7 +631,7 @@ const handlePostReply = () => {
                 {PROFILE_DATA.categories.map((cat, index) => (
                   <span
                     key={index}
-                    className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm font-medium"
+                    className="px-3 py-1 bg-gray-100 dark:bg-[#252b3b] text-gray-600 dark:text-slate-400 rounded-full text-sm font-medium"
                   >
                     {cat}
                   </span>
@@ -645,22 +655,22 @@ const handlePostReply = () => {
           <InfoCard title="" delay={0}>
             <div className="text-center">
               <CheckCircle className="w-8 h-8 text-blue-600 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-gray-900">{PROFILE_DATA.hiredCount}</div>
-              <div className="text-sm text-gray-600">Jobs Completed</div>
+              <div className="text-2xl font-bold text-gray-900 dark:text-slate-100">{PROFILE_DATA.hiredCount}</div>
+              <div className="text-sm text-gray-600 dark:text-slate-400">Jobs Completed</div>
             </div>
           </InfoCard>
           <InfoCard title="" delay={0.1}>
             <div className="text-center">
               <Award className="w-8 h-8 text-blue-600 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-gray-900">{PROFILE_DATA.rating}</div>
-              <div className="text-sm text-gray-600">Average Rating</div>
+              <div className="text-2xl font-bold text-gray-900 dark:text-slate-100">{PROFILE_DATA.rating}</div>
+              <div className="text-sm text-gray-600 dark:text-slate-400">Average Rating</div>
             </div>
           </InfoCard>
           <InfoCard title="" delay={0.2}>
             <div className="text-center">
               <TrendingUp className="w-8 h-8 text-blue-600 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-gray-900">98%</div>{/* [DB] Computed from bookings table; consider caching */}
-              <div className="text-sm text-gray-600">Success Rate</div>
+              <div className="text-2xl font-bold text-gray-900 dark:text-slate-100">98%</div>{/* [DB] Computed from bookings table; consider caching */}
+              <div className="text-sm text-gray-600 dark:text-slate-400">Success Rate</div>
             </div>
           </InfoCard>
         </motion.div>
@@ -687,7 +697,7 @@ const handlePostReply = () => {
           <InfoCard title="Payment Methods" delay={0.1}>
             <div className="space-y-1">
               {PROFILE_DATA.paymentMethods.map((m, i) => (
-                <p key={i} className="text-gray-700">{PAYMENT_LABELS[m] || m}</p>
+                <p key={i} className="text-gray-700 dark:text-slate-300">{PAYMENT_LABELS[m] || m}</p>
               ))}
             </div>
           </InfoCard>
@@ -736,7 +746,7 @@ const handlePostReply = () => {
               {PROFILE_DATA.languages.map((lang, index) => (
                 <span
                   key={index}
-                  className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-medium"
+                  className="px-3 py-1 bg-gray-100 dark:bg-[#252b3b] text-gray-700 dark:text-slate-300 rounded-full text-sm font-medium"
                 >
                   {lang}
                 </span>
@@ -787,7 +797,7 @@ const handlePostReply = () => {
 
         {/* Reviews Section */}
         <motion.div 
-          className="bg-white rounded-lg shadow mt-8"
+          className="bg-white dark:bg-[#1a1f2e] rounded-lg shadow mt-8"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -795,17 +805,17 @@ const handlePostReply = () => {
         >
           <motion.button
             onClick={() => setReviewsOpen(!reviewsOpen)}
-            className="w-full p-6 flex items-center justify-between hover:bg-gray-50 transition-colors"
-            whileHover={{ backgroundColor: "#f9fafb" }}
+            className="w-full p-6 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-[#252b3b] transition-colors"
+            whileHover={{ backgroundColor: undefined }}
           >
-            <h2 className="text-xl font-bold text-gray-900">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-slate-100">
               Reviews ({PROFILE_DATA.reviewCount})
             </h2>
             <motion.div
               animate={{ rotate: reviewsOpen ? 180 : 0 }}
               transition={{ duration: 0.3 }}
             >
-              <ChevronDown className="w-6 h-6 text-gray-600" />
+              <ChevronDown className="w-6 h-6 text-gray-600 dark:text-slate-400" />
             </motion.div>
           </motion.button>
 
@@ -826,7 +836,7 @@ const handlePostReply = () => {
                     transition={{ delay: 0.2 }}
                   >
                     <div className="text-center mb-6">
-                      <div className="text-5xl font-bold text-gray-900">
+                      <div className="text-5xl font-bold text-gray-900 dark:text-slate-100">
                         Great {PROFILE_DATA.rating}
                       </div>
                       <div className="flex justify-center space-x-1 my-2">
@@ -841,7 +851,7 @@ const handlePostReply = () => {
                           />
                         ))}
                       </div>
-                      <div className="text-gray-600">
+                      <div className="text-gray-600 dark:text-slate-400">
                         {PROFILE_DATA.reviewCount} reviews
                       </div>
                     </div>
@@ -867,8 +877,8 @@ const handlePostReply = () => {
 </div>
 
 {replyTarget && (
-  <div className="mt-6 bg-gray-50 p-4 rounded-lg border">
-    <p className="text-sm text-gray-600 mb-2">
+  <div className="mt-6 bg-gray-50 dark:bg-[#252b3b] p-4 rounded-lg border dark:border-[#1e293b]">
+    <p className="text-sm text-gray-600 dark:text-slate-400 mb-2">
       Replying to <strong>{replyTarget.author.name}</strong>:
 <span className="italic text-gray-500 ml-1">
   “{replyTarget.reviewText.slice(0, 40)}…”
@@ -879,7 +889,7 @@ const handlePostReply = () => {
     <textarea
       value={replyText}
       onChange={(e) => setReplyText(e.target.value)}
-      className="w-full bg-white text-gray-900 border rounded-lg p-3 focus:border-2 focus:border-blue-600 focus:outline-none"
+      className="w-full bg-white dark:bg-[#1a1f2e] text-gray-900 dark:text-slate-200 border dark:border-[#2d3748] rounded-lg p-3 focus:border-2 focus:border-blue-600 focus:outline-none"
       rows={3}
       placeholder="Write your reply..."
     />
@@ -887,7 +897,7 @@ const handlePostReply = () => {
     <div className="flex justify-end mt-3 gap-3">
       <button
         onClick={() => setReplyTarget(null)}
-        className="px-6 py-2 bg-white border-2 border-red-600 text-red-600 rounded-lg hover:bg-red-50 transition-colors font-semibold flex items-center gap-2"
+        className="px-6 py-2 bg-white dark:bg-[#1a1f2e] border-2 border-red-600 text-red-600 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors font-semibold flex items-center gap-2"
                       >
                       Cancel
                       </button>

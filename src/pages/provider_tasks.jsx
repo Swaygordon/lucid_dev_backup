@@ -229,26 +229,26 @@ const ProviderBookings = () => {
   const getStatusConfig = (status) => {
     const configs = {
       pending: {
-        bg: 'bg-yellow-100',
-        text: 'text-yellow-700',
+        bg: 'bg-yellow-100 dark:bg-amber-900/20',
+        text: 'text-yellow-700 dark:text-amber-400',
         icon: Clock,
         label: 'Pending'
       },
       'in-progress': {
-        bg: 'bg-blue-100',
-        text: 'text-blue-700',
+        bg: 'bg-blue-100 dark:bg-blue-900/20',
+        text: 'text-blue-700 dark:text-blue-400',
         icon: AlertCircle,
         label: 'In Progress'
       },
       completed: {
-        bg: 'bg-green-100',
-        text: 'text-green-700',
+        bg: 'bg-green-100 dark:bg-green-900/20',
+        text: 'text-green-700 dark:text-green-400',
         icon: CheckCircle,
         label: 'Completed'
       },
       cancelled: {
-        bg: 'bg-red-100',
-        text: 'text-red-700',
+        bg: 'bg-red-100 dark:bg-red-900/20',
+        text: 'text-red-700 dark:text-red-400',
         icon: XCircle,
         label: 'Cancelled'
       }
@@ -258,9 +258,9 @@ const ProviderBookings = () => {
 
   const getUrgencyConfig = (urgency) => {
     const configs = {
-      normal: { bg: 'bg-blue-100', text: 'text-blue-700', label: 'Normal' },
-      urgent: { bg: 'bg-orange-100', text: 'text-orange-700', label: 'Urgent' },
-      emergency: { bg: 'bg-red-100', text: 'text-red-700', label: 'Emergency' }
+      normal: { bg: 'bg-blue-100 dark:bg-blue-900/20', text: 'text-blue-700 dark:text-blue-400', label: 'Normal' },
+      urgent: { bg: 'bg-orange-100 dark:bg-orange-900/20', text: 'text-orange-700 dark:text-orange-400', label: 'Urgent' },
+      emergency: { bg: 'bg-red-100 dark:bg-red-900/20', text: 'text-red-700 dark:text-red-400', label: 'Emergency' }
     };
     return configs[urgency] || configs.normal;
   };
@@ -293,8 +293,8 @@ const ProviderBookings = () => {
         <Card hoverable className="relative">
           <div className="flex items-start justify-between mb-4">
             <div className="flex-1">
-              <h3 className="text-xl font-bold text-gray-900 mb-2">{task.title}</h3>
-              <div className="flex items-center gap-2 text-gray-600 mb-2">
+              <h3 className="text-xl font-bold text-gray-900 dark:text-slate-100 mb-2">{task.title}</h3>
+              <div className="flex items-center gap-2 text-gray-600 dark:text-slate-400 mb-2">
                 <User className="w-4 h-4" />
                 <span className="text-sm">{task.client}</span>
               </div>
@@ -304,43 +304,43 @@ const ProviderBookings = () => {
                 <StatusIcon className="w-3 h-3" />
                 {statusConfig.label}
               </span>
-              <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                <MoreVertical className="w-5 h-5 text-gray-600" />
+              <button className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-lg transition-colors">
+                <MoreVertical className="w-5 h-5 text-gray-600 dark:text-slate-400" />
               </button>
             </div>
           </div>
 
-          <p className="text-gray-600 mb-4 line-clamp-2">{task.description}</p>
+          <p className="text-gray-600 dark:text-slate-400 mb-4 line-clamp-2">{task.description}</p>
 
           <div className="grid grid-cols-2 gap-3 mb-4">
-            <div className="flex items-center gap-2 text-sm text-gray-600">
+            <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-slate-400">
               <Calendar className="w-4 h-4 text-blue-600" />
               <span>{task.date}</span>
             </div>
-            <div className="flex items-center gap-2 text-sm text-gray-600">
+            <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-slate-400">
               <Clock className="w-4 h-4 text-blue-600" />
               <span>{task.time}</span>
             </div>
-            <div className="flex items-center gap-2 text-sm text-gray-600">
+            <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-slate-400">
               <MapPin className="w-4 h-4 text-blue-600" />
               <span>{task.location}</span>
             </div>
-            <div className="flex items-center gap-2 text-sm text-gray-600">
+            <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-slate-400">
               <Clock className="w-4 h-4 text-blue-600" />
               <span>{task.duration}</span>
             </div>
           </div>
 
-          <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+          <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-[#1e293b]">
             <div className="flex items-center gap-2">
               <DollarSign className="w-5 h-5 text-green-600" />
-              <span className="text-xl font-bold text-gray-900">GH₵{task.price}</span>
+              <span className="text-xl font-bold text-gray-900 dark:text-slate-100">GH₵{task.price}</span>
             </div>
             <div className="flex gap-2">
               {task.status === 'completed' && task.rating && (
                 <div className="flex items-center gap-1 mr-2">
                   <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                  <span className="text-sm font-semibold">{task.rating}.0</span>
+                  <span className="text-sm font-semibold dark:text-slate-300">{task.rating}.0</span>
                 </div>
               )}
               {/* [MOCK] Replace with GET /bookings/:id on click to fetch full task detail */}
@@ -390,13 +390,13 @@ const ProviderBookings = () => {
             initial={{ scale: 0.9, y: 50 }}
             animate={{ scale: 1, y: 0 }}
             exit={{ scale: 0.9, y: 50 }}
-            className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+            className="bg-white dark:bg-[#1a1f2e] rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="sticky top-0 bg-white border-b border-gray-200 p-6 flex items-center justify-between z-10">
+            <div className="sticky top-0 bg-white dark:bg-[#1a1f2e] border-b border-gray-200 dark:border-[#1e293b] p-6 flex items-center justify-between z-10">
               <div className="flex-1">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">{task.title}</h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100 mb-2">{task.title}</h2>
                 <div className="flex items-center gap-3">
                   <span className={`px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1 ${statusConfig.bg} ${statusConfig.text}`}>
                     <StatusIcon className="w-3 h-3" />
@@ -409,9 +409,9 @@ const ProviderBookings = () => {
               </div>
               <button
                 onClick={onClose}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-lg transition-colors"
               >
-                <X className="w-6 h-6 text-gray-600" />
+                <X className="w-6 h-6 text-gray-600 dark:text-slate-400" />
               </button>
             </div>
 
@@ -420,17 +420,17 @@ const ProviderBookings = () => {
               {/* Client Information */}
               {/* [DB] Client contact details should come from GET /users/:clientId, not stored on every booking record */}
               <div>
-                <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-slate-100 mb-4 flex items-center gap-2">
                   <User className="w-5 h-5 text-blue-600" />
                   Client Information
                 </h3>
-                <div className="grid md:grid-cols-2 gap-4 bg-gray-50 rounded-lg p-4">
+                <div className="grid md:grid-cols-2 gap-4 bg-gray-50 dark:bg-[#252b3b] rounded-lg p-4">
                   <div>
-                    <p className="text-sm text-gray-600 mb-1">Name</p>
-                    <p className="font-semibold text-gray-900">{task.client}</p>
+                    <p className="text-sm text-gray-600 dark:text-slate-400 mb-1">Name</p>
+                    <p className="font-semibold text-gray-900 dark:text-slate-100">{task.client}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600 mb-1">Phone</p>
+                    <p className="text-sm text-gray-600 dark:text-slate-400 mb-1">Phone</p>
                     <a href={`tel:${task.contactPhone}`} className="font-semibold text-blue-600 hover:underline flex items-center gap-1">
                       <Phone className="w-4 h-4" />
                       {task.contactPhone}
@@ -438,7 +438,7 @@ const ProviderBookings = () => {
                   </div>
                   {task.contactEmail && (
                     <div>
-                      <p className="text-sm text-gray-600 mb-1">Email</p>
+                      <p className="text-sm text-gray-600 dark:text-slate-400 mb-1">Email</p>
                       <a href={`mailto:${task.contactEmail}`} className="font-semibold text-blue-600 hover:underline flex items-center gap-1">
                         <Mail className="w-4 h-4" />
                         {task.contactEmail}
@@ -450,29 +450,29 @@ const ProviderBookings = () => {
 
               {/* Job Details */}
               <div>
-                <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-slate-100 mb-4 flex items-center gap-2">
                   <FileText className="w-5 h-5 text-blue-600" />
                   Job Details
                 </h3>
                 <div className="space-y-4">
                   <div>
-                    <p className="text-sm text-gray-600 mb-1">Description</p>
-                    <p className="text-gray-900 bg-gray-50 rounded-lg p-3">{task.description}</p>
+                    <p className="text-sm text-gray-600 dark:text-slate-400 mb-1">Description</p>
+                    <p className="text-gray-900 dark:text-slate-200 bg-gray-50 dark:bg-[#252b3b] rounded-lg p-3">{task.description}</p>
                   </div>
 
                   <div className="grid md:grid-cols-3 gap-4">
                     <div>
-                      <p className="text-sm text-gray-600 mb-1">Estimated Duration</p>
-                      <p className="font-semibold text-gray-900">{task.estimatedDuration || task.duration}</p>
+                      <p className="text-sm text-gray-600 dark:text-slate-400 mb-1">Estimated Duration</p>
+                      <p className="font-semibold text-gray-900 dark:text-slate-100">{task.estimatedDuration || task.duration}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-600 mb-1">Budget Range</p>
-                      <p className="font-semibold text-gray-900">
+                      <p className="text-sm text-gray-600 dark:text-slate-400 mb-1">Budget Range</p>
+                      <p className="font-semibold text-gray-900 dark:text-slate-100">
                         GH₵{task.budgetMin} - GH₵{task.budgetMax}
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm text-gray-600 mb-1">Quoted Price</p>
+                      <p className="text-sm text-gray-600 dark:text-slate-400 mb-1">Quoted Price</p>
                       <p className="font-semibold text-green-600 text-lg">GH₵{task.price}</p>
                     </div>
                   </div>
@@ -481,19 +481,19 @@ const ProviderBookings = () => {
 
               {/* Schedule */}
               <div>
-                <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-slate-100 mb-4 flex items-center gap-2">
                   <Calendar className="w-5 h-5 text-blue-600" />
                   Schedule
                 </h3>
-                <div className="grid md:grid-cols-2 gap-4 bg-gray-50 rounded-lg p-4">
+                <div className="grid md:grid-cols-2 gap-4 bg-gray-50 dark:bg-[#252b3b] rounded-lg p-4">
                   <div>
-                    <p className="text-sm text-gray-600 mb-1">Preferred Date & Time</p>
-                    <p className="font-semibold text-gray-900">{task.date} at {task.time}</p>
+                    <p className="text-sm text-gray-600 dark:text-slate-400 mb-1">Preferred Date & Time</p>
+                    <p className="font-semibold text-gray-900 dark:text-slate-100">{task.date} at {task.time}</p>
                   </div>
                   {task.alternateDate && (
                     <div>
-                      <p className="text-sm text-gray-600 mb-1">Alternate Date & Time</p>
-                      <p className="font-semibold text-gray-900">{task.alternateDate} at {task.alternateTime}</p>
+                      <p className="text-sm text-gray-600 dark:text-slate-400 mb-1">Alternate Date & Time</p>
+                      <p className="font-semibold text-gray-900 dark:text-slate-100">{task.alternateDate} at {task.alternateTime}</p>
                     </div>
                   )}
                 </div>
@@ -501,31 +501,31 @@ const ProviderBookings = () => {
 
               {/* Location */}
               <div>
-                <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-slate-100 mb-4 flex items-center gap-2">
                   <MapPin className="w-5 h-5 text-blue-600" />
                   Location
                 </h3>
-                <div className="bg-gray-50 rounded-lg p-4 space-y-3">
+                <div className="bg-gray-50 dark:bg-[#252b3b] rounded-lg p-4 space-y-3">
                   <div>
-                    <p className="text-sm text-gray-600 mb-1">Address</p>
-                    <p className="font-semibold text-gray-900">{task.address}</p>
+                    <p className="text-sm text-gray-600 dark:text-slate-400 mb-1">Address</p>
+                    <p className="font-semibold text-gray-900 dark:text-slate-100">{task.address}</p>
                   </div>
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
-                      <p className="text-sm text-gray-600 mb-1">Area</p>
-                      <p className="font-semibold text-gray-900">{task.area}, {task.city}</p>
+                      <p className="text-sm text-gray-600 dark:text-slate-400 mb-1">Area</p>
+                      <p className="font-semibold text-gray-900 dark:text-slate-100">{task.area}, {task.city}</p>
                     </div>
                     {task.landmark && (
                       <div>
-                        <p className="text-sm text-gray-600 mb-1">Landmark</p>
-                        <p className="font-semibold text-gray-900">{task.landmark}</p>
+                        <p className="text-sm text-gray-600 dark:text-slate-400 mb-1">Landmark</p>
+                        <p className="font-semibold text-gray-900 dark:text-slate-100">{task.landmark}</p>
                       </div>
                     )}
                   </div>
                   {task.postalCode && (
                     <div>
-                      <p className="text-sm text-gray-600 mb-1">Postal Code</p>
-                      <p className="font-semibold text-gray-900">{task.postalCode}</p>
+                      <p className="text-sm text-gray-600 dark:text-slate-400 mb-1">Postal Code</p>
+                      <p className="font-semibold text-gray-900 dark:text-slate-100">{task.postalCode}</p>
                     </div>
                   )}
                   <a
@@ -543,8 +543,8 @@ const ProviderBookings = () => {
               {/* Additional Notes */}
               {task.additionalNotes && (
                 <div>
-                  <h3 className="text-lg font-bold text-gray-900 mb-4">Additional Notes</h3>
-                  <p className="text-gray-900 bg-yellow-50 rounded-lg p-4 border-l-4 border-yellow-400">
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-slate-100 mb-4">Additional Notes</h3>
+                  <p className="text-gray-900 dark:text-slate-200 bg-yellow-50 dark:bg-amber-900/20 rounded-lg p-4 border-l-4 border-yellow-400 dark:border-amber-600">
                     {task.additionalNotes}
                   </p>
                 </div>
@@ -553,7 +553,7 @@ const ProviderBookings = () => {
               {/* Images */}
               {task.images && task.images.length > 0 && (
                 <div>
-                  <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-slate-100 mb-4 flex items-center gap-2">
                     <ImageIcon className="w-5 h-5 text-blue-600" />
                     Attached Images
                   </h3>
@@ -573,7 +573,7 @@ const ProviderBookings = () => {
             </div>
 
             {/* Modal Footer - Action Buttons */}
-            <div className="sticky bottom-0 bg-white border-t border-gray-200 p-6">
+            <div className="sticky bottom-0 bg-white dark:bg-[#1a1f2e] border-t border-gray-200 dark:border-[#1e293b] p-6">
               {task.status === 'pending' && (
                 <div className="flex gap-4">
                   {/* [API] PATCH /bookings/:id/status — {status: 'confirmed'} → {bookingId, status} */}
@@ -619,9 +619,9 @@ const ProviderBookings = () => {
                   {/* [DB] rating sourced from GET /reviews?bookingId={id} → {rating, reviewText, clientId} */}
                   {task.rating && (
                     <div className="flex items-center justify-center gap-1">
-                      <span className="text-gray-600">Client Rating:</span>
+                      <span className="text-gray-600 dark:text-slate-400">Client Rating:</span>
                       <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-                      <span className="font-bold text-gray-900">{task.rating}.0</span>
+                      <span className="font-bold text-gray-900 dark:text-slate-100">{task.rating}.0</span>
                     </div>
                   )}
                 </div>
@@ -642,24 +642,24 @@ const ProviderBookings = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-[#0f1117]">
       {/* Header */}
       <motion.header
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="bg-white shadow-sm sticky top-0 z-30"
+        className="bg-white dark:bg-[#1a1f2e] shadow-sm dark:border-b dark:border-[#1e293b] sticky top-0 z-30"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center gap-4">
             <button
               onClick={handleBackClick}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-lg transition-colors"
             >
-              <ArrowLeft className="w-6 h-6 text-gray-700" />
+              <ArrowLeft className="w-6 h-6 text-gray-700 dark:text-slate-300" />
             </button>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">My Tasks</h1>
-              <p className="text-gray-600 mt-1">Manage all your bookings and appointments</p>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-slate-100">My Tasks</h1>
+              <p className="text-gray-600 dark:text-slate-400 mt-1">Manage all your bookings and appointments</p>
             </div>
           </div>
         </div>
@@ -676,13 +676,13 @@ const ProviderBookings = () => {
           {/* Search Bar */}
           {/* [API] Pass search query as param: GET /bookings?providerId={id}&q={searchQuery} */}
           <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-slate-500" />
             <input
               type="text"
               placeholder="Search by title, client, or location..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 bg-white border-2 border-gray-200 rounded-lg focus:border-blue-600 focus:outline-none text-base"
+              className="w-full pl-12 pr-4 py-3 bg-white dark:bg-[#1a1f2e] dark:text-slate-200 dark:placeholder-slate-500 border-2 border-gray-200 dark:border-[#2d3748] rounded-lg focus:border-blue-600 focus:outline-none text-base"
             />
           </div>
 
@@ -695,14 +695,14 @@ const ProviderBookings = () => {
                 className={`px-4 py-2 rounded-lg font-semibold transition-all ${
                   activeFilter === filter.id
                     ? 'bg-blue-600 text-white shadow-md'
-                    : 'bg-white text-gray-700 hover:bg-gray-100 border-2 border-gray-200'
+                    : 'bg-white dark:bg-[#1a1f2e] text-gray-700 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-[#252b3b] border-2 border-gray-200 dark:border-[#2d3748]'
                 }`}
               >
                 {filter.label}
                 <span className={`ml-2 px-2 py-0.5 rounded-full text-xs ${
                   activeFilter === filter.id
                     ? 'bg-white/20'
-                    : 'bg-gray-200'
+                    : 'bg-gray-200 dark:bg-[#252b3b]'
                 }`}>
                   {filter.count}
                 </span>
@@ -725,9 +725,9 @@ const ProviderBookings = () => {
             variants={fadeIn}
           >
             <Card className="text-center py-12">
-              <AlertCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">No tasks found</h3>
-              <p className="text-gray-600">
+              <AlertCircle className="w-16 h-16 text-gray-400 dark:text-slate-500 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-slate-100 mb-2">No tasks found</h3>
+              <p className="text-gray-600 dark:text-slate-400">
                 {searchQuery
                   ? "Try adjusting your search terms"
                   : "You don't have any tasks in this category"}

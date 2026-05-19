@@ -138,12 +138,12 @@ const RatingDropdown = ({ value, onChange }) => {
 
   return (
     <div ref={ref} className="relative">
-      <label className="block text-sm font-medium text-gray-700 mb-2">Minimum Rating</label>
+      <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">Minimum Rating</label>
       <button
         type="button"
         onClick={() => setOpen(p => !p)}
-        className={`w-full flex items-center justify-between px-3 py-2.5 border-2 rounded-lg bg-white text-sm font-medium transition-all ${
-          open ? 'border-primary text-primary' : 'border-gray-200 text-gray-700 hover:border-gray-300'
+        className={`w-full flex items-center justify-between px-3 py-2.5 border-2 rounded-lg bg-white dark:bg-[#252b3b] text-sm font-medium transition-all ${
+          open ? 'border-primary text-primary' : 'border-gray-200 dark:border-[#2d3748] text-gray-700 dark:text-slate-300 hover:border-gray-300'
         }`}
       >
         {selected.label}
@@ -151,14 +151,14 @@ const RatingDropdown = ({ value, onChange }) => {
       </button>
 
       {open && (
-        <div className="absolute left-0 top-full mt-1.5 z-20 bg-white border border-gray-100 rounded-xl shadow-xl overflow-hidden w-full">
+        <div className="absolute left-0 top-full mt-1.5 z-20 bg-white dark:bg-[#252b3b] border border-gray-100 dark:border-[#1e293b] rounded-xl shadow-xl overflow-hidden w-full">
           {RATING_OPTIONS.map(opt => (
             <button
               key={opt.value}
               type="button"
               onClick={() => { onChange(opt.value); setOpen(false); }}
-              className={`w-full text-left px-4 py-2.5 text-sm transition-colors hover:bg-gray-50 ${
-                value === opt.value ? 'text-primary font-semibold bg-primary/5' : 'text-gray-700'
+              className={`w-full text-left px-4 py-2.5 text-sm transition-colors hover:bg-gray-50 dark:hover:bg-[#1a1f2e] ${
+                value === opt.value ? 'text-primary font-semibold bg-primary/5 dark:bg-primary/10' : 'text-gray-700 dark:text-slate-300'
               }`}
             >
               {opt.label}
@@ -177,12 +177,12 @@ const FilterSection = React.memo(({ onFilterChange, activeFilters }) => {
 
   return (
     <motion.div
-      className="bg-white rounded-lg shadow-sm p-4 mb-6"
+      className="bg-white dark:bg-[#1a1f2e] rounded-lg shadow-sm p-4 mb-6"
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
     >
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+        <h3 className="font-semibold text-gray-900 dark:text-slate-100 flex items-center gap-2">
           <Filter className="w-5 h-5" />
           Filters
         </h3>
@@ -208,33 +208,33 @@ const FilterSection = React.memo(({ onFilterChange, activeFilters }) => {
 // [MOCK] totalProviders and averageRating — replace with aggregates from GET /providers response metadata
 const StatsBar = React.memo(({ totalProviders, averageRating }) => (
   <motion.div
-    className="bg-blue-50 rounded-lg p-4 mb-6"
+    className="bg-blue-50 dark:bg-primary/10 rounded-lg p-4 mb-6"
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
   >
     <div className="grid grid-cols-2 gap-4 text-center">
       <div>
         <p className="text-2xl font-bold text-blue-600">{totalProviders}</p>
-        <p className="text-sm text-gray-600">Professionals</p>
+        <p className="text-sm text-gray-600 dark:text-slate-400">Professionals</p>
       </div>
       <div>
         <p className="text-2xl font-bold text-blue-600 flex items-center justify-center gap-1">
           <Star className="w-5 h-5 fill-blue-600" />
           {averageRating}
         </p>
-        <p className="text-sm text-gray-600">Avg Rating</p>
+        <p className="text-sm text-gray-600 dark:text-slate-400">Avg Rating</p>
       </div>
     </div>
   </motion.div>
 ));
 
 const ProfileCardSkeleton = () => (
-  <div className="bg-white rounded-lg shadow-sm p-4 animate-pulse">
-    <div className="w-20 h-20 bg-gray-300 rounded-full mx-auto mb-3" />
-    <div className="h-4 bg-gray-300 rounded mb-2" />
-    <div className="h-3 bg-gray-300 rounded mb-2" />
-    <div className="h-3 bg-gray-300 rounded mb-4" />
-    <div className="h-8 bg-gray-300 rounded" />
+  <div className="bg-white dark:bg-[#1a1f2e] rounded-lg shadow-sm p-4 animate-pulse">
+    <div className="w-20 h-20 bg-gray-300 dark:bg-[#252b3b] rounded-full mx-auto mb-3" />
+    <div className="h-4 bg-gray-300 dark:bg-[#252b3b] rounded mb-2" />
+    <div className="h-3 bg-gray-300 dark:bg-[#252b3b] rounded mb-2" />
+    <div className="h-3 bg-gray-300 dark:bg-[#252b3b] rounded mb-4" />
+    <div className="h-8 bg-gray-300 dark:bg-[#252b3b] rounded" />
   </div>
 );
 
@@ -262,7 +262,7 @@ const SelectedServiceSkeleton = () => (
 
     <div className="container mx-auto px-6 pb-16">
       {/* Stats bar */}
-      <div className="bg-blue-50 rounded-lg p-4 mb-6">
+      <div className="bg-blue-50 dark:bg-primary/10 rounded-lg p-4 mb-6">
         <div className="grid grid-cols-2 gap-4">
           {[0, 1].map(i => (
             <div key={i} className="flex flex-col items-center gap-2">
@@ -274,7 +274,7 @@ const SelectedServiceSkeleton = () => (
       </div>
 
       {/* Filter bar */}
-      <div className="bg-white rounded-lg shadow-sm p-4 mb-6 flex items-center justify-between">
+      <div className="bg-white dark:bg-[#1a1f2e] rounded-lg shadow-sm p-4 mb-6 flex items-center justify-between">
         <div className="h-5 w-20 bg-gray-200 rounded" />
         <div className="h-4 w-24 bg-gray-200 rounded" />
       </div>
@@ -449,7 +449,7 @@ const SelectedService = () => {
   if (isLoading) return <SelectedServiceSkeleton />;
 
   return (
-    <div className="min-h-screen bg-gray-100 pb-20">
+    <div className="min-h-screen bg-gray-100 dark:bg-[#0f1117] pb-20">
       {/* Hero */}
       <div className="relative w-full h-52 md:h-64 overflow-hidden">
         <img
@@ -493,10 +493,10 @@ const SelectedService = () => {
           variants={fadeInUp}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-slate-200 mb-4">
             {svcData?.name ?? skill} Services Near You
           </h2>
-          <p className="text-gray-600 text-lg">
+          <p className="text-gray-600 dark:text-slate-400 text-lg">
             {area
               ? `Showing ${profiles.length} professionals in ${area}`
               : `Choose from ${profiles.length} verified professionals`}
@@ -534,10 +534,10 @@ const SelectedService = () => {
             className="text-center py-16"
           >
             <MapPin className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-slate-100 mb-2">
               No providers found
             </h3>
-            <p className="text-gray-600 mb-6">
+            <p className="text-gray-600 dark:text-slate-400 mb-6">
               Try adjusting your filters or search in a different area
             </p>
             <button

@@ -5,7 +5,7 @@ import ProviderAccountOverview from './provider_account_overview';
 
 function AccountSkeleton() {
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center p-5 pb-20 md:pb-5 animate-pulse">
+    <div className="min-h-screen bg-white dark:bg-[#0f1117] flex items-center justify-center p-5 pb-20 md:pb-5 animate-pulse">
       <div className="w-full mt-20 md:mt-0 max-w-5xl grid grid-cols-1 md:grid-cols-5 gap-6 md:gap-8">
 
         {/* Profile card */}

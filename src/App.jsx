@@ -20,6 +20,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavig
 // useNotification() to show toast messages without prop drilling.
 import { NotificationProvider } from './contexts/NotificationContext';
 import { LocationProvider } from './contexts/LocationContext';
+import { ThemeProvider } from './contexts/ThemeContext';
+import { FavouritesProvider } from './contexts/FavouritesContext';
 
 // Supabase client — used here only in ProtectedRoute to check the session.
 // Pages import it directly from this same file when they need auth operations.
@@ -69,6 +71,8 @@ import ClientDashboard from './pages/client_dashboard.jsx';     // rendered insi
 import ProviderDashboard from './pages/provider_dashboard.jsx'; // rendered inside DashboardPage
 import DashboardPage from './pages/DashboardPage.jsx';          // /lucid/dashboard  (role-switcher)
 import EarningsPayments from './pages/earnings.jsx';            // /lucid/earnings  (provider only)
+import TransactionsPage from './pages/transactions.jsx';        // /lucid/transactions  (provider only)
+import Favourites from './pages/favourites.jsx';                // /lucid/favourites  (client only)
 
 // ─── Account & settings flow (Phase 6) ───────────────────────────────────────
 // AccountPage is a role-switcher: renders ClientAccountOverview or ProviderAccountOverview.
@@ -171,6 +175,7 @@ function Layout({ children }) {
     '/lucid/bookings/history',        // BookingHistoryPage (role-switcher wrapper)
     '/lucid/notifications/settings',  // NotificationSettings
     '/lucid/earnings',                // EarningsPayments (provider only)
+    '/lucid/transactions',            // TransactionsPage (provider only)
     '/lucid/messages',                // MessagesListPage
     '/lucid/account/profile',         // UserProfile (provider's own profile)
     '/lucid/bookings/confirmation',   // BookingConfirmation
@@ -179,7 +184,8 @@ function Layout({ children }) {
     '/lucid/account/profile/setup',  // ProviderProfileSetup (onboarding)
     '/lucid/help',                   // Help & Support page
     '/lucid/account/settings',       // AccountSettings (user info edits)
-    '/lucid/providers/me',        // GeneralProfile (public provider profile)  
+    '/lucid/providers/me',        // GeneralProfile (public provider profile)
+    '/lucid/favourites',              // Favourites (client's saved providers)  
   ];
 
   // Prefix-based hide — catches dynamic segments like /lucid/messages/abc123
@@ -216,7 +222,9 @@ function App() {
   return (
     // NotificationProvider must be outside Router so navbar and pages
     // can both call useNotification() for the same notification queue.
+    <ThemeProvider>
     <NotificationProvider>
+      <FavouritesProvider>
       <LocationProvider>
       <Router>
         {/* ScrollToTop resets scroll position on every route change */}
@@ -328,6 +336,14 @@ function App() {
               element={<ProtectedRoute><BookingHistoryPage /></ProtectedRoute>} />
             {/* Role-switcher: renders ClientHistory or ProviderHistory. */}
 
+            <Route path="/lucid/favourites"
+              element={
+                <ProtectedRoute allowedRoles={['client']}>
+                  <Favourites />
+                </ProtectedRoute>
+              } />
+            {/* Client's saved/favourite providers list. */}
+
             <Route path="/lucid/messages"
               element={<ProtectedRoute><MessagesListPage /></ProtectedRoute>} />
             {/* Inbox — list of all conversations for the logged-in user. */}
@@ -359,6 +375,14 @@ function App() {
             {/* Earnings dashboard: total income, withdrawal history, payout settings.
                 Clients do not have an earnings page — role guard prevents access. */}
 
+            <Route path="/lucid/transactions"
+              element={
+                <ProtectedRoute allowedRoles={['service_provider']}>
+                  <TransactionsPage />
+                </ProtectedRoute>
+              } />
+            {/* Full transaction history with search and filters. Linked from earnings page. */}
+
 
             {/* ── CATCH-ALL ─────────────────────────────────────────────────
                 Any URL not matched above redirects to the home page.
@@ -370,7 +394,9 @@ function App() {
         </Layout>
       </Router>
       </LocationProvider>
+      </FavouritesProvider>
     </NotificationProvider>
+    </ThemeProvider>
   );
 }
 

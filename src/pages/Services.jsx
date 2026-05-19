@@ -126,11 +126,11 @@ const ServiceCard = memo(({ service }) => {
   const Icon = service.icon;
   return (
     <Link to={`/lucid/services/${service.slug}`} className="block h-full">
-      <div className="h-full bg-white border border-gray-200 rounded-2xl p-6 flex flex-col items-center justify-center gap-3 hover:border-blue-500 hover:shadow-md transition-all duration-200 cursor-pointer group">
-        <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center group-hover:bg-blue-100 transition-colors">
+      <div className="h-full bg-white dark:bg-[#1a1f2e] border border-gray-200 dark:border-[#1e293b] rounded-2xl p-6 flex flex-col items-center justify-center gap-3 hover:border-blue-500 hover:shadow-md transition-all duration-200 cursor-pointer group">
+        <div className="w-12 h-12 rounded-xl bg-blue-50 dark:bg-primary/10 flex items-center justify-center group-hover:bg-blue-100 dark:group-hover:bg-primary/20 transition-colors">
           <Icon size={24} className="text-blue-700" />
         </div>
-        <span className="text-gray-800 text-sm font-medium text-center leading-snug">
+        <span className="text-gray-800 dark:text-slate-200 text-sm font-medium text-center leading-snug">
           {service.name}
         </span>
       </div>
@@ -182,7 +182,7 @@ const Services = () => {
   if (isLoading) return <ServicesSkeleton />;
 
   return (
-    <div className="w-full min-h-screen bg-gray-50">
+    <div className="w-full min-h-screen bg-gray-50 dark:bg-[#0f1117]">
 
       {/* ── Hero ── */}
       <header className="relative z-10" style={{ minHeight: 460 }}>
@@ -239,16 +239,16 @@ const Services = () => {
           </p>
           <form
             onSubmit={handleSearch}
-            className="max-w-2xl w-full mx-auto flex bg-white border border-gray-300 rounded-xl shadow-md"
+            className="max-w-2xl w-full mx-auto flex bg-white dark:bg-[#252b3b] border border-gray-300 dark:border-[#2d3748] rounded-xl shadow-md"
           >
             <input
               type="text"
               value={query}
               onChange={e => setQuery(e.target.value)}
               placeholder="What service do you need?"
-              className="flex-1 px-5 py-3 text-gray-900 outline-none text-base bg-transparent rounded-l-xl placeholder-gray-400"
+              className="flex-1 px-5 py-3 text-gray-900 dark:text-slate-200 outline-none text-base bg-transparent rounded-l-xl placeholder-gray-400 dark:placeholder-slate-500"
             />
-            <div className="flex items-center border-l border-gray-200">
+            <div className="flex items-center border-l border-gray-200 dark:border-[#1e293b]">
               <LocationPicker inline />
             </div>
             <button
@@ -265,7 +265,7 @@ const Services = () => {
       {/* ── Popular Services ── */}
       <section className="max-w-6xl mx-auto px-5 py-14">
         <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-slate-100">
             Popular services <span className="text-blue-600">near you</span>
           </h2>
           <Link
@@ -284,7 +284,7 @@ const Services = () => {
       </section>
 
       {/* ── Carousel 1 ── */}
-      <div className="bg-white">
+      <div className="bg-white dark:bg-[#1a1f2e]">
         <ServicesCarousel services={carousel1} />
       </div>
 
@@ -292,12 +292,12 @@ const Services = () => {
       <DownloadSection />
 
       {/* ── Carousel 2 ── */}
-      <div className="bg-white">
+      <div className="bg-white dark:bg-[#1a1f2e]">
         <ServicesCarousel services={carousel2} />
       </div>
 
       {/* ── Featured Category Section ── */}
-      <section className="bg-white pb-16">
+      <section className="bg-white dark:bg-[#1a1f2e] pb-16">
         <BusinessCategorySection
           serviceIcons={SERVICE_ICONS}
           businessCards={BUSINESS_CARDS}

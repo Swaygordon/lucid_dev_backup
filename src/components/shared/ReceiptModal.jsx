@@ -122,28 +122,28 @@ const ReceiptModalComponent = ({ booking, onClose, userType = 'provider' }) => {
           initial={{ scale: 0.9, y: 50 }}
           animate={{ scale: 1, y: 0 }}
           exit={{ scale: 0.9, y: 50 }}
-          className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+          className="bg-white dark:bg-[#1a1f2e] rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Action Bar - Hidden when printing */}
-          <div className="sticky top-0 bg-white border-b border-gray-200 p-4 flex items-center justify-between z-10 print:hidden">
-            <h2 className="text-xl font-bold text-gray-900">Service Receipt</h2>
+          <div className="sticky top-0 bg-white dark:bg-[#1a1f2e] border-b border-gray-200 dark:border-[#1e293b] p-4 flex items-center justify-between z-10 print:hidden">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-slate-100">Service Receipt</h2>
             <div className="flex items-center gap-2">
-              <button onClick={handleDownload} className="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="Download PDF">
-                <Download className="w-5 h-5 text-gray-700" />
+              <button onClick={handleDownload} className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-lg transition-colors" title="Download PDF">
+                <Download className="w-5 h-5 text-gray-700 dark:text-slate-300" />
               </button>
-              <button onClick={handlePrint} className="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="Print">
-                <Printer className="w-5 h-5 text-gray-700" />
+              <button onClick={handlePrint} className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-lg transition-colors" title="Print">
+                <Printer className="w-5 h-5 text-gray-700 dark:text-slate-300" />
               </button>
-              <button onClick={handleShare} className="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="Share">
-                <Share2 className="w-5 h-5 text-gray-700" />
+              <button onClick={handleShare} className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-lg transition-colors" title="Share">
+                <Share2 className="w-5 h-5 text-gray-700 dark:text-slate-300" />
               </button>
-              <button onClick={handleEmail} className="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="Email">
-                <Mail className="w-5 h-5 text-gray-700" />
+              <button onClick={handleEmail} className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-lg transition-colors" title="Email">
+                <Mail className="w-5 h-5 text-gray-700 dark:text-slate-300" />
               </button>
-              <div className="w-px h-6 bg-gray-300 mx-2" />
-              <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                <X className="w-5 h-5 text-gray-700" />
+              <div className="w-px h-6 bg-gray-300 dark:bg-[#1e293b] mx-2" />
+              <button onClick={onClose} className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-lg transition-colors">
+                <X className="w-5 h-5 text-gray-700 dark:text-slate-300" />
               </button>
             </div>
           </div>
@@ -151,27 +151,27 @@ const ReceiptModalComponent = ({ booking, onClose, userType = 'provider' }) => {
           {/* Receipt Content */}
           <div ref={receiptRef} className="p-8">
             {/* Header */}
-            <div className="text-center mb-6 pb-5 border-b-2 border-gray-300">
+            <div className="text-center mb-6 pb-5 border-b-2 border-gray-300 dark:border-[#1e293b]">
               <h1 className="text-2xl font-bold text-blue-600">LUCID SERVICES</h1>
-              <p className="text-sm text-gray-500 font-semibold mt-1">Professional Service Receipt</p>
+              <p className="text-sm text-gray-500 dark:text-slate-400 font-semibold mt-1">Professional Service Receipt</p>
             </div>
 
             {/* Receipt meta: 4 fields in one row */}
             <div className="grid grid-cols-4 gap-4 mb-6 text-xs">
               <div>
-                <p className="text-gray-500 font-semibold mb-1">Receipt No.</p>
-                <p className="text-gray-900 font-bold">{receiptNumber}</p>
+                <p className="text-gray-500 dark:text-slate-400 font-semibold mb-1">Receipt No.</p>
+                <p className="text-gray-900 dark:text-slate-100 font-bold">{receiptNumber}</p>
               </div>
               <div>
-                <p className="text-gray-500 font-semibold mb-1">Reference</p>
-                <p className="text-gray-900">{ref}</p>
+                <p className="text-gray-500 dark:text-slate-400 font-semibold mb-1">Reference</p>
+                <p className="text-gray-900 dark:text-slate-100">{ref}</p>
               </div>
               <div>
-                <p className="text-gray-500 font-semibold mb-1">Issue Date</p>
-                <p className="text-gray-900 font-bold">{formatDate(new Date())}</p>
+                <p className="text-gray-500 dark:text-slate-400 font-semibold mb-1">Issue Date</p>
+                <p className="text-gray-900 dark:text-slate-100 font-bold">{formatDate(new Date())}</p>
               </div>
               <div className="text-right">
-                <p className="text-gray-500 font-semibold mb-1">Status</p>
+                <p className="text-gray-500 dark:text-slate-400 font-semibold mb-1">Status</p>
                 <div className="flex items-center justify-end gap-1">
                   <CheckCircle className="w-3 h-3 text-green-600" />
                   <span className="text-green-600 font-bold">PAID</span>
@@ -180,56 +180,56 @@ const ReceiptModalComponent = ({ booking, onClose, userType = 'provider' }) => {
             </div>
 
             {/* Parties */}
-            <div className="grid grid-cols-2 gap-5 mb-6 pb-6 border-b border-gray-200">
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <p className="font-bold text-gray-900 mb-3 text-sm">Service Provider</p>
+            <div className="grid grid-cols-2 gap-5 mb-6 pb-6 border-b border-gray-200 dark:border-[#1e293b]">
+              <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+                <p className="font-bold text-gray-900 dark:text-slate-100 mb-3 text-sm">Service Provider</p>
                 <div className="space-y-2 text-xs">
                   <div className="flex items-start gap-2">
                     <User className="w-3 h-3 text-blue-600 mt-0.5 flex-shrink-0" />
                     <div>
-                      <p className="font-semibold text-gray-900">{provider.name}</p>
-                      <p className="text-gray-500">{provider.profession}</p>
+                      <p className="font-semibold text-gray-900 dark:text-slate-100">{provider.name}</p>
+                      <p className="text-gray-500 dark:text-slate-400">{provider.profession}</p>
                     </div>
                   </div>
-                  {provider.phone && <div className="flex items-center gap-2"><Phone className="w-3 h-3 text-blue-600 flex-shrink-0" /><p className="text-gray-700">{provider.phone}</p></div>}
-                  {provider.email && <div className="flex items-center gap-2"><Mail className="w-3 h-3 text-blue-600 flex-shrink-0" /><p className="text-gray-700">{provider.email}</p></div>}
+                  {provider.phone && <div className="flex items-center gap-2"><Phone className="w-3 h-3 text-blue-600 flex-shrink-0" /><p className="text-gray-700 dark:text-slate-300">{provider.phone}</p></div>}
+                  {provider.email && <div className="flex items-center gap-2"><Mail className="w-3 h-3 text-blue-600 flex-shrink-0" /><p className="text-gray-700 dark:text-slate-300">{provider.email}</p></div>}
                 </div>
               </div>
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <p className="font-bold text-gray-900 mb-3 text-sm">Billed To</p>
+              <div className="bg-gray-50 dark:bg-[#252b3b] p-4 rounded-lg">
+                <p className="font-bold text-gray-900 dark:text-slate-100 mb-3 text-sm">Billed To</p>
                 <div className="space-y-2 text-xs">
                   <div className="flex items-start gap-2">
-                    <User className="w-3 h-3 text-gray-500 mt-0.5 flex-shrink-0" />
-                    <p className="font-semibold text-gray-900">{client.name}</p>
+                    <User className="w-3 h-3 text-gray-500 dark:text-slate-400 mt-0.5 flex-shrink-0" />
+                    <p className="font-semibold text-gray-900 dark:text-slate-100">{client.name}</p>
                   </div>
-                  {client.phone && <div className="flex items-center gap-2"><Phone className="w-3 h-3 text-gray-400 flex-shrink-0" /><p className="text-gray-700">{client.phone}</p></div>}
-                  {client.email && <div className="flex items-center gap-2"><Mail className="w-3 h-3 text-gray-400 flex-shrink-0" /><p className="text-gray-700">{client.email}</p></div>}
-                  {location.address && <div className="flex items-start gap-2"><MapPin className="w-3 h-3 text-gray-400 mt-0.5 flex-shrink-0" /><p className="text-gray-700">{location.address}, {location.area}, {location.city}</p></div>}
+                  {client.phone && <div className="flex items-center gap-2"><Phone className="w-3 h-3 text-gray-400 dark:text-slate-500 flex-shrink-0" /><p className="text-gray-700 dark:text-slate-300">{client.phone}</p></div>}
+                  {client.email && <div className="flex items-center gap-2"><Mail className="w-3 h-3 text-gray-400 dark:text-slate-500 flex-shrink-0" /><p className="text-gray-700 dark:text-slate-300">{client.email}</p></div>}
+                  {location.address && <div className="flex items-start gap-2"><MapPin className="w-3 h-3 text-gray-400 dark:text-slate-500 mt-0.5 flex-shrink-0" /><p className="text-gray-700 dark:text-slate-300">{location.address}, {location.area}, {location.city}</p></div>}
                 </div>
               </div>
             </div>
 
             {/* Service Details */}
-            <div className="mb-6 pb-6 border-b border-gray-200">
-              <p className="font-bold text-gray-900 mb-3 text-sm">Service Details</p>
-              <div className="bg-gray-50 p-4 rounded-lg">
+            <div className="mb-6 pb-6 border-b border-gray-200 dark:border-[#1e293b]">
+              <p className="font-bold text-gray-900 dark:text-slate-100 mb-3 text-sm">Service Details</p>
+              <div className="bg-gray-50 dark:bg-[#252b3b] p-4 rounded-lg">
                 <div className="mb-3">
-                  <p className="text-gray-500 text-xs mb-0.5">Service</p>
-                  <p className="text-gray-900 font-bold">{booking.title}</p>
+                  <p className="text-gray-500 dark:text-slate-400 text-xs mb-0.5">Service</p>
+                  <p className="text-gray-900 dark:text-slate-100 font-bold">{booking.title}</p>
                 </div>
-                {booking.description && <p className="text-gray-600 text-xs mb-4">{booking.description}</p>}
-                <div className="grid grid-cols-3 gap-4 text-xs pt-3 border-t border-gray-200">
+                {booking.description && <p className="text-gray-600 dark:text-slate-400 text-xs mb-4">{booking.description}</p>}
+                <div className="grid grid-cols-3 gap-4 text-xs pt-3 border-t border-gray-200 dark:border-[#1e293b]">
                   <div className="flex items-center gap-2">
                     <Calendar className="w-3 h-3 text-blue-600 flex-shrink-0" />
-                    <div><p className="text-gray-500 mb-0.5">Date</p><p className="font-semibold text-gray-900">{booking.date}</p></div>
+                    <div><p className="text-gray-500 dark:text-slate-400 mb-0.5">Date</p><p className="font-semibold text-gray-900 dark:text-slate-100">{booking.date}</p></div>
                   </div>
                   <div className="flex items-center gap-2">
                     <Clock className="w-3 h-3 text-blue-600 flex-shrink-0" />
-                    <div><p className="text-gray-500 mb-0.5">Time</p><p className="font-semibold text-gray-900">{booking.time}</p></div>
+                    <div><p className="text-gray-500 dark:text-slate-400 mb-0.5">Time</p><p className="font-semibold text-gray-900 dark:text-slate-100">{booking.time}</p></div>
                   </div>
                   <div className="flex items-center gap-2">
                     <Clock className="w-3 h-3 text-blue-600 flex-shrink-0" />
-                    <div><p className="text-gray-500 mb-0.5">Duration</p><p className="font-semibold text-gray-900">{booking.duration || '—'}</p></div>
+                    <div><p className="text-gray-500 dark:text-slate-400 mb-0.5">Duration</p><p className="font-semibold text-gray-900 dark:text-slate-100">{booking.duration || '—'}</p></div>
                   </div>
                 </div>
               </div>
@@ -237,39 +237,39 @@ const ReceiptModalComponent = ({ booking, onClose, userType = 'provider' }) => {
 
             {/* Payment Details */}
             <div className="mb-6">
-              <p className="font-bold text-gray-900 mb-3 text-sm">Payment Details</p>
-              <div className="bg-gray-50 p-4 rounded-lg">
+              <p className="font-bold text-gray-900 dark:text-slate-100 mb-3 text-sm">Payment Details</p>
+              <div className="bg-gray-50 dark:bg-[#252b3b] p-4 rounded-lg">
                 <table className="w-full text-xs mb-4">
-                  <tbody className="divide-y divide-gray-200">
+                  <tbody className="divide-y divide-gray-200 dark:divide-[#1e293b]">
                     <tr>
-                      <td className="py-2.5 text-gray-700 font-semibold">Service Charge (Client Paid)</td>
-                      <td className="py-2.5 text-right font-bold text-gray-900 text-sm">GH₵ {totalPaid}</td>
+                      <td className="py-2.5 text-gray-700 dark:text-slate-300 font-semibold">Service Charge (Client Paid)</td>
+                      <td className="py-2.5 text-right font-bold text-gray-900 dark:text-slate-100 text-sm">GH₵ {totalPaid}</td>
                     </tr>
                     <tr>
-                      <td className="py-2.5 text-orange-700">
-                        Platform Fee (18%) <span className="bg-orange-100 px-1.5 py-0.5 rounded text-xs">Deducted</span>
+                      <td className="py-2.5 text-orange-700 dark:text-orange-400">
+                        Platform Fee (18%) <span className="bg-orange-100 dark:bg-orange-900/20 px-1.5 py-0.5 rounded text-xs">Deducted</span>
                       </td>
-                      <td className="py-2.5 text-right font-semibold text-orange-700">− GH₵ {platformFee}</td>
+                      <td className="py-2.5 text-right font-semibold text-orange-700 dark:text-orange-400">− GH₵ {platformFee}</td>
                     </tr>
-                    <tr className="bg-green-50">
-                      <td className="py-2.5 text-green-900 font-bold">Provider Receives (82%)</td>
-                      <td className="py-2.5 text-right font-bold text-green-600 text-sm">GH₵ {providerReceives}</td>
+                    <tr className="bg-green-50 dark:bg-green-900/20">
+                      <td className="py-2.5 text-green-900 dark:text-green-300 font-bold">Provider Receives (82%)</td>
+                      <td className="py-2.5 text-right font-bold text-green-600 dark:text-green-400 text-sm">GH₵ {providerReceives}</td>
                     </tr>
                   </tbody>
                 </table>
-                <div className="grid grid-cols-3 gap-4 pt-4 border-t border-gray-200 text-xs">
+                <div className="grid grid-cols-3 gap-4 pt-4 border-t border-gray-200 dark:border-[#1e293b] text-xs">
                   <div>
-                    <p className="text-gray-500 font-semibold mb-1">Payment Method</p>
-                    <p className="text-gray-900">{booking.paymentData?.paymentMethod || booking.paymentMethod || 'Mobile Money'}</p>
+                    <p className="text-gray-500 dark:text-slate-400 font-semibold mb-1">Payment Method</p>
+                    <p className="text-gray-900 dark:text-slate-100">{booking.paymentData?.paymentMethod || booking.paymentMethod || 'Mobile Money'}</p>
                   </div>
                   <div>
-                    <p className="text-gray-500 font-semibold mb-1">Payment Date</p>
-                    <p className="text-gray-900">{booking.paymentData?.paidAt ? formatDate(booking.paymentData.paidAt) : booking.date}</p>
+                    <p className="text-gray-500 dark:text-slate-400 font-semibold mb-1">Payment Date</p>
+                    <p className="text-gray-900 dark:text-slate-100">{booking.paymentData?.paidAt ? formatDate(booking.paymentData.paidAt) : booking.date}</p>
                   </div>
                   <div>
                     {/* [DB] transactionId from payment gateway — never generate client-side */}
-                    <p className="text-gray-500 font-semibold mb-1">Transaction ID</p>
-                    <p className="text-gray-900 font-mono break-all">{booking.paymentData?.transactionId || `TXN-${ref}-${new Date().getTime().toString().slice(-6)}`}</p>
+                    <p className="text-gray-500 dark:text-slate-400 font-semibold mb-1">Transaction ID</p>
+                    <p className="text-gray-900 dark:text-slate-100 font-mono break-all">{booking.paymentData?.transactionId || `TXN-${ref}-${new Date().getTime().toString().slice(-6)}`}</p>
                   </div>
                 </div>
               </div>
@@ -277,16 +277,16 @@ const ReceiptModalComponent = ({ booking, onClose, userType = 'provider' }) => {
 
             {/* Rating */}
             {booking.rating && (
-              <div className="mb-6 pb-5 border-b border-gray-200">
-                <p className="font-bold text-gray-900 mb-2 text-sm">Client Feedback</p>
+              <div className="mb-6 pb-5 border-b border-gray-200 dark:border-[#1e293b]">
+                <p className="font-bold text-gray-900 dark:text-slate-100 mb-2 text-sm">Client Feedback</p>
                 <div className="flex items-center gap-3 text-xs">
                   <div className="flex gap-0.5">
                     {[...Array(5)].map((_, i) => (
-                      <Star key={i} className={`w-3.5 h-3.5 ${i < booking.rating ? 'fill-blue-600 text-blue-600' : 'text-gray-300'}`} />
+                      <Star key={i} className={`w-3.5 h-3.5 ${i < booking.rating ? 'fill-blue-600 text-blue-600' : 'text-gray-300 dark:text-slate-600'}`} />
                     ))}
                   </div>
-                  <span className="font-bold text-gray-900">{booking.rating}.0</span>
-                  {booking.review && <span className="text-gray-600 italic">"{booking.review}"</span>}
+                  <span className="font-bold text-gray-900 dark:text-slate-100">{booking.rating}.0</span>
+                  {booking.review && <span className="text-gray-600 dark:text-slate-400 italic">"{booking.review}"</span>}
                 </div>
               </div>
             )}
@@ -294,18 +294,18 @@ const ReceiptModalComponent = ({ booking, onClose, userType = 'provider' }) => {
             {/* Additional Notes */}
             {booking.additionalNotes && (
               <div className="mb-6">
-                <p className="font-bold text-gray-900 mb-2 text-sm">Notes</p>
-                <div className="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-400">
-                  <p className="text-gray-700 text-xs">{booking.additionalNotes}</p>
+                <p className="font-bold text-gray-900 dark:text-slate-100 mb-2 text-sm">Notes</p>
+                <div className="bg-yellow-50 dark:bg-amber-900/20 p-4 rounded-lg border-l-4 border-yellow-400 dark:border-amber-600">
+                  <p className="text-gray-700 dark:text-slate-300 text-xs">{booking.additionalNotes}</p>
                 </div>
               </div>
             )}
 
             {/* Footer */}
-            <div className="text-center pt-5 border-t-2 border-gray-300">
-              <p className="text-gray-600 text-xs mb-2">Thank you for using Lucid Services</p>
-              <p className="text-gray-500 text-xs">support@lucidservices.com · <span className="font-semibold">www.lucidservices.com</span></p>
-              <p className="text-gray-400 text-xs mt-3">Official receipt generated by Lucid Services platform</p>
+            <div className="text-center pt-5 border-t-2 border-gray-300 dark:border-[#1e293b]">
+              <p className="text-gray-600 dark:text-slate-400 text-xs mb-2">Thank you for using Lucid Services</p>
+              <p className="text-gray-500 dark:text-slate-500 text-xs">support@lucidservices.com · <span className="font-semibold">www.lucidservices.com</span></p>
+              <p className="text-gray-400 dark:text-slate-600 text-xs mt-3">Official receipt generated by Lucid Services platform</p>
             </div>
           </div>
         </motion.div>

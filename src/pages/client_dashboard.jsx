@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useNavigateBack } from '../hooks/useNavigateBack.js';
 import { useNotification } from '../contexts/NotificationContext';
+import { useFavourites } from '../contexts/FavouritesContext';
 import { Avatar, StatCard } from '../components/ui';
 import { BookingDetailsModal, CancelBookingModal } from '../components/shared';
 // [MOCK] getBookingsByClient and calculateBookingStats read from local mock data.
@@ -43,8 +44,8 @@ const PeriodDropdown = ({ value, onChange }) => {
       <button
         type="button"
         onClick={() => setOpen(p => !p)}
-        className={`flex items-center gap-2 px-4 py-2 text-sm font-medium border-2 rounded-lg bg-white transition-all ${
-          open ? 'border-primary text-primary' : 'border-gray-200 text-gray-700 hover:border-gray-300'
+        className={`flex items-center gap-2 px-4 py-2 text-sm font-medium border-2 rounded-lg bg-white dark:bg-[#1a1f2e] transition-all ${
+          open ? 'border-primary text-primary' : 'border-gray-200 dark:border-[#2d3748] text-gray-700 dark:text-slate-300 hover:border-gray-300'
         }`}
       >
         {selected?.label}
@@ -52,14 +53,14 @@ const PeriodDropdown = ({ value, onChange }) => {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-1.5 z-20 bg-white border border-gray-100 rounded-xl shadow-xl overflow-hidden w-full">
+        <div className="absolute right-0 top-full mt-1.5 z-20 bg-white dark:bg-[#252b3b] border border-gray-100 dark:border-[#1e293b] rounded-xl shadow-xl overflow-hidden w-full">
           {PERIODS.map(period => (
             <button
               key={period.value}
               type="button"
               onClick={() => { onChange(period.value); setOpen(false); }}
-              className={`w-full text-center px-4 py-2.5 text-sm transition-colors hover:bg-gray-50 ${
-                value === period.value ? 'text-primary font-semibold bg-primary/5' : 'text-gray-700'
+              className={`w-full text-center px-4 py-2.5 text-sm transition-colors hover:bg-gray-50 dark:hover:bg-[#1e293b] ${
+                value === period.value ? 'text-primary font-semibold bg-primary/5' : 'text-gray-700 dark:text-slate-300'
               }`}
             >
               {period.label}
@@ -91,34 +92,34 @@ const DashboardBookingCard = ({ booking, onViewDetails }) => {
     <motion.div
       variants={itemVariants}
       whileHover={{ scale: 1.02 }}
-      className="bg-white border-2 border-gray-100 rounded-xl p-5 hover:border-primary/30 hover:shadow-md transition-all"
+      className="bg-white dark:bg-[#1a1f2e] border-2 border-gray-100 dark:border-[#1e293b] rounded-xl p-5 hover:border-primary/30 hover:shadow-md transition-all"
     >
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
           <Avatar name={providerName} size="md" />
           <div>
-            <h4 className="font-semibold text-gray-900">{providerName}</h4>
-            <p className="text-sm text-gray-600">{booking.title}</p>
+            <h4 className="font-semibold text-gray-900 dark:text-slate-100">{providerName}</h4>
+            <p className="text-sm text-gray-600 dark:text-slate-400">{booking.title}</p>
           </div>
         </div>
-        <span className="px-3 py-1 bg-primary-50 text-primary text-xs font-semibold rounded-full capitalize">
+        <span className="px-3 py-1 bg-primary-50 dark:bg-primary/10 text-primary text-xs font-semibold rounded-full capitalize">
           {booking.status}
         </span>
       </div>
 
       <div className="space-y-2 text-sm">
-        <div className="flex items-center gap-2 text-gray-600">
+        <div className="flex items-center gap-2 text-gray-600 dark:text-slate-400">
           <Calendar className="w-4 h-4" />
           <span>{booking.date} at {booking.time}</span>
         </div>
-        <div className="flex items-center gap-2 text-gray-600">
+        <div className="flex items-center gap-2 text-gray-600 dark:text-slate-400">
           <MapPin className="w-4 h-4" />
           <span>{locationLabel}</span>
         </div>
       </div>
 
-      <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
-        <span className="text-lg font-bold text-gray-900">GH₵{booking.price}</span>
+      <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100 dark:border-[#1e293b]">
+        <span className="text-lg font-bold text-gray-900 dark:text-slate-100">GH₵{booking.price}</span>
         <button
           onClick={() => onViewDetails(booking)}
           className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors text-sm font-semibold"
@@ -137,28 +138,28 @@ const ProviderCard = ({ name, profession, rating, jobs, isFavorite }) => {
     <motion.div
       variants={itemVariants}
       whileHover={{ y: -5 }}
-      className="bg-white rounded-xl p-4 shadow-md hover:shadow-xl transition-all relative"
+      className="bg-white dark:bg-[#1a1f2e] rounded-xl p-4 shadow-md hover:shadow-xl transition-all relative"
     >
       <button
         onClick={() => setFavorite(!favorite)}
-        className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-full transition-colors"
+        className="absolute top-4 right-4 p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-full transition-colors"
       >
-        <Heart className={`w-5 h-5 ${favorite ? 'fill-error text-error' : 'text-gray-400'}`} />
+        <Heart className={`w-5 h-5 ${favorite ? 'fill-error text-error' : 'text-gray-400 dark:text-slate-500'}`} />
       </button>
 
       <div className="flex flex-col items-center text-center mb-4">
         <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary-light to-purple-600 flex items-center justify-center text-white font-bold text-xl mb-3">
           {name.split(' ').map(n => n[0]).join('')}
         </div>
-        <h3 className="font-bold text-gray-900">{name}</h3>
-        <p className="text-sm text-gray-600 mb-2">{profession}</p>
+        <h3 className="font-bold text-gray-900 dark:text-slate-100">{name}</h3>
+        <p className="text-sm text-gray-600 dark:text-slate-400 mb-2">{profession}</p>
         <div className="flex items-center gap-2 mb-2">
           <div className="flex items-center gap-1">
             <Star className="w-4 h-4 fill-primary text-primary" />
-            <span className="font-semibold text-gray-900">{rating}</span>
+            <span className="font-semibold text-gray-900 dark:text-slate-100">{rating}</span>
           </div>
-          <span className="text-gray-400">•</span>
-          <span className="text-sm text-gray-600">{jobs} jobs</span>
+          <span className="text-gray-400 dark:text-slate-500">•</span>
+          <span className="text-sm text-gray-600 dark:text-slate-400">{jobs} jobs</span>
         </div>
       </div>
 
@@ -175,7 +176,7 @@ const QuickAction = ({ icon: Icon, label, to, badgeCount }) => (
   <motion.div variants={itemVariants} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
     <Link
       to={to}
-      className="flex flex-col items-center gap-3 p-6 bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow"
+      className="flex flex-col items-center gap-3 p-6 bg-white dark:bg-[#1a1f2e] rounded-xl shadow-md hover:shadow-xl transition-shadow"
     >
       <div className="p-4 bg-gradient-to-br from-primary-light to-primary rounded-xl relative">
         <Icon className="w-6 h-6 text-white" />
@@ -185,7 +186,7 @@ const QuickAction = ({ icon: Icon, label, to, badgeCount }) => (
           </span>
         )}
       </div>
-      <span className="text-sm font-semibold text-gray-900">{label}</span>
+      <span className="text-sm font-semibold text-gray-900 dark:text-slate-100">{label}</span>
     </Link>
   </motion.div>
 );
@@ -194,21 +195,21 @@ const ActivityItem = ({ icon: Icon, title, description, time, actionLabel, to })
   <motion.div
     variants={itemVariants}
     whileHover={{ x: 5 }}
-    className="flex items-start gap-4 p-4 hover:bg-gray-50 rounded-lg transition-colors"
+    className="flex items-start gap-4 p-4 hover:bg-gray-50 dark:hover:bg-[#252b3b] rounded-lg transition-colors"
   >
     <Link to={to} className="flex gap-4 flex-1">
-      <div className="w-9 h-9 p-2 bg-primary-50 rounded-lg">
+      <div className="w-9 h-9 p-2 bg-primary-50 dark:bg-primary/10 rounded-lg">
         <Icon className="w-5 h-5 text-primary" />
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1">
-            <h4 className="font-semibold text-gray-900 mb-1">{title}</h4>
-            <p className="text-sm text-gray-600">{description}</p>
+            <h4 className="font-semibold text-gray-900 dark:text-slate-100 mb-1">{title}</h4>
+            <p className="text-sm text-gray-600 dark:text-slate-400">{description}</p>
           </div>
         </div>
         <div className="flex items-center justify-between mt-2">
-          <p className="text-xs text-gray-500 flex items-center gap-1">
+          <p className="text-xs text-gray-500 dark:text-slate-500 flex items-center gap-1">
             <Clock className="w-3 h-3" />
             {time}
           </p>
@@ -252,6 +253,7 @@ const ClientDashboard = () => {
 
   const handleBackClick = useNavigateBack('/lucid/', 600);
   const { showNotification } = useNotification();
+  const { favouriteProviders } = useFavourites();
 
   const handleCancel = (booking) => {
     setBookingToCancel(booking);
@@ -272,6 +274,43 @@ const ClientDashboard = () => {
     setSelectedBooking(null);
   };
 
+  // [API] PATCH /bookings/:id/price-adjustment — {action: 'approved'} → updates bookings.agreedPrice
+  const handleApprovePriceAdjustment = (booking) => {
+    setSelectedBooking(prev => prev ? {
+      ...prev,
+      originalPrice: prev.agreedPrice || prev.price,
+      agreedPrice: prev.priceAdjustment.newPrice,
+      price: prev.priceAdjustment.newPrice,
+      priceAdjustment: { ...prev.priceAdjustment, status: 'approved' }
+    } : null);
+    showNotification('Price adjustment approved. Updated amount will be used for payment.', 'success');
+  };
+
+  // [API] PATCH /bookings/:id/price-adjustment — {action: 'rejected'} → reverts to original price
+  const handleRejectPriceAdjustment = (booking) => {
+    setSelectedBooking(prev => prev ? { ...prev, priceAdjustment: null } : null);
+    showNotification('Price adjustment rejected. Original price remains.', 'info');
+  };
+
+  // [API] POST /payments — {bookingId, amount, paymentMethod, phoneNumber} → {reference, status}
+  const handleProcessPayment = async (paymentData) => {
+    await new Promise(r => setTimeout(r, 1000));
+    showNotification('Payment processed successfully!', 'success');
+  };
+
+  // [API] PATCH /bookings/:id/status — {status: 'completed', paymentStatus: 'paid'}
+  const handleMarkComplete = (booking) => {
+    setSelectedBooking(prev => prev ? {
+      ...prev,
+      status: 'completed',
+      paymentStatus: 'paid',
+      completionRequest: prev.completionRequest
+        ? { ...prev.completionRequest, status: 'approved' }
+        : undefined,
+    } : null);
+    showNotification('Booking marked as complete!', 'success');
+  };
+
   const allBookings = useMemo(() => getBookingsByClient(CURRENT_CLIENT_ID), []);
   const bookingStats = useMemo(() => calculateBookingStats(allBookings), [allBookings]);
 
@@ -282,14 +321,13 @@ const ClientDashboard = () => {
 
   // [API] Stats (change %, trend) should come from: GET /users/:id/stats?period={timeframe}
   // → { activeBookings, completedJobs, totalSpent, favouritesCount, weekOverWeekChange: {...} }
-  // 'Favourites: 8' and all change values are hardcoded placeholders below.
+  // All change values are hardcoded placeholders; favourites count comes from context.
   const stats = useMemo(() => [
     { icon: Calendar, title: 'Active Bookings', value: bookingStats.active.toString(), change: '+1', trend: 'up', color: 'blue' },
     { icon: CheckCircle, title: 'Completed Jobs', value: bookingStats.completed.toString(), change: '+3', trend: 'up', color: 'green' },
     { icon: DollarSign, title: 'Total Spent', value: `GH₵${bookingStats.totalRevenue}`, change: '+15%', trend: 'up', color: 'purple' },
-    // [API] GET /users/:id/favourites/count → { count: number }
-    { icon: Heart, title: 'Favourites', value: '8', change: '+2', trend: 'up', color: 'orange' }
-  ], [bookingStats]);
+    { icon: Heart, title: 'Favourites', value: favouriteProviders.length.toString(), change: null, trend: 'up', color: 'orange', to: '/lucid/favourites' }
+  ], [bookingStats, favouriteProviders.length]);
 
   const bookings = useMemo(() => activeBookings.slice(0, 3), [activeBookings]);
 
@@ -307,26 +345,27 @@ const ClientDashboard = () => {
   const quickActions = [
     { icon: Search, label: 'Find Services', to: '/lucid/services' },
     { icon: Calendar, label: 'My Bookings', to: '/lucid/bookings', badgeCount: unreadBookings },
+    { icon: Heart, label: 'Favourites', to: '/lucid/favourites' },
     { icon: User, label: 'Account', to: '/lucid/account' },
     { icon: MessageSquare, label: 'Messages', to: '/lucid/messages', badgeCount: unreadMessages }
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-[#0f1117]">
       <motion.header
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="bg-white border-b border-gray-100 sticky top-0 z-30"
+        className="bg-white dark:bg-[#1a1f2e] border-b border-gray-100 dark:border-[#1e293b] sticky top-0 z-30"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <button onClick={handleBackClick} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                <ArrowLeft className="w-5 h-5 text-gray-700" />
+              <button onClick={handleBackClick} className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-lg transition-colors">
+                <ArrowLeft className="w-5 h-5 text-gray-700 dark:text-slate-300" />
               </button>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">Dashboard</h1>
-                <p className="text-sm text-gray-500">Welcome back, {currentUserName}!</p>
+                <h1 className="text-xl font-bold text-gray-900 dark:text-slate-100">Dashboard</h1>
+                <p className="text-sm text-gray-500 dark:text-slate-500">Welcome back, {currentUserName}!</p>
               </div>
             </div>
             <div className="flex items-center gap-4">
@@ -334,9 +373,9 @@ const ClientDashboard = () => {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="relative p-3 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                  className="relative p-3 bg-gray-100 dark:bg-[#252b3b] rounded-lg hover:bg-gray-200 dark:hover:bg-[#1e293b] transition-colors"
                 >
-                  <Bell className="w-5 h-5 text-gray-700" />
+                  <Bell className="w-5 h-5 text-gray-700 dark:text-slate-300" />
                   {notificationCount > 0 && (
                     <span className="absolute -top-1 -right-1 min-w-5 h-5 bg-error rounded-full flex items-center justify-center text-xs text-white font-bold px-1 border-2 border-white">
                       {notificationCount > 99 ? '99+' : notificationCount}
@@ -356,19 +395,27 @@ const ClientDashboard = () => {
         <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-8">
           <section>
             <motion.div variants={itemVariants} className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Overview</h2>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100">Overview</h2>
               <PeriodDropdown value={timeframe} onChange={setTimeframe} />
             </motion.div>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-              {stats.map((stat, i) => <StatCard key={i} {...stat} />)}
+              {stats.map((stat, i) =>
+                stat.to ? (
+                  <Link key={i} to={stat.to} className="block">
+                    <StatCard {...stat} />
+                  </Link>
+                ) : (
+                  <StatCard key={i} {...stat} />
+                )
+              )}
             </div>
           </section>
 
           <section>
-            <motion.h2 variants={itemVariants} className="text-2xl font-bold text-gray-900 mb-6">
+            <motion.h2 variants={itemVariants} className="text-2xl font-bold text-gray-900 dark:text-slate-100 mb-6">
               Quick Actions
             </motion.h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
               {quickActions.map((action, i) => <QuickAction key={i} {...action} />)}
             </div>
           </section>
@@ -376,7 +423,7 @@ const ClientDashboard = () => {
           <div className="grid lg:grid-cols-3 gap-8">
             <section className="lg:col-span-2">
               <motion.div variants={itemVariants} className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">Active Bookings</h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100">Active Bookings</h2>
                 <Link to="/lucid/bookings" className="flex items-center gap-2 text-primary hover:text-primary-hover font-semibold">
                   View All
                   <ChevronRight className="w-4 h-4" />
@@ -391,9 +438,9 @@ const ClientDashboard = () => {
 
             <section>
               <motion.div variants={itemVariants} className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">Recent Activity</h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100">Recent Activity</h2>
               </motion.div>
-              <motion.div variants={itemVariants} className="bg-white rounded-xl shadow-md divide-y divide-gray-100">
+              <motion.div variants={itemVariants} className="bg-white dark:bg-[#1a1f2e] rounded-xl shadow-md divide-y divide-gray-100 dark:divide-[#1e293b]">
                 {recentActivities.map((activity, i) => (
                   <ActivityItem key={i} {...activity} />
                 ))}
@@ -402,13 +449,13 @@ const ClientDashboard = () => {
           </div>
 
           <motion.section variants={itemVariants}>
-            <div className="bg-white rounded-xl shadow-md p-6">
+            <div className="bg-white dark:bg-[#1a1f2e] rounded-xl shadow-md p-6">
               <div className="flex items-center justify-between mb-6">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900">Services Near You</h2>
-                  <p className="text-gray-600 mt-1">Showing providers within 5km radius</p>
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100">Services Near You</h2>
+                  <p className="text-gray-600 dark:text-slate-400 mt-1">Showing providers within 5km radius</p>
                 </div>
-                <button className="px-4 py-2 text-primary hover:bg-primary-50 rounded-lg font-semibold transition-colors flex items-center gap-2">
+                <button className="px-4 py-2 text-primary hover:bg-primary-50 dark:hover:bg-primary/10 rounded-lg font-semibold transition-colors flex items-center gap-2">
                   <Filter className="w-4 h-4" />
                   Filter
                 </button>
@@ -429,6 +476,10 @@ const ClientDashboard = () => {
           userType="client"
           onCancel={handleCancel}
           onEdit={handleEdit}
+          onMarkComplete={handleMarkComplete}
+          onProcessPayment={handleProcessPayment}
+          onApprovePriceAdjustment={handleApprovePriceAdjustment}
+          onRejectPriceAdjustment={handleRejectPriceAdjustment}
         />
       )}
 

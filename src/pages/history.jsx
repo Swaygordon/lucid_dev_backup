@@ -159,36 +159,36 @@ const handleBackClick = useCallback(() => {
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-2">
-              <h3 className="text-lg font-bold text-gray-900">{item.title}</h3>
+              <h3 className="text-lg font-bold text-gray-900 dark:text-slate-100">{item.title}</h3>
               {item.status === 'completed' ? (
-                <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold flex items-center gap-1">
+                <span className="px-3 py-1 bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 rounded-full text-xs font-semibold flex items-center gap-1">
                   <CheckCircle className="w-3 h-3" />
                   Completed
                 </span>
               ) : (
-                <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-semibold flex items-center gap-1">
+                <span className="px-3 py-1 bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 rounded-full text-xs font-semibold flex items-center gap-1">
                   <XCircle className="w-3 h-3" />
                   Cancelled
                 </span>
               )}
             </div>
-            <div className="flex items-center gap-2 text-sm text-gray-600">
+            <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-slate-400">
               <User className="w-4 h-4" />
               <span>{item.client}</span>
             </div>
           </div>
           <div className="text-right">
-            <div className="text-2xl font-bold text-gray-900">GH₵{item.amount}</div>
+            <div className="text-2xl font-bold text-gray-900 dark:text-slate-100">GH₵{item.amount}</div>
             {item.rating && (
               <div className="flex items-center gap-1 justify-end mt-1">
                 <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                <span className="text-sm font-semibold">{item.rating}.0</span>
+                <span className="text-sm font-semibold dark:text-slate-300">{item.rating}.0</span>
               </div>
             )}
           </div>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm text-gray-600">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm text-gray-600 dark:text-slate-400">
           <div className="flex items-center gap-2">
             <Calendar className="w-4 h-4 text-blue-600" />
             <span>{item.date}</span>
@@ -209,7 +209,7 @@ const handleBackClick = useCallback(() => {
           )}
         </div>
 
-        <div className="flex gap-2 mt-4 pt-4 border-t border-gray-200">
+        <div className="flex gap-2 mt-4 pt-4 border-t border-gray-200 dark:border-[#1e293b]">
           {/* [API] GET /bookings/:id/receipt — returns receipt data for the modal */}
           <Button size="sm" variant="outline" className="flex-1">
             <FileText className="w-4 h-4" />
@@ -228,25 +228,25 @@ const handleBackClick = useCallback(() => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-[#0f1117]">
       {/* Header */}
       <motion.header
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="bg-white shadow-sm sticky top-0 z-30"
+        className="bg-white dark:bg-[#1a1f2e] shadow-sm dark:border-b dark:border-[#1e293b] sticky top-0 z-30"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <button
                 onClick={handleBackClick}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-lg transition-colors"
               >
-                <ArrowLeft className="w-6 h-6 text-gray-700" />
+                <ArrowLeft className="w-6 h-6 text-gray-700 dark:text-slate-300" />
               </button>
               <div>
-                <h1 className="text-3xl font-bold text-gray-900">History</h1>
-                <p className="text-gray-600 mt-1">View your past jobs and earnings</p>
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-slate-100">History</h1>
+                <p className="text-gray-600 dark:text-slate-400 mt-1">View your past jobs and earnings</p>
               </div>
             </div>
             <div className="flex gap-2">
@@ -255,7 +255,7 @@ const handleBackClick = useCallback(() => {
                 className={`p-2 rounded-lg transition-colors ${
                   viewMode === 'list'
                     ? 'bg-blue-600 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    : 'bg-gray-100 dark:bg-[#252b3b] text-gray-700 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-[#2d3748]'
                 }`}
               >
                 <FileText className="w-5 h-5" />
@@ -265,7 +265,7 @@ const handleBackClick = useCallback(() => {
                 className={`p-2 rounded-lg transition-colors ${
                   viewMode === 'stats'
                     ? 'bg-blue-600 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    : 'bg-gray-100 dark:bg-[#252b3b] text-gray-700 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-[#2d3748]'
                 }`}
               >
                 <BarChart3 className="w-5 h-5" />
@@ -285,8 +285,8 @@ const handleBackClick = useCallback(() => {
           className="mb-8"
         >
           <div className="flex items-center gap-2 mb-6">
-            <Filter className="w-5 h-5 text-gray-600" />
-            <span className="font-semibold text-gray-900">Filter by period:</span>
+            <Filter className="w-5 h-5 text-gray-600 dark:text-slate-400" />
+            <span className="font-semibold text-gray-900 dark:text-slate-100">Filter by period:</span>
           </div>
           <div className="flex flex-wrap gap-3">
             {periods.map((period) => (
@@ -296,7 +296,7 @@ const handleBackClick = useCallback(() => {
                 className={`px-4 py-2 rounded-lg font-semibold transition-all ${
                   selectedPeriod === period.id
                     ? 'bg-blue-600 text-white shadow-md'
-                    : 'bg-white text-gray-700 hover:bg-gray-100 border-2 border-gray-200'
+                    : 'bg-white dark:bg-[#1a1f2e] text-gray-700 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-[#252b3b] border-2 border-gray-200 dark:border-[#2d3748]'
                 }`}
               >
                 {period.label}
@@ -318,37 +318,37 @@ const handleBackClick = useCallback(() => {
               <div className="text-3xl font-bold text-blue-600 mb-2">
                 {stats.totalJobs}
               </div>
-              <div className="text-sm text-gray-600">Total Jobs</div>
+              <div className="text-sm text-gray-600 dark:text-slate-400">Total Jobs</div>
             </Card>
             <Card className="text-center">
               <div className="text-3xl font-bold text-green-600 mb-2">
                 {stats.completedJobs}
               </div>
-              <div className="text-sm text-gray-600">Completed</div>
+              <div className="text-sm text-gray-600 dark:text-slate-400">Completed</div>
             </Card>
             <Card className="text-center">
               <div className="text-3xl font-bold text-red-600 mb-2">
                 {stats.cancelledJobs}
               </div>
-              <div className="text-sm text-gray-600">Cancelled</div>
+              <div className="text-sm text-gray-600 dark:text-slate-400">Cancelled</div>
             </Card>
             <Card className="text-center">
               <div className="text-3xl font-bold text-yellow-600 mb-2">
                 {stats.avgRating}
               </div>
-              <div className="text-sm text-gray-600">Avg Rating</div>
+              <div className="text-sm text-gray-600 dark:text-slate-400">Avg Rating</div>
             </Card>
             <Card className="text-center">
               <div className="text-3xl font-bold text-purple-600 mb-2">
                 {stats.completionRate}%
               </div>
-              <div className="text-sm text-gray-600">Success Rate</div>
+              <div className="text-sm text-gray-600 dark:text-slate-400">Success Rate</div>
             </Card>
             <Card className="text-center">
               <div className="text-3xl font-bold text-green-600 mb-2">
                 GH₵{stats.totalEarnings}
               </div>
-              <div className="text-sm text-gray-600">Total Earned</div>
+              <div className="text-sm text-gray-600 dark:text-slate-400">Total Earned</div>
             </Card>
           </motion.div>
         )}

@@ -95,7 +95,7 @@ const navigate = useNavigate();
   };
 
   return (
-    <div className="relative min-h-screen bg-white flex items-center justify-center p-5 pb-20 md:pb-5 font-sans">
+    <div className="relative min-h-screen bg-white dark:bg-[#0f1117] flex items-center justify-center p-5 pb-20 md:pb-5 font-sans">
        {/* Notification Toast - Fixed to bottom */}
       {notification && (
         <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white px-6 py-3 rounded-lg shadow-lg z-50">
@@ -105,7 +105,7 @@ const navigate = useNavigate();
 
         <button
           onClick={handleBackClick}
-            className="absolute hidden md:inline-flex items-center top-4 left-4 md:top-6 md:left-10 p-2 text-blue-600 hover:bg-gray-100 rounded-lg transition-colors"
+            className="absolute hidden md:inline-flex items-center top-4 left-4 md:top-6 md:left-10 p-2 text-blue-600 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-lg transition-colors"
           >
             <ArrowLeft size={22} color="#2563eb"/>
             <span className="ml-1 text-lg" >Go back</span>

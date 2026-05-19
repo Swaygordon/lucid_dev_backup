@@ -84,7 +84,7 @@ const NotificationSettings = () => {
     <button
       onClick={onChange}
       className={`relative w-12 h-6 rounded-full transition-colors ${
-        enabled ? 'bg-blue-600' : 'bg-gray-300'
+        enabled ? 'bg-blue-600' : 'bg-gray-300 dark:bg-[#252b3b]'
       }`}
     >
       <motion.div
@@ -96,14 +96,14 @@ const NotificationSettings = () => {
   );
 
   const NotificationItem = ({ icon: Icon, title, description, settingKey }) => (
-    <div className="flex items-start justify-between py-4 border-b border-gray-200 last:border-0">
+    <div className="flex items-start justify-between py-4 border-b border-gray-200 dark:border-[#1e293b] last:border-0">
       <div className="flex gap-4 flex-1">
-        <div className="p-2 bg-blue-50 rounded-lg h-fit">
+        <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg h-fit">
           <Icon className="w-5 h-5 text-blue-600" />
         </div>
         <div className="flex-1">
-          <h4 className="font-semibold text-gray-900 mb-1">{title}</h4>
-          <p className="text-sm text-gray-600">{description}</p>
+          <h4 className="font-semibold text-gray-900 dark:text-slate-100 mb-1">{title}</h4>
+          <p className="text-sm text-gray-600 dark:text-slate-400">{description}</p>
         </div>
       </div>
       <ToggleSwitch
@@ -114,24 +114,24 @@ const NotificationSettings = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-[#0f1117]">
       {/* Header */}
-      <motion.header 
+      <motion.header
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="bg-white shadow-sm sticky top-0 z-30"
+        className="bg-white dark:bg-[#1a1f2e] shadow-sm sticky top-0 z-30"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center gap-4">
             <button
               onClick={handleBackClick}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-lg transition-colors"
             >
-              <ArrowLeft className="w-6 h-6 text-gray-700" />
+              <ArrowLeft className="w-6 h-6 text-gray-700 dark:text-slate-300" />
             </button>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Notification Settings</h1>
-              <p className="text-gray-600 mt-1">Customize how you receive notifications</p>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-slate-100">Notification Settings</h1>
+              <p className="text-gray-600 dark:text-slate-400 mt-1">Customize how you receive notifications</p>
             </div>
           </div>
         </div>
@@ -149,7 +149,7 @@ const NotificationSettings = () => {
               <div className="p-2 bg-blue-600 rounded-lg">
                 <Bell className="w-6 h-6 text-white" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900">Push Notifications</h2>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100">Push Notifications</h2>
             </div>
             <div className="space-y-2">
               <NotificationItem
@@ -204,7 +204,7 @@ const NotificationSettings = () => {
               <div className="p-2 bg-orange-600 rounded-lg">
                 <Mail className="w-6 h-6 text-white" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900">Email Notifications</h2>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100">Email Notifications</h2>
             </div>
             <div className="space-y-2">
               <NotificationItem
@@ -265,7 +265,7 @@ const NotificationSettings = () => {
               <div className="p-2 bg-green-600 rounded-lg">
                 <Smartphone className="w-6 h-6 text-white" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900">SMS Notifications</h2>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100">SMS Notifications</h2>
             </div>
             <div className="space-y-2">
               <NotificationItem
@@ -308,7 +308,7 @@ const NotificationSettings = () => {
               <div className="p-2 bg-purple-600 rounded-lg">
                 <Volume2 className="w-6 h-6 text-white" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900">Sound & Vibration</h2>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100">Sound & Vibration</h2>
             </div>
             <div className="space-y-2">
               <NotificationItem
@@ -340,8 +340,8 @@ const NotificationSettings = () => {
                 <Shield className="w-6 h-6 text-white" />
               </div>
               <div className="flex-1">
-                <h2 className="text-2xl font-bold text-gray-900">Do Not Disturb</h2>
-                <p className="text-gray-600 text-sm mt-1">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100">Do Not Disturb</h2>
+                <p className="text-gray-600 dark:text-slate-400 text-sm mt-1">
                   Silence notifications during specific hours
                 </p>
               </div>
@@ -355,28 +355,28 @@ const NotificationSettings = () => {
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
-                className="grid md:grid-cols-2 gap-4 pt-4 border-t border-gray-200"
+                className="grid md:grid-cols-2 gap-4 pt-4 border-t border-gray-200 dark:border-[#1e293b]"
               >
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">
                     Start Time
                   </label>
                   <input
                     type="time"
                     value={settings.dndStart}
                     onChange={(e) => handleTimeChange('dndStart', e.target.value)}
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-600 focus:outline-none"
+                    className="w-full px-4 py-3 border-2 border-gray-300 dark:border-[#2d3748] rounded-lg focus:border-blue-600 focus:outline-none bg-white dark:bg-[#252b3b] text-gray-900 dark:text-slate-200"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-2">
                     End Time
                   </label>
                   <input
                     type="time"
                     value={settings.dndEnd}
                     onChange={(e) => handleTimeChange('dndEnd', e.target.value)}
-                    className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-600 focus:outline-none"
+                    className="w-full px-4 py-3 border-2 border-gray-300 dark:border-[#2d3748] rounded-lg focus:border-blue-600 focus:outline-none bg-white dark:bg-[#252b3b] text-gray-900 dark:text-slate-200"
                   />
                 </div>
               </motion.div>

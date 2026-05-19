@@ -42,8 +42,8 @@ const PeriodDropdown = ({ value, onChange }) => {
       <button
         type="button"
         onClick={() => setOpen(p => !p)}
-        className={`flex items-center gap-2 px-4 py-2 text-sm font-medium border-2 rounded-lg bg-white transition-all ${
-          open ? 'border-primary text-primary' : 'border-gray-200 text-gray-700 hover:border-gray-300'
+        className={`flex items-center gap-2 px-4 py-2 text-sm font-medium border-2 rounded-lg bg-white dark:bg-[#1a1f2e] transition-all ${
+          open ? 'border-primary text-primary' : 'border-gray-200 dark:border-[#2d3748] text-gray-700 dark:text-slate-300 hover:border-gray-300'
         }`}
       >
         {selected?.label}
@@ -51,14 +51,14 @@ const PeriodDropdown = ({ value, onChange }) => {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-1.5 z-20 bg-white border border-gray-100 rounded-xl shadow-xl overflow-hidden w-full">
+        <div className="absolute right-0 top-full mt-1.5 z-20 bg-white dark:bg-[#252b3b] border border-gray-100 dark:border-[#1e293b] rounded-xl shadow-xl overflow-hidden w-full">
           {PERIODS.map(period => (
             <button
               key={period.value}
               type="button"
               onClick={() => { onChange(period.value); setOpen(false); }}
-              className={`w-full text-center px-4 py-2.5 text-sm transition-colors hover:bg-gray-50 ${
-                value === period.value ? 'text-primary font-semibold bg-primary/5' : 'text-gray-700'
+              className={`w-full text-center px-4 py-2.5 text-sm transition-colors hover:bg-gray-50 dark:hover:bg-[#1e293b] ${
+                value === period.value ? 'text-primary font-semibold bg-primary/5' : 'text-gray-700 dark:text-slate-300'
               }`}
             >
               {period.label}
@@ -92,17 +92,17 @@ const ActivityItem = ({ icon: Icon, title, description, time, status, to }) => {
     <motion.div
       variants={itemVariants}
       whileHover={{ x: 5 }}
-      className="flex items-start gap-4 p-4 hover:bg-gray-50 rounded-lg transition-colors"
+      className="flex items-start gap-4 p-4 hover:bg-gray-50 dark:hover:bg-[#252b3b] rounded-lg transition-colors"
     >
       <Link to={to} className="flex gap-4 flex-1">
-        <div className="w-9 h-9 p-2 bg-primary-50 rounded-lg flex-shrink-0 self-start">
+        <div className="w-9 h-9 p-2 bg-primary-50 dark:bg-primary/10 rounded-lg flex-shrink-0 self-start">
           <Icon className="w-5 h-5 text-primary" />
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
             <div className="flex-1">
-              <h4 className="font-semibold text-gray-900 mb-1">{title}</h4>
-              <p className="text-sm text-gray-600">{description}</p>
+              <h4 className="font-semibold text-gray-900 dark:text-slate-100 mb-1">{title}</h4>
+              <p className="text-sm text-gray-600 dark:text-slate-400">{description}</p>
             </div>
             {status && (
               <span className={`px-2 py-1 rounded-full text-xs font-medium whitespace-nowrap ${statusColors[status]}`}>
@@ -110,7 +110,7 @@ const ActivityItem = ({ icon: Icon, title, description, time, status, to }) => {
               </span>
             )}
           </div>
-          <p className="text-xs text-gray-500 mt-2 flex items-center gap-1">
+          <p className="text-xs text-gray-500 dark:text-slate-500 mt-2 flex items-center gap-1">
             <Clock className="w-3 h-3" />
             {time}
           </p>
@@ -129,34 +129,34 @@ const DashboardBookingCard = ({ booking, onViewDetails }) => {
     <motion.div
       variants={itemVariants}
       whileHover={{ scale: 1.02 }}
-      className="bg-white border-2 border-gray-100 rounded-xl p-5 hover:border-primary/30 hover:shadow-md transition-all"
+      className="bg-white dark:bg-[#1a1f2e] border-2 border-gray-100 dark:border-[#1e293b] rounded-xl p-5 hover:border-primary/30 hover:shadow-md transition-all"
     >
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
           <Avatar name={clientName} size="md" />
           <div>
-            <h4 className="font-semibold text-gray-900">{clientName}</h4>
-            <p className="text-sm text-gray-600">{booking.title}</p>
+            <h4 className="font-semibold text-gray-900 dark:text-slate-100">{clientName}</h4>
+            <p className="text-sm text-gray-600 dark:text-slate-400">{booking.title}</p>
           </div>
         </div>
-        <span className="px-3 py-1 bg-primary-50 text-primary text-xs font-semibold rounded-full capitalize">
+        <span className="px-3 py-1 bg-primary-50 dark:bg-primary/10 text-primary text-xs font-semibold rounded-full capitalize">
           {booking.status}
         </span>
       </div>
 
       <div className="space-y-2 text-sm">
-        <div className="flex items-center gap-2 text-gray-600">
+        <div className="flex items-center gap-2 text-gray-600 dark:text-slate-400">
           <Calendar className="w-4 h-4" />
           <span>{booking.date} at {booking.time}</span>
         </div>
-        <div className="flex items-center gap-2 text-gray-600">
+        <div className="flex items-center gap-2 text-gray-600 dark:text-slate-400">
           <MapPin className="w-4 h-4" />
           <span>{locationLabel}</span>
         </div>
       </div>
 
-      <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
-        <span className="text-lg font-bold text-gray-900">GH₵{booking.price}</span>
+      <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100 dark:border-[#1e293b]">
+        <span className="text-lg font-bold text-gray-900 dark:text-slate-100">GH₵{booking.price}</span>
         <button
           onClick={() => onViewDetails(booking)}
           className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors text-sm font-semibold"
@@ -172,7 +172,7 @@ const QuickAction = ({ icon: Icon, label, to, badgeCount }) => (
   <motion.div variants={itemVariants} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
     <Link
       to={to}
-      className="flex flex-col items-center gap-3 p-6 bg-white rounded-xl shadow-md hover:shadow-xl transition-shadow"
+      className="flex flex-col items-center gap-3 p-6 bg-white dark:bg-[#1a1f2e] rounded-xl shadow-md hover:shadow-xl transition-shadow"
     >
       <div className="p-4 bg-gradient-to-br from-primary-light to-primary rounded-xl relative">
         <Icon className="w-6 h-6 text-white" />
@@ -182,7 +182,7 @@ const QuickAction = ({ icon: Icon, label, to, badgeCount }) => (
           </span>
         )}
       </div>
-      <span className="text-sm font-semibold text-gray-900">{label}</span>
+      <span className="text-sm font-semibold text-gray-900 dark:text-slate-100">{label}</span>
     </Link>
   </motion.div>
 );
@@ -238,6 +238,22 @@ const ProviderDashboard = () => {
     setSelectedBooking(null);
   };
 
+  // [API] POST /bookings/:id/price-adjustment — {originalPrice, newPrice, reason} → {adjustmentId, status: 'pending'}
+  const handleSubmitPriceAdjustment = (adjustmentData) => {
+    setSelectedBooking(prev => prev ? {
+      ...prev,
+      priceAdjustment: {
+        status: 'pending',
+        originalPrice: adjustmentData.originalPrice,
+        newPrice: adjustmentData.newPrice,
+        reason: adjustmentData.reason,
+        requestedBy: 'provider',
+        timestamp: adjustmentData.timestamp,
+      }
+    } : null);
+    showNotification('Price adjustment request sent to client.', 'success');
+  };
+
   const allBookings = useMemo(() => getBookingsByProvider(CURRENT_PROVIDER_ID), []);
   const bookingStats = useMemo(() => calculateBookingStats(allBookings), [allBookings]);
 
@@ -277,21 +293,21 @@ const ProviderDashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-[#0f1117]">
       <motion.header
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="bg-white border-b border-gray-100 sticky top-0 z-30"
+        className="bg-white dark:bg-[#1a1f2e] border-b border-gray-100 dark:border-[#1e293b] sticky top-0 z-30"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <button onClick={handleBackClick} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                <ArrowLeft className="w-5 h-5 text-gray-700" />
+              <button onClick={handleBackClick} className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-lg transition-colors">
+                <ArrowLeft className="w-5 h-5 text-gray-700 dark:text-slate-300" />
               </button>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">Dashboard</h1>
-                <p className="text-sm text-gray-500">Welcome back, {currentUserName}!</p>
+                <h1 className="text-xl font-bold text-gray-900 dark:text-slate-100">Dashboard</h1>
+                <p className="text-sm text-gray-500 dark:text-slate-500">Welcome back, {currentUserName}!</p>
               </div>
             </div>
             <div className="flex items-center gap-4">
@@ -299,9 +315,9 @@ const ProviderDashboard = () => {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="relative p-3 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                  className="relative p-3 bg-gray-100 dark:bg-[#252b3b] rounded-lg hover:bg-gray-200 dark:hover:bg-[#1e293b] transition-colors"
                 >
-                  <Bell className="w-5 h-5 text-gray-700" />
+                  <Bell className="w-5 h-5 text-gray-700 dark:text-slate-300" />
                   {notificationCount > 0 && (
                     <span className="absolute -top-1 -right-1 min-w-5 h-5 bg-error rounded-full flex items-center justify-center text-xs text-white font-bold px-1 border-2 border-white">
                       {notificationCount > 99 ? '99+' : notificationCount}
@@ -321,7 +337,7 @@ const ProviderDashboard = () => {
         <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-8">
           <section>
             <motion.div variants={itemVariants} className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Overview</h2>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100">Overview</h2>
               <PeriodDropdown value={timeframe} onChange={setTimeframe} />
             </motion.div>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
@@ -330,7 +346,7 @@ const ProviderDashboard = () => {
           </section>
 
           <section>
-            <motion.h2 variants={itemVariants} className="text-2xl font-bold text-gray-900 mb-6">
+            <motion.h2 variants={itemVariants} className="text-2xl font-bold text-gray-900 dark:text-slate-100 mb-6">
               Quick Actions
             </motion.h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -341,7 +357,7 @@ const ProviderDashboard = () => {
           <div className="grid lg:grid-cols-3 gap-8">
             <section className="lg:col-span-2">
               <motion.div variants={itemVariants} className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">Upcoming Bookings</h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100">Upcoming Bookings</h2>
                 <Link to="/lucid/bookings" className="flex items-center gap-2 text-primary hover:text-primary-hover font-semibold">
                   View All
                   <ChevronRight className="w-4 h-4" />
@@ -356,9 +372,9 @@ const ProviderDashboard = () => {
 
             <section>
               <motion.div variants={itemVariants} className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">Recent Activity</h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100">Recent Activity</h2>
               </motion.div>
-              <motion.div variants={itemVariants} className="bg-white rounded-xl shadow-md divide-y divide-gray-100">
+              <motion.div variants={itemVariants} className="bg-white dark:bg-[#1a1f2e] rounded-xl shadow-md divide-y divide-gray-100 dark:divide-[#1e293b]">
                 {recentActivities.map((activity, i) => (
                   <ActivityItem key={i} {...activity} />
                 ))}
@@ -401,6 +417,7 @@ const ProviderDashboard = () => {
           onAccept={handleAccept}
           onDecline={handleDecline}
           onMarkComplete={handleMarkComplete}
+          onSubmitPriceAdjustment={handleSubmitPriceAdjustment}
         />
       )}
     </div>

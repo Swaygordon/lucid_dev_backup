@@ -66,8 +66,8 @@ const EarningsChart = () => {
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-white border-2 border-blue-600 rounded-lg p-3 shadow-xl">
-          <p className="font-semibold text-gray-900 mb-2">{label}</p>
+        <div className="bg-white dark:bg-[#1a1f2e] border-2 border-blue-600 rounded-lg p-3 shadow-xl">
+          <p className="font-semibold text-gray-900 dark:text-slate-100 mb-2">{label}</p>
           <div className="space-y-1">
             <p className="text-sm text-green-600 font-semibold">
               Earnings: GH₵{payload[0].value.toLocaleString()}
@@ -97,7 +97,7 @@ const EarningsChart = () => {
               className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all ${
                 timeframe === period
                   ? 'bg-blue-600 text-white shadow-md'
-                  : 'bg-white text-gray-700 hover:bg-gray-100 border-2 border-gray-200'
+                  : 'bg-white dark:bg-[#1a1f2e] text-gray-700 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-[#252b3b] border-2 border-gray-200 dark:border-[#2d3748]'
               }`}
             >
               {period === 'week' ? 'This Week' : period === 'month' ? 'This Month' : 'This Year'}
@@ -114,7 +114,7 @@ const EarningsChart = () => {
               className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all capitalize ${
                 chartType === type
                   ? 'bg-blue-600 text-white shadow-md'
-                  : 'bg-white text-gray-700 hover:bg-gray-100 border-2 border-gray-200'
+                  : 'bg-white dark:bg-[#1a1f2e] text-gray-700 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-[#252b3b] border-2 border-gray-200 dark:border-[#2d3748]'
               }`}
             >
               {type}
@@ -125,10 +125,10 @@ const EarningsChart = () => {
         {/* Toggle Jobs Display */}
         <button
           onClick={() => setShowJobs(!showJobs)}
-          className="flex items-center gap-2 px-4 py-2 bg-white border-2 border-gray-200 rounded-lg hover:bg-gray-100 transition-colors"
+          className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-[#1a1f2e] border-2 border-gray-200 dark:border-[#2d3748] rounded-lg hover:bg-gray-100 dark:hover:bg-[#252b3b] transition-colors"
         >
           {showJobs ? <Eye className="w-4 h-4 text-primary" /> : <EyeOff className="w-4 h-4 text-primary" />}
-          <span className="text-sm font-semibold text-gray-700">
+          <span className="text-sm font-semibold text-gray-700 dark:text-slate-300">
             {showJobs ? 'Hide' : 'Show'} Jobs
           </span>
         </button>
@@ -136,34 +136,34 @@ const EarningsChart = () => {
 
       {/* Stats Summary */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-4 border-2 border-green-200">
+        <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/30 dark:to-green-900/20 rounded-lg p-4 border-2 border-green-200 dark:border-green-800/50">
           <div className="flex items-center gap-2 mb-2">
             <DollarSign className="w-5 h-5 text-green-600" />
             <span className="text-sm font-medium text-green-600">Total Earnings</span>
           </div>
-          <p className="text-2xl font-bold text-gray-900">GH₵{totalEarnings.toLocaleString()}</p>
+          <p className="text-2xl font-bold text-gray-900 dark:text-slate-100">GH₵{totalEarnings.toLocaleString()}</p>
         </div>
 
-        <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4 border-2 border-blue-200">
+        <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-900/20 rounded-lg p-4 border-2 border-blue-200 dark:border-blue-800/50">
           <div className="flex items-center gap-2 mb-2">
             <Calendar className="w-5 h-5 text-blue-600" />
             <span className="text-sm font-medium text-blue-600">Total Jobs</span>
           </div>
-          <p className="text-2xl font-bold text-gray-900">{totalJobs}</p>
+          <p className="text-2xl font-bold text-gray-900 dark:text-slate-100">{totalJobs}</p>
         </div>
 
-        <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg p-4 border-2 border-orange-200">
+        <div className="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/30 dark:to-orange-900/20 rounded-lg p-4 border-2 border-orange-200 dark:border-orange-800/50">
           <div className="flex items-center gap-2 mb-2">
             <TrendingUp className="w-5 h-5 text-orange-600" />
             <span className="text-sm font-medium text-secondary">Avg Per Period</span>
           </div>
-          <p className="text-2xl font-bold text-gray-900">GH₵{avgEarnings}</p>
+          <p className="text-2xl font-bold text-gray-900 dark:text-slate-100">GH₵{avgEarnings}</p>
         </div>
       </div>
 
       {/* Chart */}
-      <div className="bg-white rounded-lg border-2 border-gray-200 p-6">
-        <h3 className="text-lg font-bold text-gray-900 mb-4">
+      <div className="bg-white dark:bg-[#1a1f2e] rounded-lg border-2 border-gray-200 dark:border-[#1e293b] p-6">
+        <h3 className="text-lg font-bold text-gray-900 dark:text-slate-100 mb-4">
           Earnings Trend - {timeframe === 'week' ? 'Weekly' : timeframe === 'month' ? 'Monthly' : 'Yearly'}
         </h3>
         
@@ -274,22 +274,6 @@ const EarningsChart = () => {
         </ResponsiveContainer>
       </div>
 
-      {/* Insights */}
-      <div className="grid md:grid-cols-2 gap-4">
-        <div className="bg-red-50 border-2 border-red-200 rounded-lg p-4">
-          <h4 className="font-semibold text-blue-900 mb-2">Insight</h4>
-          <p className="text-sm text-blue-800">
-            Your earnings have increased by 14.8% compared to last {timeframe}. Keep up the great work!
-          </p>
-        </div>
-        
-        <div className="bg-green-50 border-2 border-green-200 rounded-lg p-4">
-          <h4 className="font-semibold text-green-900 mb-2">Goal Progress</h4>
-          <p className="text-sm text-green-800">
-            You're 85% towards your monthly goal of GH₵5,000. Just GH₵{(5000 - totalEarnings).toLocaleString()} more to go!
-          </p>
-        </div>
-      </div>
     </div>
   );
 };

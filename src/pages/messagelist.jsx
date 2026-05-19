@@ -53,25 +53,25 @@ const ConfirmationModal = memo(({ isOpen, onClose, onConfirm, title, message, pr
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.9, opacity: 0 }}
           onClick={(e) => e.stopPropagation()}
-          className="bg-white rounded-lg shadow-xl p-6 max-w-md mx-4"
+          className="bg-white dark:bg-[#1a1f2e] rounded-lg shadow-xl p-6 max-w-md mx-4"
         >
           <div className="flex items-center space-x-3 mb-4">
-            <div className={`${confirmColor === 'red' ? 'bg-red-100' : 'bg-blue-100'} p-3 rounded-full`}>
+            <div className={`${confirmColor === 'red' ? 'bg-red-100 dark:bg-red-900/30' : 'bg-blue-100 dark:bg-blue-900/30'} p-3 rounded-full`}>
               <Trash2 className={`w-6 h-6 ${confirmColor === 'red' ? 'text-red-600' : 'text-blue-600'}`} />
             </div>
-            <h2 className="text-xl font-semibold text-gray-900">{title}</h2>
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-slate-100">{title}</h2>
           </div>
-          <p className="text-gray-600 mb-2">{message}</p>
+          <p className="text-gray-600 dark:text-slate-400 mb-2">{message}</p>
           {preview && (
-            <div className="bg-gray-50 p-3 rounded-lg mb-6 border border-gray-200">
-              <p className="text-sm text-gray-700 font-semibold">{preview.name}</p>
-              <p className="text-sm text-gray-600 mt-1 truncate">{preview.lastMessage}</p>
+            <div className="bg-gray-50 dark:bg-[#252b3b] p-3 rounded-lg mb-6 border border-gray-200 dark:border-[#1e293b]">
+              <p className="text-sm text-gray-700 dark:text-slate-300 font-semibold">{preview.name}</p>
+              <p className="text-sm text-gray-600 dark:text-slate-400 mt-1 truncate">{preview.lastMessage}</p>
             </div>
           )}
           <div className="flex space-x-3 mt-6">
             <button
               onClick={onClose}
-              className="flex-1 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-medium"
+              className="flex-1 px-4 py-2 bg-gray-200 dark:bg-[#252b3b] text-gray-700 dark:text-slate-300 rounded-lg hover:bg-gray-300 dark:hover:bg-[#2d3448] transition-colors font-medium"
             >
               Cancel
             </button>
@@ -94,38 +94,38 @@ const ActionsMenu = memo(({ conversation, onPin, onMute, onArchive, onDelete, on
     initial={{ opacity: 0, scale: 0.95 }}
     animate={{ opacity: 1, scale: 1 }}
     exit={{ opacity: 0, scale: 0.95 }}
-    className="absolute right-0 mt-2 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden z-20 min-w-48 conversation-actions-menu"
+    className="absolute right-0 mt-2 bg-white dark:bg-[#1a1f2e] rounded-lg shadow-xl border border-gray-200 dark:border-[#1e293b] overflow-hidden z-20 min-w-48 conversation-actions-menu"
   >
     <button
       onClick={() => onPin(conversation.id)}
-      className="w-full px-4 py-3 text-left hover:bg-gray-100 text-blue-600 flex items-center space-x-3 text-sm"
+      className="w-full px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-[#252b3b] text-blue-600 flex items-center space-x-3 text-sm"
     >
       <Pin className={`w-4 h-4 ${conversation.pinned ? 'fill-blue-600' : ''}`} />
       <span>{conversation.pinned ? 'Unpin' : 'Pin'}</span>
     </button>
-    
+
     <button
       onClick={() => onMute(conversation.id)}
-      className="w-full px-4 py-3 text-left hover:bg-gray-100 text-blue-600 flex items-center space-x-3 text-sm"
+      className="w-full px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-[#252b3b] text-blue-600 flex items-center space-x-3 text-sm"
     >
       {conversation.muted ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
       <span>{conversation.muted ? 'Unmute' : 'Mute'}</span>
     </button>
-    
+
     <button
       onClick={() => onArchive(conversation.id)}
-      className="w-full px-4 py-3 text-left hover:bg-gray-100 text-orange-600 flex items-center space-x-3 text-sm"
+      className="w-full px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-[#252b3b] text-orange-600 flex items-center space-x-3 text-sm"
     >
       <Archive className="w-4 h-4" />
       <span>{conversation.archived ? 'Unarchive' : 'Archive'}</span>
     </button>
-    
+
     <button
       onClick={() => {
         onDelete(conversation);
         onClose();
       }}
-      className="w-full px-4 py-3 text-left hover:bg-red-50 text-red-600 flex items-center space-x-3 text-sm"
+      className="w-full px-4 py-3 text-left hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 flex items-center space-x-3 text-sm"
     >
       <Trash2 className="w-4 h-4" />
       <span>Delete</span>
@@ -177,8 +177,8 @@ const ConversationItem = memo(({ conversation, onSelect, onShowActions }) => {
       onTouchStart={startLongPress}
       onTouchEnd={cancelLongPress}
       onClick={() => onSelect(conversation)}
-      className={`relative flex items-center gap-4 p-4 border-b border-gray-200 transition-all duration-200 hover:bg-gray-50 cursor-pointer ${
-        conversation.unreadCount > 0 ? 'bg-blue-50' : 'bg-white'
+      className={`relative flex items-center gap-4 p-4 border-b border-gray-200 dark:border-[#1e293b] transition-all duration-200 hover:bg-gray-50 dark:hover:bg-[#252b3b] cursor-pointer ${
+        conversation.unreadCount > 0 ? 'bg-blue-50 dark:bg-blue-900/20' : 'bg-white dark:bg-[#1a1f2e]'
       } ${conversation.pinned ? 'border-l-4 border-l-blue-600' : ''}`}
     >
       {/* Profile Picture */}
@@ -189,17 +189,17 @@ const ConversationItem = memo(({ conversation, onSelect, onShowActions }) => {
           className="w-14 h-14 rounded-full object-cover"
         />
         {conversation.online && (
-          <div className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
+          <div className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-white dark:border-[#1a1f2e]"></div>
         )}
       </div>
 
       {/* Content */}
       <div className="flex-1 min-w-0">
         <div className="flex items-start justify-between gap-2 mb-1">
-          <h3 className="font-semibold text-gray-900 text-base truncate">
+          <h3 className="font-semibold text-gray-900 dark:text-slate-100 text-base truncate">
             {conversation.name}
           </h3>
-          <span className="text-xs text-gray-500 whitespace-nowrap flex-shrink-0">
+          <span className="text-xs text-gray-500 dark:text-slate-500 whitespace-nowrap flex-shrink-0">
             {conversation.time}
           </span>
         </div>
@@ -207,7 +207,7 @@ const ConversationItem = memo(({ conversation, onSelect, onShowActions }) => {
         <div className="flex items-center gap-2">
           {conversation.isOutgoing && getStatusIcon()}
           <p className={`text-sm truncate ${
-            conversation.unreadCount > 0 ? 'font-semibold text-gray-900' : 'text-gray-600'
+            conversation.unreadCount > 0 ? 'font-semibold text-gray-900 dark:text-slate-100' : 'text-gray-600 dark:text-slate-400'
           }`}>
             {conversation.lastMessage}
           </p>
@@ -240,13 +240,13 @@ const EmptyState = memo(({ searchQuery }) => (
     animate="visible"
     className="flex flex-col items-center justify-center py-16 px-4"
   >
-    <div className="w-32 h-32 bg-gray-200 rounded-full flex items-center justify-center mb-6">
-      <Search className="w-16 h-16 text-gray-400" />
+    <div className="w-32 h-32 bg-gray-200 dark:bg-[#252b3b] rounded-full flex items-center justify-center mb-6">
+      <Search className="w-16 h-16 text-gray-400 dark:text-slate-500" />
     </div>
-    <h2 className="text-2xl font-bold text-gray-900 mb-2">
+    <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100 mb-2">
       {searchQuery ? 'No Results Found' : 'No Messages Yet'}
     </h2>
-    <p className="text-gray-600 text-center max-w-xs">
+    <p className="text-gray-600 dark:text-slate-400 text-center max-w-xs">
       {searchQuery 
         ? `No conversations match "${searchQuery}"`
         : "Start a new conversation to see it here"
@@ -262,7 +262,7 @@ const FilterButton = memo(({ filter, isActive, count, onClick }) => (
     className={`relative top-2 mb-2 px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-200 ${
       isActive
         ? 'bg-blue-600 text-white shadow-md'
-        : 'bg-white text-gray-700 border border-gray-300 hover:border-blue-600'
+        : 'bg-white dark:bg-[#1a1f2e] text-gray-700 dark:text-slate-300 border border-gray-300 dark:border-[#2d3748] hover:border-blue-600'
     }`}
   >
     {filter.label}
@@ -469,7 +469,7 @@ const MessagesListPage = () => {
   }, [showNotification]);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-gray-50 dark:bg-[#0f1117] flex flex-col">
       {/* Delete Confirmation Modal */}
       <ConfirmationModal
         isOpen={!!confirmDelete}
@@ -489,20 +489,20 @@ const MessagesListPage = () => {
       <motion.div
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="bg-white border-b border-gray-200 sticky top-0 z-10"
+        className="bg-white dark:bg-[#1a1f2e] border-b border-gray-200 dark:border-[#1e293b] sticky top-0 z-10"
       >
         <div className="w-full mx-auto px-4 py-4">
           <div className="flex items-center justify-between mb-4">
             <motion.button
               onClick={handleBackClick}
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-full transition-colors"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
             >
-              <ArrowLeft className="w-6 h-6 text-gray-700" />
+              <ArrowLeft className="w-6 h-6 text-gray-700 dark:text-slate-300" />
             </motion.button>
-            
-            <h1 className="text-2xl font-bold text-gray-900">Messages</h1>
+
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-slate-100">Messages</h1>
             
             <motion.button
               onClick={handleNewMessage}

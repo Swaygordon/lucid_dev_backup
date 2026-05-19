@@ -74,9 +74,9 @@ const Category = () => {
   // Fallback: unknown slug → show all categories
   if (!cat) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gray-50 dark:bg-[#0f1117]">
         <div className="max-w-6xl mx-auto px-5 py-20 text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Category not found</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-slate-100 mb-4">Category not found</h1>
           <Link to="/lucid/services/all" className="text-blue-600 hover:underline">
             Browse all categories
           </Link>
@@ -88,7 +88,7 @@ const Category = () => {
   const Icon = cat.icon;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-[#0f1117]">
 
       {/* ── Hero ── */}
       <div className="relative w-full h-56 md:h-72 overflow-hidden">
@@ -118,7 +118,7 @@ const Category = () => {
 
       {/* ── Sub-services grid ── */}
       <div className="max-w-6xl mx-auto px-5 py-8">
-        <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-6">
+        <h2 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-slate-100 mb-6">
           {cat.services.length} services in {cat.name}
         </h2>
 
@@ -128,7 +128,7 @@ const Category = () => {
               key={svc.slug}
               to={`/lucid/services/${cat.slug}/${svc.slug}`}
             >
-              <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg border border-gray-100 transition-all duration-200 group">
+              <div className="bg-white dark:bg-[#1a1f2e] rounded-2xl overflow-hidden shadow-sm hover:shadow-lg border border-gray-100 dark:border-[#1e293b] transition-all duration-200 group">
                 <div className="relative h-44 overflow-hidden">
                   <img
                     src={svc.image}
@@ -139,13 +139,13 @@ const Category = () => {
                 </div>
                 <div className="p-4 flex items-center justify-between">
                   <div>
-                    <h3 className="font-semibold text-gray-900">{svc.name}</h3>
-                    <div className="flex items-center gap-1 text-xs text-gray-500 mt-1">
+                    <h3 className="font-semibold text-gray-900 dark:text-slate-100">{svc.name}</h3>
+                    <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-slate-500 mt-1">
                       <MapPin size={12} />
                       <span>See workers near you</span>
                     </div>
                   </div>
-                  <ChevronRight size={18} className="text-gray-400 group-hover:text-blue-600 transition-colors" />
+                  <ChevronRight size={18} className="text-gray-400 dark:text-slate-500 group-hover:text-blue-600 transition-colors" />
                 </div>
               </div>
             </Link>
@@ -155,7 +155,7 @@ const Category = () => {
 
       {/* ── Other categories ── */}
       <div className="max-w-6xl mx-auto px-5 pb-14">
-        <h2 className="text-lg font-bold text-gray-900 mb-4">Explore other categories</h2>
+        <h2 className="text-lg font-bold text-gray-900 dark:text-slate-100 mb-4">Explore other categories</h2>
         <div className="flex flex-wrap gap-3">
           {ALL_CATEGORIES.filter(c => c.slug !== cat.slug).map(c => {
             const CIcon = c.icon;

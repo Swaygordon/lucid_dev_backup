@@ -126,7 +126,7 @@ const AccountSettings = () => {
   const modalContent = getModalContent();
 
   return (
-    <div className="bg-white min-h-screen flex justify-center items-start p-8">
+    <div className="bg-white dark:bg-[#0f1117] min-h-screen flex justify-center items-start p-8">
       {/* Notification Toast */}
       {notification && (
         <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-primary text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-slide-up">
@@ -137,28 +137,28 @@ const AccountSettings = () => {
       {/* Confirmation Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 animate-fade-in">
-          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-8 animate-scale-in">
+          <div className="bg-white dark:bg-[#1a1f2e] rounded-xl shadow-2xl max-w-md w-full p-8 animate-scale-in">
             {modalContent.icon}
-            
-            <h2 className="text-2xl font-bold text-gray-900 text-center mb-4">
+
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100 text-center mb-4">
               {modalContent.title}
             </h2>
             
-            <p className="text-gray-600 text-center mb-6">
+            <p className="text-gray-600 dark:text-slate-400 text-center mb-6">
               {modalContent.message}
             </p>
 
             {modalContent.showInput && (
               <div className="mb-6">
-                <p className="text-sm text-gray-700 mb-2">
-                  Type <span className="font-bold text-gray-900">{modalContent.verificationText}</span> to confirm:
+                <p className="text-sm text-gray-700 dark:text-slate-300 mb-2">
+                  Type <span className="font-bold text-gray-900 dark:text-slate-100">{modalContent.verificationText}</span> to confirm:
                 </p>
                 <input
                   type="text"
                   value={verificationInput}
                   onChange={(e) => setVerificationInput(e.target.value)}
                   placeholder={modalContent.placeholder}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg text-base focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all"
+                  className="w-full px-4 py-3 border-2 border-gray-300 dark:border-[#2d3748] rounded-lg text-base focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/40 transition-all bg-white dark:bg-[#252b3b] dark:text-slate-200 dark:placeholder-slate-500"
                 />
               </div>
             )}
@@ -166,7 +166,7 @@ const AccountSettings = () => {
             <div className="flex gap-3">
               <button
                 onClick={closeModal}
-                className="flex-1 bg-white hover:bg-gray-50 text-gray-700 border-2 border-gray-300 font-medium px-6 py-3 rounded-lg transition-all duration-200"
+                className="flex-1 bg-white dark:bg-[#1a1f2e] hover:bg-gray-50 dark:hover:bg-[#252b3b] text-gray-700 dark:text-slate-300 border-2 border-gray-300 dark:border-[#2d3748] font-medium px-6 py-3 rounded-lg transition-all duration-200"
               >
                 Cancel
               </button>
@@ -182,7 +182,7 @@ const AccountSettings = () => {
         </div>
       )}
 
-      <div className="max-w-3xl w-full bg-white rounded-xl p-8 shadow-lg">
+      <div className="max-w-3xl w-full bg-white dark:bg-[#1a1f2e] rounded-xl p-8 shadow-lg">
         <button 
           onClick={() => {
             showNotification('Navigating back...');
@@ -194,14 +194,14 @@ const AccountSettings = () => {
               }
             }, 600);
           }}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-full transition-colors"
           >
             <ArrowLeft className="w-6 h-6 text-primary" />
         </button>
         {/* User Information Section */}
-        <div className="relative pb-4 mb-8 border-b border-gray-200">
+        <div className="relative pb-4 mb-8 border-b border-gray-200 dark:border-[#1e293b]">
           <div className="flex justify-between items-center">
-            <h2 className="flex-1 text-center text-2xl font-semibold text-gray-800">
+            <h2 className="flex-1 text-center text-2xl font-semibold text-gray-800 dark:text-slate-200">
               User Information
             </h2>
             {!isEditing && (
@@ -221,7 +221,7 @@ const AccountSettings = () => {
           {/* First and Last Name Row */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div className="flex flex-col gap-2">
-              <label className="text-gray-400 text-sm font-medium">First Name</label>
+              <label className="text-gray-400 dark:text-slate-500 text-sm font-medium">First Name</label>
               <input
                 type="text"
                 name="firstName"
@@ -230,13 +230,13 @@ const AccountSettings = () => {
                 readOnly={!isEditing}
                 className={`px-4 py-3 border rounded-md text-base transition-all duration-200 ${
                   isEditing
-                    ? 'bg-white text-gray-700 border-gray-300 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100'
-                    : 'bg-gray-50 text-gray-600 border-gray-300 cursor-not-allowed'
+                    ? 'bg-white dark:bg-[#252b3b] text-gray-700 dark:text-slate-200 border-gray-300 dark:border-[#2d3748] focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/40'
+                    : 'bg-gray-50 dark:bg-[#252b3b] text-gray-600 dark:text-slate-400 border-gray-300 dark:border-[#2d3748] cursor-not-allowed'
                 }`}
               />
             </div>
             <div className="flex flex-col gap-2">
-              <label className="text-gray-400 text-sm font-medium">Last Name</label>
+              <label className="text-gray-400 dark:text-slate-500 text-sm font-medium">Last Name</label>
               <input
                 type="text"
                 name="lastName"
@@ -245,8 +245,8 @@ const AccountSettings = () => {
                 readOnly={!isEditing}
                 className={`px-4 py-3 border rounded-md text-base transition-all duration-200 ${
                   isEditing
-                    ? 'bg-white text-gray-700 border-gray-300 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100'
-                    : 'bg-gray-50 text-gray-600 border-gray-300 cursor-not-allowed'
+                    ? 'bg-white dark:bg-[#252b3b] text-gray-700 dark:text-slate-200 border-gray-300 dark:border-[#2d3748] focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/40'
+                    : 'bg-gray-50 dark:bg-[#252b3b] text-gray-600 dark:text-slate-400 border-gray-300 dark:border-[#2d3748] cursor-not-allowed'
                 }`}
               />
             </div>
@@ -313,7 +313,7 @@ const AccountSettings = () => {
           {/* Region and City Row */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="flex flex-col gap-2">
-              <label className="text-gray-400 text-sm font-medium">Region</label>
+              <label className="text-gray-400 dark:text-slate-500 text-sm font-medium">Region</label>
               <input
                 type="text"
                 name="region"
@@ -322,13 +322,13 @@ const AccountSettings = () => {
                 readOnly={!isEditing}
                 className={`px-4 py-3 border rounded-md text-base transition-all duration-200 ${
                   isEditing
-                    ? 'bg-white text-gray-700 border-gray-300 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100'
-                    : 'bg-gray-50 text-gray-600 border-gray-300 cursor-not-allowed'
+                    ? 'bg-white dark:bg-[#252b3b] text-gray-700 dark:text-slate-200 border-gray-300 dark:border-[#2d3748] focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/40'
+                    : 'bg-gray-50 dark:bg-[#252b3b] text-gray-600 dark:text-slate-400 border-gray-300 dark:border-[#2d3748] cursor-not-allowed'
                 }`}
               />
             </div>
             <div className="flex flex-col gap-2">
-              <label className="text-gray-400 text-sm font-medium">City/Town</label>
+              <label className="text-gray-400 dark:text-slate-500 text-sm font-medium">City/Town</label>
               <input
                 type="text"
                 name="city"
@@ -337,8 +337,8 @@ const AccountSettings = () => {
                 readOnly={!isEditing}
                 className={`px-4 py-3 border rounded-md text-base transition-all duration-200 ${
                   isEditing
-                    ? 'bg-white text-gray-700 border-gray-300 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100'
-                    : 'bg-gray-50 text-gray-600 border-gray-300 cursor-not-allowed'
+                    ? 'bg-white dark:bg-[#252b3b] text-gray-700 dark:text-slate-200 border-gray-300 dark:border-[#2d3748] focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/40'
+                    : 'bg-gray-50 dark:bg-[#252b3b] text-gray-600 dark:text-slate-400 border-gray-300 dark:border-[#2d3748] cursor-not-allowed'
                 }`}
               />
             </div>

@@ -76,16 +76,16 @@ const ClientHistory = () => {
           <div className="flex items-start justify-between mb-4">
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-2">
-                <h3 className="text-lg font-bold text-gray-900">{item.title}</h3>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-slate-100">{item.title}</h3>
                 <StatusBadge status={item.status} />
               </div>
-              <div className="flex items-center gap-2 text-sm text-gray-600">
+              <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-slate-400">
                 <User className="w-4 h-4" />
                 <span>{providerName}</span>
               </div>
             </div>
             <div className="text-right">
-              <div className="text-2xl font-bold text-gray-900">GH₵{item.price}</div>
+              <div className="text-2xl font-bold text-gray-900 dark:text-slate-100">GH₵{item.price}</div>
               {item.rating && (
                 <div className="flex items-center gap-1 justify-end mt-1">
                   <Star className="w-4 h-4 fill-primary text-primary" />
@@ -95,7 +95,7 @@ const ClientHistory = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm text-gray-600">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm text-gray-600 dark:text-slate-400">
             <div className="flex items-center gap-2">
               <Calendar className="w-4 h-4 text-primary" />
               <span>{item.date}</span>
@@ -116,7 +116,7 @@ const ClientHistory = () => {
             )}
           </div>
 
-          <div className="flex gap-2 mt-4 pt-4 border-t border-gray-200">
+          <div className="flex gap-2 mt-4 pt-4 border-t border-gray-200 dark:border-[#1e293b]">
             {/* [MOCK] booking detail data comes from parent list; in prod parent fetches GET /bookings/:id */}
             <Button size="sm" variant="outline" className="flex-1" onClick={() => setSelectedBooking(item)}>
               <Eye className="w-4 h-4" />
@@ -139,13 +139,13 @@ const ClientHistory = () => {
     <div className="flex gap-2">
       <button
         onClick={() => setViewMode('list')}
-        className={`p-2 rounded-lg transition-colors ${viewMode === 'list' ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+        className={`p-2 rounded-lg transition-colors ${viewMode === 'list' ? 'bg-primary text-white' : 'bg-gray-100 dark:bg-[#252b3b] text-gray-700 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-[#1e293b]'}`}
       >
         <FileText className="w-5 h-5" />
       </button>
       <button
         onClick={() => setViewMode('stats')}
-        className={`p-2 rounded-lg transition-colors ${viewMode === 'stats' ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+        className={`p-2 rounded-lg transition-colors ${viewMode === 'stats' ? 'bg-primary text-white' : 'bg-gray-100 dark:bg-[#252b3b] text-gray-700 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-[#1e293b]'}`}
       >
         <BarChart3 className="w-5 h-5" />
       </button>
@@ -153,7 +153,7 @@ const ClientHistory = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-[#0f1117]">
       <PageHeader
         title="History"
         subtitle="View your past service bookings"
@@ -165,8 +165,8 @@ const ClientHistory = () => {
         {/* Period filter — [API] pass selected period as ?period= query param to /bookings endpoint */}
         <motion.div initial="hidden" animate="visible" variants={fadeIn} className="mb-8">
           <div className="flex items-center gap-2 mb-4">
-            <Filter className="w-5 h-5 text-gray-600" />
-            <span className="font-semibold text-gray-900">Filter by period:</span>
+            <Filter className="w-5 h-5 text-gray-600 dark:text-slate-400" />
+            <span className="font-semibold text-gray-900 dark:text-slate-100">Filter by period:</span>
           </div>
           <div className="flex flex-wrap gap-3">
             {PERIODS.map((period) => (
@@ -176,7 +176,7 @@ const ClientHistory = () => {
                 className={`px-4 py-2 rounded-lg font-semibold transition-all ${
                   selectedPeriod === period.id
                     ? 'bg-primary text-white shadow-md'
-                    : 'bg-white text-gray-700 hover:bg-gray-100 border-2 border-gray-200'
+                    : 'bg-white dark:bg-[#1a1f2e] text-gray-700 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-[#252b3b] border-2 border-gray-200 dark:border-[#1e293b]'
                 }`}
               >
                 {period.label}
@@ -195,27 +195,27 @@ const ClientHistory = () => {
           >
             <Card className="text-center">
               <div className="text-3xl font-bold text-primary mb-2">{stats.totalJobs}</div>
-              <div className="text-sm text-gray-600">Total Jobs</div>
+              <div className="text-sm text-gray-600 dark:text-slate-400">Total Jobs</div>
             </Card>
             <Card className="text-center">
               <div className="text-3xl font-bold text-green-600 mb-2">{stats.completedJobs}</div>
-              <div className="text-sm text-gray-600">Completed</div>
+              <div className="text-sm text-gray-600 dark:text-slate-400">Completed</div>
             </Card>
             <Card className="text-center">
               <div className="text-3xl font-bold text-error mb-2">{stats.cancelledJobs}</div>
-              <div className="text-sm text-gray-600">Cancelled</div>
+              <div className="text-sm text-gray-600 dark:text-slate-400">Cancelled</div>
             </Card>
             <Card className="text-center">
               <div className="text-3xl font-bold text-purple-600 mb-2">{stats.completionRate}%</div>
-              <div className="text-sm text-gray-600">Success Rate</div>
+              <div className="text-sm text-gray-600 dark:text-slate-400">Success Rate</div>
             </Card>
             <Card className="text-center">
               <div className="text-3xl font-bold text-secondary mb-2">GH₵{stats.totalSpent}</div>
-              <div className="text-sm text-gray-600">Total Spent</div>
+              <div className="text-sm text-gray-600 dark:text-slate-400">Total Spent</div>
             </Card>
             <Card className="text-center">
               <div className="text-3xl font-bold text-yellow-600 mb-2">{stats.avgRating}</div>
-              <div className="text-sm text-gray-600">Avg Rating Given</div>
+              <div className="text-sm text-gray-600 dark:text-slate-400">Avg Rating Given</div>
             </Card>
           </motion.div>
         )}

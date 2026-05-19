@@ -52,7 +52,7 @@ const BookingConfirmation = () => {
 
   if (!bookingData || !provider) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-[#0f1117] flex items-center justify-center">
         <Card className="text-center p-8">
           <p className="text-gray-600 mb-4">No booking data found</p>
           <Button onClick={() => navigate('/lucid/')}>Go Home</Button>
@@ -62,7 +62,7 @@ const BookingConfirmation = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-[#0f1117]">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <motion.div
           initial="hidden"
@@ -87,13 +87,13 @@ const BookingConfirmation = () => {
             </div>
           </motion.div>
 
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-slate-100 mb-4">
             Booking Request Sent!
           </h1>
-          <p className="text-xl text-gray-600 mb-2">
+          <p className="text-xl text-gray-600 dark:text-slate-400 mb-2">
             Your booking request has been successfully submitted to {provider.name}
           </p>
-          <p className="text-gray-600">
+          <p className="text-gray-600 dark:text-slate-400">
             Booking Reference: <span className="font-bold text-primary">{bookingData.bookingReference}</span>
           </p>
         </motion.div>
@@ -107,15 +107,15 @@ const BookingConfirmation = () => {
         >
           {/* What Happens Next */}
           <Card>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">What Happens Next?</h2>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100 mb-6">What Happens Next?</h2>
             <div className="space-y-4">
               <div className="flex gap-4">
                 <div className="flex-shrink-0 w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center font-bold">
                   1
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-1">Provider Reviews Request</h3>
-                  <p className="text-gray-600">
+                  <h3 className="font-semibold text-gray-900 dark:text-slate-100 mb-1">Provider Reviews Request</h3>
+                  <p className="text-gray-600 dark:text-slate-400">
                     {provider.name} will review your booking details and check availability.
                   </p>
                 </div>
@@ -127,7 +127,7 @@ const BookingConfirmation = () => {
                 </div>
                 <div>
                   {/* [WS] Subscribe to booking status channel (e.g., ws://…/bookings/:id/status) for real-time accept/decline notifications */}
-                  <h3 className="font-semibold text-gray-900 mb-1">Confirmation or Discussion</h3>
+                  <h3 className="font-semibold text-gray-900 dark:text-slate-100 mb-1">Confirmation or Discussion</h3>
                   <p className="text-gray-600">
                     You'll receive a notification when the provider confirms or wants to discuss details.
                   </p>
@@ -139,7 +139,7 @@ const BookingConfirmation = () => {
                   3
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-1">Service Delivery</h3>
+                  <h3 className="font-semibold text-gray-900 dark:text-slate-100 mb-1">Service Delivery</h3>
                   <p className="text-gray-600">
                     Once confirmed, the service provider will arrive at the scheduled time.
                   </p>
@@ -153,7 +153,7 @@ const BookingConfirmation = () => {
                 <div>
                   {/* [API] POST /payments/initiate — {bookingId, method, phoneNumber} → {paymentRef, status} */}
                   {/* [API] GET /payments/:ref/status — poll until confirmed or use webhook callback */}
-                  <h3 className="font-semibold text-gray-900 mb-1">Payment & Review</h3>
+                  <h3 className="font-semibold text-gray-900 dark:text-slate-100 mb-1">Payment & Review</h3>
                   <p className="text-gray-600">
                     After completion, make payment and leave a review for the service.
                   </p>
@@ -165,41 +165,41 @@ const BookingConfirmation = () => {
           {/* Booking Details */}
           {/* [MOCK] Replace with GET /bookings/:id — all fields below should be sourced from API response, not navigation state */}
           <Card>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Booking Details</h2>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100 mb-6">Booking Details</h2>
             <div className="grid md:grid-cols-2 gap-6">
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
                   <User className="w-5 h-5 text-primary mt-1" />
                   <div>
-                    <p className="text-sm text-gray-600">Service Provider</p>
-                    <p className="font-semibold text-gray-900">{provider.name}</p>
-                    <p className="text-sm text-gray-600">{provider.profession}</p>
+                    <p className="text-sm text-gray-600 dark:text-slate-400">Service Provider</p>
+                    <p className="font-semibold text-gray-900 dark:text-slate-100">{provider.name}</p>
+                    <p className="text-sm text-gray-600 dark:text-slate-400">{provider.profession}</p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-3">
                   <FileText className="w-5 h-5 text-primary mt-1" />
                   <div>
-                    <p className="text-sm text-gray-600">Service Type</p>
-                    <p className="font-semibold text-gray-900">{bookingData.serviceType}</p>
+                    <p className="text-sm text-gray-600 dark:text-slate-400">Service Type</p>
+                    <p className="font-semibold text-gray-900 dark:text-slate-100">{bookingData.serviceType}</p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-3">
                   <Calendar className="w-5 h-5 text-primary mt-1" />
                   <div>
-                    <p className="text-sm text-gray-600">Preferred Date & Time</p>
-                    <p className="font-semibold text-gray-900">{bookingData.date}</p>
-                    <p className="font-semibold text-gray-900">{bookingData.time}</p>
+                    <p className="text-sm text-gray-600 dark:text-slate-400">Preferred Date & Time</p>
+                    <p className="font-semibold text-gray-900 dark:text-slate-100">{bookingData.date}</p>
+                    <p className="font-semibold text-gray-900 dark:text-slate-100">{bookingData.time}</p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-3">
                   <MapPin className="w-5 h-5 text-primary mt-1" />
                   <div>
-                    <p className="text-sm text-gray-600">Location</p>
-                    <p className="font-semibold text-gray-900">{bookingData.location.address}</p>
-                    <p className="text-gray-600">{bookingData.location.area}, {bookingData.location.city}</p>
+                    <p className="text-sm text-gray-600 dark:text-slate-400">Location</p>
+                    <p className="font-semibold text-gray-900 dark:text-slate-100">{bookingData.location.address}</p>
+                    <p className="text-gray-600 dark:text-slate-400">{bookingData.location.area}, {bookingData.location.city}</p>
                   </div>
                 </div>
               </div>
@@ -208,16 +208,16 @@ const BookingConfirmation = () => {
                 <div className="flex items-start gap-3">
                   <User className="w-5 h-5 text-primary mt-1" />
                   <div>
-                    <p className="text-sm text-gray-600">Contact Person</p>
-                    <p className="font-semibold text-gray-900">{bookingData.client.name}</p>
+                    <p className="text-sm text-gray-600 dark:text-slate-400">Contact Person</p>
+                    <p className="font-semibold text-gray-900 dark:text-slate-100">{bookingData.client.name}</p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-3">
                   <Phone className="w-5 h-5 text-primary mt-1" />
                   <div>
-                    <p className="text-sm text-gray-600">Phone Number</p>
-                    <p className="font-semibold text-gray-900">{bookingData.client.phone}</p>
+                    <p className="text-sm text-gray-600 dark:text-slate-400">Phone Number</p>
+                    <p className="font-semibold text-gray-900 dark:text-slate-100">{bookingData.client.phone}</p>
                   </div>
                 </div>
 
@@ -225,8 +225,8 @@ const BookingConfirmation = () => {
                   <div className="flex items-start gap-3">
                     <Mail className="w-5 h-5 text-primary mt-1" />
                     <div>
-                      <p className="text-sm text-gray-600">Email</p>
-                      <p className="font-semibold text-gray-900">{bookingData.client.email}</p>
+                      <p className="text-sm text-gray-600 dark:text-slate-400">Email</p>
+                      <p className="font-semibold text-gray-900 dark:text-slate-100">{bookingData.client.email}</p>
                     </div>
                   </div>
                 )}
@@ -234,8 +234,8 @@ const BookingConfirmation = () => {
                 <div className="flex items-start gap-3">
                   <Clock className="w-5 h-5 text-primary mt-1" />
                   <div>
-                    <p className="text-sm text-gray-600">Urgency</p>
-                    <p className="font-semibold text-gray-900 capitalize">
+                    <p className="text-sm text-gray-600 dark:text-slate-400">Urgency</p>
+                    <p className="font-semibold text-gray-900 dark:text-slate-100 capitalize">
                       {bookingData.urgency}
                     </p>
                   </div>
@@ -244,9 +244,9 @@ const BookingConfirmation = () => {
             </div>
 
             {bookingData.description && (
-              <div className="mt-6 pt-6 border-t border-gray-200">
-                <p className="text-sm text-gray-600 mb-2">Description</p>
-                <p className="text-gray-900">{bookingData.description}</p>
+              <div className="mt-6 pt-6 border-t border-gray-200 dark:border-[#1e293b]">
+                <p className="text-sm text-gray-600 dark:text-slate-400 mb-2">Description</p>
+                <p className="text-gray-900 dark:text-slate-100">{bookingData.description}</p>
               </div>
             )}
           </Card>
@@ -308,7 +308,7 @@ const BookingConfirmation = () => {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="text-center text-gray-600"
+              className="text-center text-gray-600 dark:text-slate-400"
             >
               <p>Redirecting to home page in {countdown} seconds...</p>
             </motion.div>

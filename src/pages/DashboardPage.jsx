@@ -5,9 +5,9 @@ import ProviderDashboard from './provider_dashboard';
 
 function DashboardSkeleton() {
   return (
-    <div className="min-h-screen bg-gray-50 animate-pulse">
+    <div className="min-h-screen bg-gray-50 dark:bg-[#0f1117] animate-pulse">
       {/* Header bar */}
-      <div className="bg-white border-b px-6 py-5 flex items-center justify-between">
+      <div className="bg-white dark:bg-[#1a1f2e] border-b dark:border-[#1e293b] px-6 py-5 flex items-center justify-between">
         <div className="space-y-2">
           <div className="h-6 bg-gray-200 rounded-lg w-44" />
           <div className="h-4 bg-gray-100 rounded-lg w-64" />
