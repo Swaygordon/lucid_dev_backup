@@ -1,0 +1,1 @@
+import{c as s,b as c,i,r as n}from"./index-DiGdoNAQ.js";const r=[["path",{d:"m12 19-7-7 7-7",key:"1l729n"}],["path",{d:"M19 12H5",key:"x3x0zl"}]],h=s("arrow-left",r),k=(a="/lucid_dev_backup",e=200)=>{const t=c(),{showNotification:o}=i();return n.useCallback(()=>{o("Going Back . . .","info"),setTimeout(()=>{window.history.length>2?t(-1):t(a)},e)},[t,o,a,e])};export{h as A,k as u};
