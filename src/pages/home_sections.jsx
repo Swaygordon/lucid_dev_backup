@@ -1,9 +1,9 @@
-import React, { memo, lazy, Suspense } from 'react';
+import React, { memo, lazy, Suspense, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Shield, Clock, CheckCircle2 } from 'lucide-react';
+import { Shield, Clock, CheckCircle2, ChevronDown } from 'lucide-react';
 import Search from '../assets/search_options.png';
 import Review from '../assets/Ratings.png';
-import Book from '../assets/book.png';
+import Book from '../assets/book.webp';
 import InstantQuotes from '../assets/instant qoutes.jpg';
 
 // Lazy load heavy components
@@ -53,7 +53,7 @@ const IconWrapper = memo(({ children }) => (
 // Memoized Feature Card Component
 const FeatureCard = memo(({ icon: Icon, title, description, index }) => (
   <motion.div
-    className="card rounded-3xl w-full bg-white dark:bg-[#1a1f2e] card-md shadow-2xl hover:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] transition-shadow duration-200"
+    className="flex flex-col rounded-3xl w-full bg-white dark:bg-[#1a1f2e] shadow-2xl hover:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] transition-shadow duration-200"
     variants={fadeInUp}
     initial="hidden"
     whileInView="visible"
@@ -61,7 +61,7 @@ const FeatureCard = memo(({ icon: Icon, title, description, index }) => (
     transition={{ duration: 0.5, delay: index * 0.1 }}
     whileHover={{ y: -10 }}
   >
-    <div className="card-body items-center text-center">
+    <div className="flex flex-col flex-1 gap-2 p-6 items-center text-center">
       <IconWrapper>
         <Icon size={32} className="text-white" strokeWidth={2} />
       </IconWrapper>
@@ -74,7 +74,7 @@ const FeatureCard = memo(({ icon: Icon, title, description, index }) => (
 // Memoized Platform Feature Card
 const PlatformFeatureCard = memo(({ title, description, index }) => (
   <motion.div 
-    className="card w-full bg-white dark:bg-[#1a1f2e] card-md shadow-2xl rounded-3xl hover:shadow-xl transition-shadow"
+    className="flex flex-col w-full bg-white dark:bg-[#1a1f2e] shadow-2xl rounded-3xl hover:shadow-xl transition-shadow"
     variants={scaleIn}
     initial="hidden"
     whileInView="visible"
@@ -82,8 +82,8 @@ const PlatformFeatureCard = memo(({ title, description, index }) => (
     transition={{ duration: 0.4, delay: index * 0.08 }}
     whileHover={{ scale: 1.03 }}
   >
-    <div className="card-body">
-      <h2 className="card-title text-black dark:text-slate-100 mb-2 pb-2 font-semibold text-xl">
+    <div className="flex flex-col flex-1 gap-2 p-6">
+      <h2 className="font-semibold text-xl text-black dark:text-slate-100 mb-2 pb-2">
         {title}
       </h2>
       <p className="text-gray-600 dark:text-slate-400">{description}</p>
@@ -132,24 +132,32 @@ const HowItWorksStep = memo(({ step, index }) => (
 ));
 
 // Memoized FAQ Item
-const FAQItem = memo(({ index, question, answer }) => (
-  <motion.div 
-    tabIndex={index} 
-    className="collapse collapse-arrow bg-white dark:bg-[#1a1f2e] border-b-2 rounded-none border-gray-100 dark:border-[#1e293b] hover:bg-gray-50 dark:hover:bg-[#252b3b] transition-colors"
-    variants={fadeInUp}
-    initial="hidden"
-    whileInView="visible"
-    viewport={{ once: true }}
-    transition={{ duration: 0.4, delay: index * 0.05 }}
-  >
-    <div className="collapse-title font-semibold text-black dark:text-slate-100 text-left">
-      {question}
-    </div>
-    <div className="collapse-content text-sm text-gray-600 dark:text-slate-400 text-left">
-      {answer}
-    </div>
-  </motion.div>
-));
+const FAQItem = memo(({ index, question, answer }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <motion.div
+      className="bg-white dark:bg-[#1a1f2e] border-b-2 rounded-none border-gray-100 dark:border-[#1e293b]"
+      variants={fadeInUp}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      transition={{ duration: 0.4, delay: index * 0.05 }}
+    >
+      <button
+        onClick={() => setIsOpen(prev => !prev)}
+        className="w-full flex items-center justify-between px-4 py-4 font-semibold text-black dark:text-slate-100 text-left hover:bg-gray-50 dark:hover:bg-[#252b3b] transition-colors"
+      >
+        <span>{question}</span>
+        <ChevronDown className={`w-5 h-5 flex-shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+      </button>
+      {isOpen && (
+        <div className="px-4 pb-4 text-sm text-gray-600 dark:text-slate-400 text-left">
+          {answer}
+        </div>
+      )}
+    </motion.div>
+  );
+});
 
 // Memoized Section Header
 const SectionHeader = memo(({ title, description }) => (

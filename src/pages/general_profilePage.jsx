@@ -84,7 +84,7 @@ const HeroSection = memo(({ heroUrl }) => (
     style={{ minHeight: 240 }}
   >
     {heroUrl ? (
-      <img src={heroUrl} alt="Profile banner" className="w-full h-full object-cover" style={{ minHeight: 240 }} />
+      <img src={heroUrl} alt="Profile banner" className="w-full h-full object-cover" loading="lazy" style={{ minHeight: 240 }} />
     ) : (
       <div className="w-full bg-gradient-to-br from-blue-600 to-blue-400" style={{ minHeight: 240 }} />
     )}
@@ -101,7 +101,7 @@ const ProfileAvatar = memo(({ avatarUrl }) => (
   >
     <div className="w-24 h-24 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full border-4 border-blue-600 bg-gray-200 flex items-center justify-center overflow-hidden shadow-lg">
       {avatarUrl ? (
-        <img src={avatarUrl} alt="profile picture" className="w-full h-full object-cover" />
+        <img src={avatarUrl} alt="profile picture" className="w-full h-full object-cover" loading="lazy" />
       ) : (
         <User size={48} className="text-gray-400" />
       )}

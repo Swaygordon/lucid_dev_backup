@@ -77,7 +77,7 @@ const ProfileCardComponent = ({
           whileHover={{ scale: 1.05 }}
         >
           {image ? (
-            <img src={image} alt={name} className="w-full h-full object-cover" />
+            <img src={image} alt={name} className="w-full h-full object-cover" loading="lazy" />
           ) : (
             <User size={36} className="text-gray-400 dark:text-slate-500" />
           )}

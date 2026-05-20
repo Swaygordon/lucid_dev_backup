@@ -50,7 +50,7 @@ const ProfileCard = ({
       <div className="flex justify-center mb-4">
         <div className="w-20 h-20 rounded-full border-4 border-blue-600 flex items-center justify-center bg-gray-200 dark:bg-[#252b3b] overflow-hidden">
           {image ? (
-            <img src={image} alt={name} className="w-full h-full object-cover" />
+            <img src={image} alt={name} className="w-full h-full object-cover" loading="lazy" />
           ) : (
             <User size={36} className="text-gray-400 dark:text-slate-500" />
           )}

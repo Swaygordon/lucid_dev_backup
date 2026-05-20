@@ -148,7 +148,7 @@ const MobileCategoryButton = memo(({ category, isActive, onClick }) => {
 
         <motion.button
           onClick={onClick}
-          className={`absolute btn btn-square top-3 left-3 w-12 h-12 rounded-lg flex items-center justify-center transition-colors duration-300 ${
+          className={`absolute top-3 left-3 w-12 h-12 rounded-lg flex items-center justify-center transition-colors duration-300 ${
             isActive
               ? 'bg-orange-600 hover:bg-orange-700'
               : 'bg-blue-700 hover:bg-blue-300'
@@ -176,7 +176,7 @@ const MoreButton = memo(({ isMobile = false }) => (
       <div className={`absolute top-0 ${isMobile ? 'left-6' : 'left-5'} right-2 w-12 h-12 bg-blue-300 rounded-lg`} />
       <Link to="/lucid/services/all">
         <motion.div
-          className={`${isMobile ? 'absolute btn btn-square top-3 left-3' : 'relative top-2 left-1'} w-12 h-12 bg-blue-700 rounded-lg hover:bg-blue-300 flex items-center justify-center transition-all duration-300 cursor-pointer`}
+          className={`${isMobile ? 'absolute top-3 left-3' : 'relative top-2 left-1'} w-12 h-12 bg-blue-700 rounded-lg hover:bg-blue-300 flex items-center justify-center transition-all duration-300 cursor-pointer`}
           whileHover={{ scale: 1.1, rotate: 5 }}
           whileTap={{ scale: 0.95 }}
         >
@@ -204,12 +204,9 @@ const ServiceCard = memo(({ service, index }) => {
     >
       <Link to={to}>
         <motion.div
-          className={`card bg-white dark:bg-[#1a1f2e] transition-all duration-300 rounded-none overflow-hidden
+          className={`flex flex-col relative bg-white dark:bg-[#1a1f2e] transition-all duration-300 rounded-none overflow-hidden hover:shadow-xl
             ${index === 0 ? 'md:rounded-bl-xl' : index === 2 ? 'md:rounded-br-xl' : ''}`}
-          whileHover={{
-            y: -8,
-            boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)"
-          }}
+          whileHover={{ y: -8 }}
         >
           <figure>
             <motion.img
@@ -221,8 +218,8 @@ const ServiceCard = memo(({ service, index }) => {
               transition={{ duration: 0.3 }}
             />
           </figure>
-          <div className="card-body p-4">
-            <h4 className="card-title text-lg font-semibold text-black dark:text-slate-100">
+          <div className="flex flex-col gap-2 p-4">
+            <h4 className="flex items-center gap-2 text-lg font-semibold text-black dark:text-slate-100">
               {service.title}
             </h4>
             <div className="flex items-center gap-2 text-sm text-black dark:text-slate-300">
@@ -289,7 +286,7 @@ const BusinessCategorySection = ({
 
       {/* Divider */}
       <motion.div
-        className="divider max-w-7xl mx-auto mb-10 max-h-px bg-gray-300 dark:bg-[#1e293b]"
+        className="h-px max-w-7xl mx-auto mb-10 bg-gray-300 dark:bg-[#1e293b]"
         initial={{ scaleX: 0 }}
         whileInView={{ scaleX: 1 }}
         viewport={{ once: true }}
@@ -309,10 +306,8 @@ const BusinessCategorySection = ({
           >
             <Link to={`/lucid/services/${currentBusinessCard.slug ?? ''}`}>
               <motion.div
-                className="card relative w-full mb-8 overflow-hidden rounded-t-xl rounded-b-none"
-                whileHover={{
-                  boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.2)"
-                }}
+                className="flex flex-col relative w-full mb-8 overflow-hidden rounded-t-xl rounded-b-none hover:shadow-xl transition-shadow duration-200"
+                whileHover={{ scale: 1.005 }}
               >
                 <motion.div
                   className="relative h-56"

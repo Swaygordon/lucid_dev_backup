@@ -83,15 +83,15 @@ const AllCategories = () => {
           </p>
 
           {/* Search bar + inline location picker */}
-          <div className="max-w-xl mx-auto flex bg-white dark:bg-[#252b3b] border border-gray-300 dark:border-[#2d3748] rounded-xl shadow-md">
+          <div className="max-w-xl mx-auto flex bg-white/15 backdrop-blur-md border border-white/25 rounded-xl shadow-md">
             <input
               type="text"
               value={query}
               onChange={e => setQuery(e.target.value)}
               placeholder="Search services..."
-              className="flex-1 px-5 py-3 text-gray-900 dark:text-slate-200 outline-none text-base bg-transparent rounded-l-xl placeholder-gray-400 dark:placeholder-slate-500"
+              className="flex-1 px-5 py-3 text-white outline-none text-base bg-transparent rounded-l-xl placeholder-white/60"
             />
-            <div className="flex items-center border-l border-gray-200 dark:border-[#1e293b]">
+            <div className="flex items-center border-l border-white/25">
               <LocationPicker inline />
             </div>
             <button

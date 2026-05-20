@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from "framer-motion";
 import {
@@ -37,6 +37,8 @@ function Navbar() {
   const [userProfile, setUserProfile] = useState(null);
   const [notificationCount, setNotificationCount] = useState(0);
   const [messageCount, setMessageCount] = useState(0);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
   const { showNotification } = useNotification();
   const { isDark, toggle: toggleTheme } = useTheme();
   const navigate = useNavigate();
@@ -70,6 +72,17 @@ function Navbar() {
 
     return () => subscription.unsubscribe();
   }, []);
+
+  useEffect(() => {
+    if (!isDropdownOpen) return;
+    function handleClickOutside(e) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setIsDropdownOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isDropdownOpen]);
 
   const fetchUserProfile = async (userId) => {
     const { data } = await supabase
@@ -144,16 +157,16 @@ function Navbar() {
 
   return (
     <>
-      <nav className="navbar bg-white dark:bg-[#1a1f2e] h-20 border-b border-gray-200 dark:border-[#1e293b] sticky top-0 z-30" style={{ willChange: 'transform' }}>
+      <nav className="flex items-center justify-between bg-white dark:bg-[#1a1f2e] h-20 border-b border-gray-200 dark:border-[#1e293b] sticky top-0 z-30" style={{ willChange: 'transform' }}>
         {/* Logo */}
-        <div className="navbar-start ml-4 md:ml-12">
+        <div className="flex items-center ml-4 md:ml-12">
           <Link to="/lucid/" className="flex items-center">
-            <img src={Logo} alt="Lucid Logo" className="h-5 w-20 object-cover" />
+            <img src={Logo} alt="Lucid Logo" className="h-5 w-20 object-cover" width="80" height="20" loading="eager" />
           </Link>
         </div>
 
         {/* Desktop Navigation */}
-        <div className="navbar-end mr-4">
+        <div className="flex items-center ml-auto mr-4">
           <div className="hidden lg:flex items-center gap-2">
             {/* Navigation Links */}
             {navLinks.map((link, index) => (
@@ -169,10 +182,10 @@ function Navbar() {
 
           {/* User Profile / Sign In */}
           {isLoggedIn ? (
-            <div className="dropdown dropdown-end ml-4 hidden lg:block relative">
+            <div ref={dropdownRef} className="relative ml-4 hidden lg:block">
               <div
-                tabIndex={0}
                 role="button"
+                onClick={() => setIsDropdownOpen(prev => !prev)}
                 className="relative flex items-center space-x-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-[#252b3b] p-2 rounded-lg transition-colors"
               >
                 <NotificationBadge count={totalNotifications} className="top-1 right-20" />
@@ -189,31 +202,31 @@ function Navbar() {
                 <ChevronDown className="w-4 h-4 text-gray-600" />
               </div>
 
-              <ul
-                tabIndex={0}
-                className="dropdown-content menu bg-white dark:bg-[#1a1f2e] rounded-lg z-50 w-52 p-2 shadow-lg border border-gray-200 dark:border-[#1e293b] mt-2"
-              >
-                {userMenuLinks.map((link, index) => (
-                  <li key={index}>
-                    <Link
-                      to={link.to}
-                      className="text-gray-700 dark:text-slate-300 hover:bg-secondary-50 dark:hover:bg-secondary/10 hover:text-secondary rounded-md transition-colors relative flex items-center justify-between"
+              {isDropdownOpen && (
+                <ul className="absolute right-0 top-full mt-2 bg-white dark:bg-[#1a1f2e] rounded-lg z-50 w-52 p-2 shadow-lg border border-gray-200 dark:border-[#1e293b]">
+                  {userMenuLinks.map((link, index) => (
+                    <li key={index}>
+                      <Link
+                        to={link.to}
+                        onClick={() => setIsDropdownOpen(false)}
+                        className="text-gray-700 dark:text-slate-300 hover:bg-secondary-50 dark:hover:bg-secondary/10 hover:text-secondary rounded-md transition-colors flex items-center justify-between px-3 py-2"
+                      >
+                        <span>{link.label}</span>
+                        <NotificationBadge count={link.badge} className="relative top-0 right-0 w-4 h-4 p-2" />
+                      </Link>
+                    </li>
+                  ))}
+                  <li className="border-t border-gray-200 dark:border-[#1e293b] mt-2 pt-2">
+                    <button
+                      onClick={handleLogout}
+                      className="text-error hover:bg-error-50 dark:hover:bg-red-900/20 rounded-md transition-colors w-full text-left px-3 py-2"
                     >
-                      <span>{link.label}</span>
-                      <NotificationBadge count={link.badge} className="relative top-0 right-0 w-4 h-4 p-2" />
-                    </Link>
+                      <LogOut className="w-4 h-4 inline mr-2" />
+                      Logout
+                    </button>
                   </li>
-                ))}
-                <li className="border-t border-gray-200 dark:border-[#1e293b] mt-2 pt-2">
-                  <button
-                    onClick={handleLogout}
-                    className="text-error hover:bg-error-50 dark:hover:bg-red-900/20 rounded-md transition-colors w-full text-left"
-                  >
-                    <LogOut className="w-4 h-4 inline mr-2" />
-                    Logout
-                  </button>
-                </li>
-              </ul>
+                </ul>
+              )}
             </div>
           ) : (
             <Link to="/lucid/signin">
@@ -266,7 +279,7 @@ function Navbar() {
         <div className="p-6 h-dvh flex flex-col">
           {/* Logo */}
           <div className="mb-6">
-            <img src={Logo} alt="Lucid Logo" className="h-5 w-28 object-cover m-1" />
+            <img src={Logo} alt="Lucid Logo" className="h-5 w-28 object-cover m-1" width="112" height="20" loading="lazy" />
           </div>
 
           {/* User Profile (Mobile) */}
@@ -274,7 +287,7 @@ function Navbar() {
             <div className="mb-6 pb-6 border-b border-gray-200 dark:border-[#1e293b]">
               <div className="flex items-center space-x-3">
                 {userProfile?.avatar_url ? (
-                  <img src={userProfile.avatar_url} alt={getFullName()} className="w-12 h-12 rounded-full object-cover" />
+                  <img src={userProfile.avatar_url} alt={getFullName()} className="w-12 h-12 rounded-full object-cover" width="48" height="48" loading="lazy" />
                 ) : (
                   <Avatar name={getFullName()} size="lg" />
                 )}

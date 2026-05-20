@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 import downloadBtn_1 from "../assets/download.png";
 import downloadBtn_2 from "../assets/web-189884714.jpg";
-import DownloadappImage from "../assets/app.jpg";
+import DownloadappImage from "../assets/app.webp";
 
 /* Animations (LOCAL to this component) */
 const fadeInUp = {
@@ -69,30 +69,36 @@ export const DownloadSection = memo(() => (
                   >
                     <motion.div variants={scaleIn}>
                       <Link to="/">
-                        <motion.button 
-                          className="btn border-2 bg-black border-white hover:border-orange-500 transition-all"
-                          whileHover={{ scale: 1.05, boxShadow: "0 0 20px rgba(251, 146, 60, 0.6)" }}
+                        <motion.button
+                          className="inline-flex items-center justify-center bg-black border border-white/40 hover:border-orange-500 rounded-xl overflow-hidden cursor-pointer transition-colors"
+                          whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                         >
                           <img
                             src={downloadBtn_1}
                             alt="app store download button"
-                            className="h-20 w-24 object-contain"
+                            className="h-12 w-36 object-contain"
+                            width="144"
+                            height="48"
+                            loading="lazy"
                           />
                         </motion.button>
                       </Link>
                     </motion.div>
                     <motion.div variants={scaleIn}>
                       <Link to="/">
-                        <motion.button 
-                          className="btn border-2 bg-black border-white hover:border-orange-500 transition-all"
-                          whileHover={{ scale: 1.05, boxShadow: "0 0 20px rgba(251, 146, 60, 0.6)" }}
+                        <motion.button
+                          className="inline-flex items-center justify-center bg-black border border-white/40 hover:border-orange-500 rounded-xl overflow-hidden cursor-pointer transition-colors"
+                          whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                         >
                           <img
                             src={downloadBtn_2}
                             alt="playstore download button"
-                            className="h-20 w-24 object-contain"
+                            className="h-12 w-36 object-contain"
+                            width="144"
+                            height="48"
+                            loading="lazy"
                           />
                         </motion.button>
                       </Link>

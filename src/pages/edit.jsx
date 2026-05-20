@@ -550,7 +550,7 @@ const EditProfile = () => {
       {/* ── Hero Background Section ── */}
       <div className="relative w-full h-44 md:h-56 overflow-hidden">
         {heroUrl ? (
-          <img src={heroUrl} alt="Profile banner" className="w-full h-full object-cover" />
+          <img src={heroUrl} alt="Profile banner" className="w-full h-full object-cover" loading="lazy" />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-blue-600 to-blue-400" />
         )}
@@ -581,7 +581,7 @@ const EditProfile = () => {
           <div className="relative group">
             <div className="w-24 h-24 md:w-28 md:h-28 rounded-full border-4 border-white shadow-lg overflow-hidden bg-gray-200 dark:bg-[#252b3b] flex items-center justify-center">
               {avatarUrl ? (
-                <img src={avatarUrl} alt="Profile" className="w-full h-full object-cover" />
+                <img src={avatarUrl} alt="Profile" className="w-full h-full object-cover" loading="lazy" />
               ) : (
                 <User size={48} className="text-gray-400" />
               )}

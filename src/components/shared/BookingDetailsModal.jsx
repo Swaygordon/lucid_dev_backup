@@ -587,7 +587,7 @@ const BookingDetailsModalComponent = ({
                 <h3 className="text-lg font-bold text-gray-900 dark:text-slate-100 mb-4">Attached Images</h3>
                 <div className="grid grid-cols-3 gap-4">
                   {booking.images.map((img, index) => (
-                    <img key={index} src={img} alt={`Attachment ${index + 1}`} className="w-full h-32 object-cover rounded-lg" />
+                    <img key={index} src={img} alt={`Attachment ${index + 1}`} className="w-full h-32 object-cover rounded-lg" loading="lazy" />
                   ))}
                 </div>
               </div>

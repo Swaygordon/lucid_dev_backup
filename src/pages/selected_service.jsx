@@ -67,7 +67,7 @@ const scaleIn = {
 const HeroSection = React.memo(({ backgroundImage, icon: Icon, title, subtitle }) => (
   <div className='h-1/2'>
     <div
-      className="hero w-full h-96"
+      className="relative w-full h-96 flex items-center justify-center"
       style={{
         backgroundImage: `url(${backgroundImage})`,
         backgroundSize: "cover",
@@ -75,9 +75,9 @@ const HeroSection = React.memo(({ backgroundImage, icon: Icon, title, subtitle }
         backgroundRepeat: "no-repeat",
       }}
     >
-      <div className="hero-overlay bg-black bg-opacity-40"></div>
+      <div className="absolute inset-0 bg-black bg-opacity-40"></div>
       <motion.div
-        className="hero-content justify-start items-start w-full"
+        className="relative z-10 flex flex-col gap-4 justify-start items-start w-full"
         initial="hidden"
         animate="visible"
         variants={fadeInUp}

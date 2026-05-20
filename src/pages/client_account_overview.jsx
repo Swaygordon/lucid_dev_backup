@@ -108,7 +108,7 @@ function ClientAccountOverview() {
             onClick={upload.openModal}
           >
             {profile?.avatar_url ? (
-              <img src={profile.avatar_url} alt={displayName} className="w-full h-full rounded-full object-cover" />
+              <img src={profile.avatar_url} alt={displayName} className="w-full h-full rounded-full object-cover" loading="lazy" />
             ) : (
               <div className="w-full h-full rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-3xl font-bold shadow-lg">
                 {displayInitials}

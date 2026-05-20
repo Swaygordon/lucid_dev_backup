@@ -99,7 +99,7 @@ const ProfileAvatar = memo(({ avatarUrl }) => (
   >
     <div className="w-24 h-24 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full border-4 border-blue-600 bg-gray-200 flex items-center justify-center overflow-hidden relative">
       {avatarUrl ? (
-        <img src={avatarUrl} alt="profile picture" className="w-full h-full object-cover" />
+        <img src={avatarUrl} alt="profile picture" className="w-full h-full object-cover" loading="lazy" />
       ) : (
         <User size={48} className="text-gray-400" />
       )}

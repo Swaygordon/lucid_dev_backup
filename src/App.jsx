@@ -7,11 +7,7 @@
 //   3. Declare every route and protect authenticated-only routes
 // ─────────────────────────────────────────────────────────────────────────────
 
-import React, { useEffect, useState } from 'react';
-
-// Leaflet CSS — must be imported globally so the map tiles render correctly.
-// Without this, ServicesMap (client dashboard) shows broken tiles.
-import 'leaflet/dist/leaflet.css';
+import React, { useEffect, useState, lazy, Suspense } from 'react';
 
 // React Router — BrowserRouter uses the HTML5 history API (clean URLs, no #hash).
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
@@ -27,66 +23,64 @@ import { FavouritesProvider } from './contexts/FavouritesContext';
 // Pages import it directly from this same file when they need auth operations.
 import { supabase } from './lib/supabaseClient';
 
-// ─── Shared layout components ─────────────────────────────────────────────────
-// Shown on every PUBLIC page. Hidden on dashboard/account/booking pages (see Layout).
+// ─── Shared layout components — eagerly loaded (present on every page) ────────
 import Navbar from "./components/navbar";
 import Footer from './components/footer';
+import ProfileSetupBanner from './components/ProfileSetupBanner.jsx';
 
-// ─── Public pages (no login needed) ──────────────────────────────────────────
-import Home from './pages/home.jsx';                    // /lucid/
-import About from './pages/about.jsx';                  // /lucid/about
-import HelpSupport from './pages/help_support.jsx';     // /lucid/help
-import Signup from './pages/sign_up.jsx';               // /lucid/signup  +  /lucid/become-provider
-import Signin from './pages/sign_in.jsx';               // /lucid/signin
+// ─── Page-level code splitting ────────────────────────────────────────────────
+// Each lazy() call creates a separate chunk. Vite only downloads a chunk when
+// the user first navigates to that route — the home page visit doesn't pull in
+// dashboard, messaging, or booking code.
 
-// ─── Services discovery flow (Phase 2) ───────────────────────────────────────
-// All public. No login required to browse.
-import Service from './pages/Services.jsx';             // /lucid/services  +  /lucid/search
-import AllCategories from './pages/AllCategories.jsx';  // /lucid/services/all
-import Category from './pages/category.jsx';            // /lucid/services/:category
-import Selected_service from './pages/selected_service.jsx'; // /lucid/services/:category/:service
+// Public pages
+const Home               = lazy(() => import('./pages/home.jsx'));
+const About              = lazy(() => import('./pages/about.jsx'));
+const HelpSupport        = lazy(() => import('./pages/help_support.jsx'));
+const Signup             = lazy(() => import('./pages/sign_up.jsx'));
+const Signin             = lazy(() => import('./pages/sign_in.jsx'));
 
-// ─── Provider profile flow (Phase 3) ─────────────────────────────────────────
-import GeneralProfile from './pages/general_profilePage.jsx';           // /lucid/providers/:id  (public — client view)
-import UserProfile from './pages/user_Profile.jsx';                     // /lucid/account/profile  (private — provider's own view)
-import EditProfile from './pages/edit.jsx';                             // /lucid/account/profile/edit
-import ProviderProfileSetup from './pages/provider_profile_setup.jsx';  // /lucid/account/profile/setup  (post-signup onboarding)
-import ProfileSetupBanner from './components/ProfileSetupBanner.jsx';   // sitewide incomplete-profile nudge
+// Services discovery (Phase 2)
+const Service            = lazy(() => import('./pages/Services.jsx'));
+const AllCategories      = lazy(() => import('./pages/AllCategories.jsx'));
+const Category           = lazy(() => import('./pages/category.jsx'));
+const Selected_service   = lazy(() => import('./pages/selected_service.jsx'));
 
-// ─── Bookings flow (Phase 4) ──────────────────────────────────────────────────
-// BookingsPage and BookingHistoryPage are thin wrappers: they call useRole()
-// and render either the client or provider child component.
-import ClientBookings from './pages/client_bookings.jsx';     // rendered inside BookingsPage
-import ProviderBookings from './pages/provider_bookings.jsx'; // rendered inside BookingsPage
-import BookingsPage from './pages/BookingsPage.jsx';          // /lucid/bookings  (role-switcher)
-import ClientHistory from './pages/client_history.jsx';       // rendered inside BookingHistoryPage
-import ProviderHistory from './pages/provider_history.jsx';   // rendered inside BookingHistoryPage
-import BookingHistoryPage from './pages/BookingHistoryPage.jsx'; // /lucid/bookings/history  (role-switcher)
-import BookingRequest from './pages/booking_request.jsx';     // /lucid/bookings/new
-import BookingConfirmation from './pages/booking_confirmation.jsx'; // /lucid/bookings/confirmation
+// Provider profile (Phase 3)
+const GeneralProfile        = lazy(() => import('./pages/general_profilePage.jsx'));
+const UserProfile           = lazy(() => import('./pages/user_Profile.jsx'));
+const EditProfile           = lazy(() => import('./pages/edit.jsx'));
+const ProviderProfileSetup  = lazy(() => import('./pages/provider_profile_setup.jsx'));
 
-// ─── Dashboard flow (Phase 5) ─────────────────────────────────────────────────
-// DashboardPage is a role-switcher: renders ClientDashboard or ProviderDashboard.
-import ClientDashboard from './pages/client_dashboard.jsx';     // rendered inside DashboardPage
-import ProviderDashboard from './pages/provider_dashboard.jsx'; // rendered inside DashboardPage
-import DashboardPage from './pages/DashboardPage.jsx';          // /lucid/dashboard  (role-switcher)
-import EarningsPayments from './pages/earnings.jsx';            // /lucid/earnings  (provider only)
-import TransactionsPage from './pages/transactions.jsx';        // /lucid/transactions  (provider only)
-import Favourites from './pages/favourites.jsx';                // /lucid/favourites  (client only)
+// Bookings (Phase 4)
+const ClientBookings     = lazy(() => import('./pages/client_bookings.jsx'));
+const ProviderBookings   = lazy(() => import('./pages/provider_bookings.jsx'));
+const BookingsPage       = lazy(() => import('./pages/BookingsPage.jsx'));
+const ClientHistory      = lazy(() => import('./pages/client_history.jsx'));
+const ProviderHistory    = lazy(() => import('./pages/provider_history.jsx'));
+const BookingHistoryPage = lazy(() => import('./pages/BookingHistoryPage.jsx'));
+const BookingRequest     = lazy(() => import('./pages/booking_request.jsx'));
+const BookingConfirmation = lazy(() => import('./pages/booking_confirmation.jsx'));
 
-// ─── Account & settings flow (Phase 6) ───────────────────────────────────────
-// AccountPage is a role-switcher: renders ClientAccountOverview or ProviderAccountOverview.
-import ClientAccountOverview from './pages/client_account_overview.jsx';     // rendered inside AccountPage
-import ProviderAccountOverview from './pages/provider_account_overview.jsx'; // rendered inside AccountPage
-import AccountPage from './pages/AccountPage.jsx';                           // /lucid/account  (role-switcher)
-import UserInfo from './pages/user_info.jsx';                                // /lucid/account/settings
-import AccountSettings from './pages/user_info.jsx';                          // /lucid/account/settings
-import NotificationsPage from './pages/notification_page.jsx';               // /lucid/notifications
-import NotificationSettings from './pages/notificationSettings.jsx';         // /lucid/notifications/settings
+// Dashboard (Phase 5)
+const ClientDashboard    = lazy(() => import('./pages/client_dashboard.jsx'));
+const ProviderDashboard  = lazy(() => import('./pages/provider_dashboard.jsx'));
+const DashboardPage      = lazy(() => import('./pages/DashboardPage.jsx'));
+const EarningsPayments   = lazy(() => import('./pages/earnings.jsx'));
+const TransactionsPage   = lazy(() => import('./pages/transactions.jsx'));
+const Favourites         = lazy(() => import('./pages/favourites.jsx'));
 
-// ─── Messaging flow (Phase 7) ─────────────────────────────────────────────────
-import MessagesListPage from './pages/messagelist.jsx';   // /lucid/messages
-import ChatMessagingPage from './pages/messaging.jsx';    // /lucid/messages/:id
+// Account & settings (Phase 6)
+const ClientAccountOverview   = lazy(() => import('./pages/client_account_overview.jsx'));
+const ProviderAccountOverview = lazy(() => import('./pages/provider_account_overview.jsx'));
+const AccountPage             = lazy(() => import('./pages/AccountPage.jsx'));
+const AccountSettings         = lazy(() => import('./pages/user_info.jsx'));
+const NotificationsPage       = lazy(() => import('./pages/notification_page.jsx'));
+const NotificationSettings    = lazy(() => import('./pages/notificationSettings.jsx'));
+
+// Messaging (Phase 7)
+const MessagesListPage  = lazy(() => import('./pages/messagelist.jsx'));
+const ChatMessagingPage = lazy(() => import('./pages/messaging.jsx'));
 
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -231,6 +225,7 @@ function App() {
         <ScrollToTop />
         {/* Layout reads location from Router context — must be inside <Router> */}
         <Layout>
+          <Suspense fallback={<div className="min-h-screen bg-white dark:bg-[#0f1117]" />}>
           <Routes>
 
             {/* ── PUBLIC ROUTES ─────────────────────────────────────────────
@@ -391,6 +386,7 @@ function App() {
             <Route path="*" element={<Navigate to="/lucid/" replace />} />
 
           </Routes>
+          </Suspense>
         </Layout>
       </Router>
       </LocationProvider>

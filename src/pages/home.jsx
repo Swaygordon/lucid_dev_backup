@@ -31,8 +31,6 @@ const staggerContainer = {
   }
 };
 
-const OCTAGON = 'polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%)';
-
 // 5 categories with the shortest names, shown beside the "More" button
 const FALLBACK_CATEGORIES = [...ALL_CATEGORIES]
   .sort((a, b) => a.name.length - b.name.length)
@@ -56,7 +54,7 @@ const ServiceIcon = memo(
         >
           <div className="absolute top-0 left-6 right-2 w-12 h-12 rounded-lg bg-blue-300" />
           <motion.div
-            className="absolute btn btn-square top-3 left-3 w-12 h-12 rounded-lg flex items-center justify-center bg-blue-700 hover:bg-blue-300"
+            className="absolute top-3 left-3 w-12 h-12 rounded-lg flex items-center justify-center bg-blue-700 hover:bg-blue-300"
             whileHover={{ rotate: 5, scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -87,7 +85,7 @@ const SearchBar = ({ onSearch, isLoading }) => {
       animate="visible"
       transition={{ duration: 0.6, delay: 0.4 }}
     >
-      <div className="flex w-full max-w-2xl bg-white dark:bg-[#1a1f2e] border border-gray-300 dark:border-[#2d3748] rounded-xl shadow-md hover:shadow-xl transition-shadow duration-200">
+      <div className="flex w-full max-w-2xl bg-white dark:bg-white/10 dark:backdrop-blur-md border border-gray-300 dark:border-white/20 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-200">
         <input
           type="text"
           value={searchTerm}
@@ -304,7 +302,7 @@ function Home() {
     <>
       <div className="flex flex-col lg:min-h-screen bg-white dark:bg-[#0f1117]">
         <div
-          className="hero flex-1 w-full min-h-[29rem] relative z-10 transition-colors duration-700"
+          className="flex flex-col items-center justify-center flex-1 w-full relative z-10 transition-colors duration-700"
           style={{
             background: isDark ? [
               'radial-gradient(ellipse at 62% 18%, rgba(29, 78, 216, 0.55) 0%, transparent 52%)',
@@ -316,15 +314,6 @@ function Home() {
         >
           {/* Decorative layer — overflow-hidden scoped so dropdown can escape */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            {/* ── Octagonal shapes — corner-anchored, laptop+ only ── */}
-            <div className="hidden lg:block absolute w-16 h-16 bg-orange-500"
-              style={{ top: '-6px', left: '-4px', clipPath: OCTAGON }} />
-            <div className="hidden lg:block absolute w-32 h-32 bg-blue-700"
-              style={{ top: '8px', left: '18px', clipPath: OCTAGON }} />
-            <div className="hidden lg:block absolute w-36 h-36 bg-blue-700"
-              style={{ top: '-14px', right: '-70px', clipPath: OCTAGON }} />
-            <div className="hidden lg:block absolute w-44 h-44 bg-orange-500"
-              style={{ bottom: '-75px', left: '-45px', clipPath: OCTAGON }} />
 
             {/* ── Dark mode: animated glow orbs ── */}
             {isDark && (
@@ -364,9 +353,8 @@ function Home() {
             )}
           </div>
 
-          <div className="hero-overlay bg-transparent"></div>
-          <div className="hero-content w-full text-neutral-content text-center px-4 sm:px-6">
-            <div className="w-full max-w-3xl">
+          <div className="relative z-10 w-full text-center px-4 sm:px-6 py-16 sm:py-20">
+            <div className="w-full max-w-3xl mx-auto">
               {/* Cycling word badge */}
               <CyclingBadge />
 
@@ -401,7 +389,7 @@ function Home() {
               <SearchBar onSearch={handleSearch} isLoading={searchLoading} />
 
               {/* Desktop/Tablet Category Grid */}
-              <div className="hidden md:block mt-8 pb-6 w-full">
+              <div className="hidden md:block mt-14 pb-6 w-full">
                 {loading ? (
                   <ServiceIconsSkeleton
                     count={6}
@@ -414,7 +402,7 @@ function Home() {
                   />
                 )}
                 <motion.div
-                  className="divider max-w-7xl mx-auto mb-10 max-h-px bg-gray-300 dark:bg-[#1e293b]"
+                  className="h-px max-w-7xl mx-auto mt-10 mb-10 bg-gray-300 dark:bg-[#1e293b]"
                   initial={{ scaleX: 0 }}
                   whileInView={{ scaleX: 1 }}
                   viewport={{ once: true }}
@@ -423,33 +411,33 @@ function Home() {
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Mobile Category Scroll */}
-        <motion.div
-          className="block md:hidden w-full bg-white dark:bg-[#0f1117] py-6"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className="overflow-x-auto scrollbar-hide">
-            {loading ? (
-              <ServiceIconsSkeleton count={6} className="flex justify-center gap-6 px-4 pb-2" />
-            ) : (
-              <ServiceIconsGrid
-                categories={categories}
-                className="flex gap-6 px-4 pb-2"
-              />
-            )}
-          </div>
+          {/* Mobile Category Scroll — inside hero, shares same background */}
           <motion.div
-            className="divider max-w-7xl mx-auto mb-10 max-h-px bg-gray-300"
-            initial={{ scaleX: 0 }}
-            whileInView={{ scaleX: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-          />
-        </motion.div>
+            className="relative z-10 block md:hidden w-full pb-8"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="overflow-x-auto scrollbar-hide">
+              {loading ? (
+                <ServiceIconsSkeleton count={6} className="flex gap-6 px-6 pb-2" />
+              ) : (
+                <ServiceIconsGrid
+                  categories={categories}
+                  className="flex gap-6 px-6 pb-2"
+                />
+              )}
+            </div>
+            <motion.div
+              className="h-px max-w-7xl mx-auto mt-6 bg-gray-300 dark:bg-white/10"
+              initial={{ scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+            />
+          </motion.div>
+        </div>
       </div>
 
       <ProviderCTA />
