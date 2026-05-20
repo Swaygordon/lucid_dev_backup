@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
 import downloadBtn_1 from "../assets/download.png";
-import downloadBtn_2 from "../assets/web-189884714.jpg";
+import downloadBtn_2 from "../assets/web-189884714.webp";
 import DownloadappImage from "../assets/app.webp";
 
 /* Animations (LOCAL to this component) */

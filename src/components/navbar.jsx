@@ -11,7 +11,7 @@ import { useNotification } from '../contexts/NotificationContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { supabase } from '../lib/supabaseClient';
 import { Sun, Moon } from 'lucide-react';
-import Logo from "../assets/Lucid.png";
+import Logo from "../assets/Lucid.webp";
 
 const NotificationBadge = ({ count = 0, className = "" }) => {
   if (!count || count <= 0) return null;

@@ -1,10 +1,10 @@
 import React, { memo, lazy, Suspense, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Shield, Clock, CheckCircle2, ChevronDown } from 'lucide-react';
-import Search from '../assets/search_options.png';
-import Review from '../assets/Ratings.png';
+import Search from '../assets/search_options.webp';
+import Review from '../assets/Ratings.webp';
 import Book from '../assets/book.webp';
-import InstantQuotes from '../assets/instant qoutes.jpg';
+import InstantQuotes from '../assets/instant_qoutes.webp';
 
 // Lazy load heavy components
 const Carousel = lazy(() => import('../components/carousal_slider.jsx'));
@@ -384,8 +384,8 @@ const Section1 = () => {
 
       {/* Carousel Section - Lazy Loaded */}
       <Suspense fallback={
-        <motion.div 
-          className="min-h-[400px] bg-gray-200 animate-pulse"
+        <motion.div
+          className="min-h-[700px] md:min-h-[560px] bg-gray-200 animate-pulse"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
         />

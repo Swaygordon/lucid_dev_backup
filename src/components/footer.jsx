@@ -9,7 +9,7 @@ import {
   FaThreads
 } from 'react-icons/fa6';
 import downloadBtn_1 from "../assets/download.png";
-import downloadBtn_2 from "../assets/web-189884714.jpg";
+import downloadBtn_2 from "../assets/web-189884714.webp";
 import Logo2 from "../assets/Lucid-white.png";
 
 // Animation variants
@@ -117,11 +117,11 @@ const DOWNLOAD_BUTTONS = [
 
 // Memoized Footer Section Component
 const FooterSection = memo(({ title, children }) => (
-  <motion.nav 
+  <motion.nav
     className="mx-4 p-2"
     variants={fadeInUp}
   >
-    <h6 className="mb-1 uppercase font-semibold text-xl text-white">{title}</h6>
+    <p className="mb-1 uppercase font-semibold text-xl text-white">{title}</p>
     <div className="flex flex-col gap-2">
       {children}
     </div>

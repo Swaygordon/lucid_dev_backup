@@ -31,6 +31,29 @@ async function compress(inputPath, outputPath, options = {}) {
 async function run() {
   let totalBefore = 0, totalAfter = 0;
 
+  // ── 0. Resize + convert oversized images ─────────────────────────────────
+  console.log('\nResize + convert:');
+  const resizeTargets = [
+    { src: 'src/assets/instant qoutes.jpg', out: 'src/assets/instant_qoutes.webp', width: 560 },
+    { src: 'src/assets/Ratings.png',        out: 'src/assets/Ratings.webp',        width: 560 },
+    { src: 'src/assets/search_options.png', out: 'src/assets/search_options.webp', width: 560 },
+    { src: 'src/assets/Lucid.png',          out: 'src/assets/Lucid.webp',          width: 200 },
+    { src: 'src/assets/web-189884714.jpg',  out: 'src/assets/web-189884714.webp',  width: 300 },
+  ];
+  for (const { src, out, width } of resizeTargets) {
+    const inputPath  = join(ROOT, src);
+    const outputPath = join(ROOT, out);
+    try {
+      const before = (await stat(inputPath)).size;
+      await sharp(inputPath).resize(width).webp({ quality: 82 }).toFile(outputPath);
+      const after = (await stat(outputPath)).size;
+      const saved = ((before - after) / before * 100).toFixed(0);
+      console.log(`  ${basename(src)} → ${basename(out)}  ${(before/1024).toFixed(0)} KB → ${(after/1024).toFixed(0)} KB  (${saved}% smaller)`);
+      totalBefore += before; totalAfter += after;
+      if (inputPath !== outputPath) await unlink(inputPath);
+    } catch (e) { console.warn(`  skipped ${src}: ${e.message}`); }
+  }
+
   // ── 1. Heavy one-off images ──────────────────────────────────────────────
   console.log('\nHeavy images:');
   const oneOffs = [
