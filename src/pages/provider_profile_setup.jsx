@@ -1,6 +1,7 @@
-import React, { useState, useCallback, memo } from 'react';
+import React, { useState, useCallback, memo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useNotification } from '../contexts/NotificationContext';
+import { supabase } from '../lib/supabaseClient';
 import {
   CheckCircle, Users, User, Clock, SquarePlus, Minus, Plus,
   ChevronDown, ChevronUp, MapPin, Award, Languages, Camera, Trash2, ImageIcon, X
@@ -8,7 +9,6 @@ import {
 import { ALL_CATEGORIES } from '../data/categories';
 import { ImageUploadModal } from '../components/shared';
 import { motion } from 'framer-motion';
-import profileImg from '../assets/profile.svg';
 import { Button, Input } from '../components/ui';
 
 // ─── Profile setup completion helper ─────────────────────────────────────────
@@ -361,6 +361,7 @@ const WorkingHoursSection = memo(({ profile, onDaySelect, onTimeChange, onCustom
 // ============================================
 const ProviderProfileSetup = () => {
   const [loading, setLoading] = useState(false);
+  const [loadingData, setLoadingData] = useState(true);
   const { showNotification } = useNotification();
   const formMethods = useProfileForm();
   const navigate = useNavigate();
@@ -369,39 +370,157 @@ const ProviderProfileSetup = () => {
   const [heroUrl, setHeroUrl]         = useState(null);
   const [uploadTarget, setUploadTarget] = useState(null);
 
-  const openUpload  = (target) => setUploadTarget(target);
-  const closeUpload = () => setUploadTarget(null);
+  useEffect(() => {
+    loadProviderProfile();
+  }, []);
 
-  const handleUpload = () => {
-    if (uploadTarget === 'avatar') setAvatarUrl(profileImg);
-    else if (uploadTarget === 'hero')
-      setHeroUrl('https://images.unsplash.com/photo-1504148455328-c376907d081c?w=1200&auto=format');
-    closeUpload();
-    showNotification('Image updated', 'success');
+  const loadProviderProfile = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from('provider_profiles')
+        .select('*')
+        .eq('user_id', user.id)
+        .single();
+
+      if (error && error.code !== 'PGRST116') throw error;
+
+      if (data) {
+        formMethods.handleInputChange('firstName', data.first_name || '');
+        formMethods.handleInputChange('lastName', data.last_name || '');
+        formMethods.handleInputChange('otherName', data.other_name || '');
+        formMethods.handleInputChange('occupation', data.occupation || '');
+        formMethods.handleInputChange('location', data.location || '');
+        formMethods.handleInputChange('description', data.description || '');
+        formMethods.handleInputChange('categories', data.categories || []);
+        formMethods.handleInputChange('skills', data.skills || []);
+        formMethods.handleInputChange('certifications', data.certifications || []);
+        formMethods.handleInputChange('languages', data.languages || []);
+        formMethods.handleInputChange('workExperience', data.work_experience || 0);
+        formMethods.handleInputChange('employees', data.employees || 1);
+        formMethods.handleInputChange('paymentMethods', data.payment_methods || []);
+        formMethods.handleInputChange('selectedDays', data.selected_days || { weekdays: false, weekend: false, custom: false });
+        formMethods.handleInputChange('weekdaysTime', data.weekdays_time || { start: '09:00', end: '17:00' });
+        formMethods.handleInputChange('weekendTime', data.weekend_time || { start: '10:00', end: '16:00' });
+        formMethods.handleInputChange('customDays', data.custom_days || {});
+
+        setAvatarUrl(data.avatar_url);
+        setHeroUrl(data.hero_url);
+      }
+    } catch (error) {
+      console.error('Error loading profile:', error);
+    } finally {
+      setLoadingData(false);
+    }
+  };
+
+  const uploadImage = async (file, path) => {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}.${fileExt}`;
+    const filePath = `${path}/${fileName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('avatars')
+      .upload(filePath, file);
+
+    if (uploadError) throw uploadError;
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('avatars')
+      .getPublicUrl(filePath);
+
+    return publicUrl;
   };
 
   // Skip — account exists but profile not yet complete. Banner will remind them.
   const handleSkip = () => {
     showNotification('You can complete your profile anytime from your dashboard.', 'info');
-    setTimeout(() => navigate('/lucid/dashboard'), 800);
+    setTimeout(() => navigate('/lucid/', { replace: true }), 800);
   };
 
-  // Save — marks setup complete and clears the sitewide banner.
+  // Save — upserts to DB, marks setup complete, clears the sitewide banner.
   const handleSave = async (e) => {
     e.preventDefault();
     setLoading(true);
+
     try {
-      // [API] PUT /users/me/profile — replace with real Supabase upsert
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('User not authenticated');
+
+      const profileData = {
+        user_id: user.id,
+        first_name: formMethods.profile.firstName,
+        last_name: formMethods.profile.lastName,
+        other_name: formMethods.profile.otherName,
+        occupation: formMethods.profile.occupation,
+        location: formMethods.profile.location,
+        description: formMethods.profile.description,
+        categories: formMethods.profile.categories,
+        skills: formMethods.profile.skills,
+        certifications: formMethods.profile.certifications,
+        languages: formMethods.profile.languages,
+        work_experience: formMethods.profile.workExperience,
+        employees: formMethods.profile.employees,
+        payment_methods: formMethods.profile.paymentMethods,
+        selected_days: formMethods.profile.selectedDays,
+        weekdays_time: formMethods.profile.weekdaysTime,
+        weekend_time: formMethods.profile.weekendTime,
+        custom_days: formMethods.profile.customDays,
+        avatar_url: avatarUrl,
+        hero_url: heroUrl,
+        is_profile_complete: true,
+        updated_at: new Date().toISOString()
+      };
+
+      const { error } = await supabase
+        .from('provider_profiles')
+        .upsert(profileData, { onConflict: 'user_id' });
+
+      if (error) throw error;
+
       markProfileComplete();
       showNotification('Profile saved! Welcome to Lucid.', 'success');
-      navigate('/lucid/dashboard');
-    } catch {
-      showNotification('Failed to save profile. Please try again.', 'error');
+      navigate('/lucid/account/profile', { replace: true });
+    } catch (error) {
+      console.error('Save error:', error);
+      showNotification(error.message || 'Failed to save profile. Please try again.', 'error');
     } finally {
       setLoading(false);
     }
   };
+
+  const openUpload  = (target) => setUploadTarget(target);
+  const closeUpload = () => setUploadTarget(null);
+
+  const handleUploadComplete = async (file) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
+
+      const url = await uploadImage(file, `providers/${user.id}`);
+
+      if (uploadTarget === 'avatar') {
+        setAvatarUrl(url);
+      } else if (uploadTarget === 'hero') {
+        setHeroUrl(url);
+      }
+
+      showNotification('Image uploaded successfully!', 'success');
+    } catch (error) {
+      showNotification('Failed to upload image', 'error');
+    }
+    closeUpload();
+  };
+
+  if (loadingData) {
+    return (
+      <div className="min-h-screen flex items-center justify-center dark:bg-[#0f1117]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-gray-50 dark:bg-[#0f1117] min-h-screen pb-32">
@@ -595,7 +714,7 @@ const ProviderProfileSetup = () => {
       <ImageUploadModal
         isOpen={uploadTarget !== null}
         onClose={closeUpload}
-        onUpload={handleUpload}
+        onUpload={handleUploadComplete}
         title={
           uploadTarget === 'avatar'    ? 'Add Profile Picture' :
           uploadTarget === 'hero'      ? 'Add Banner Image' :

@@ -25,7 +25,17 @@ import {
   ArrowLeft
 } from 'lucide-react';
 import { Button } from '../components/ui';
-import { MOCK_PROVIDER, PAYMENT_LABELS, formatTime } from '../data/mockProvider';
+import { supabase } from '../lib/supabaseClient';
+
+const PAYMENT_LABELS = { mobile: 'Mobile Money', bank: 'Bank Transfer' };
+
+const formatTime = (t) => {
+  if (!t) return '';
+  const [h, m] = t.split(':').map(Number);
+  const period = h >= 12 ? 'PM' : 'AM';
+  const hour = h % 12 || 12;
+  return `${hour}:${String(m).padStart(2, '0')} ${period}`;
+};
 
 // Lazy load heavy components
 const ProjectCarousel = lazy(() => import("../components/project_Carousel.jsx"));
@@ -403,14 +413,23 @@ const GeneralProfile = () => {
   const { id } = useParams();
   const handleBack = useNavigateBack('/lucid/services', 400);
 
+  const [PROFILE_DATA, setPROFILE_DATA] = useState(null);
+  const [RATING_DISTRIBUTION, setRATING_DISTRIBUTION] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  useEffect(() => {
-    const id = setTimeout(() => setIsLoading(false), 800);
-    return () => clearTimeout(id);
-  }, []);
 
-  const PROFILE_DATA = MOCK_PROVIDER;
-  const RATING_DISTRIBUTION = MOCK_RATING_DISTRIBUTION;
+  useEffect(() => {
+    if (!id) { setIsLoading(false); return; }
+
+    supabase
+      .from('provider_profiles')
+      .select('*')
+      .eq('user_id', id)
+      .single()
+      .then(({ data, error }) => {
+        if (!error && data) setPROFILE_DATA(data);
+        setIsLoading(false);
+      });
+  }, [id]);
 
   const { isFavourite, toggleFavourite } = useFavourites();
   const isFavorite = isFavourite(PROFILE_DATA.id);
@@ -438,37 +457,19 @@ const insertReply = (items, parentId, reply) => {
 };
 
 
-// [MOCK] Replace with GET /users/:id/reviews?page={n} — paginated list of reviews with nested replies
-const [REVIEWS, setREVIEWS] = useState([
-  {
-    id: "REV-001",
-    parentId: null,
-    bookingId: "BK-REVIEW-001",
-    author: {
-      id: "CLIENT-301",
-      name: "Ama Boateng",
-      role: "client"
-    },
-    rating: 5,
-    reviewText: "Excellent service. Very professional and punctual.",
-    createdAt: "2025-02-09T18:40:00Z",
-    verified: true,
-    replies: [
-      {
-        id: "REP-001",
-        parentId: "REV-001",
-        author: {
-          id: "PROV-101",
-          name: "Gabriel A. Gordon-Mensah",
-          role: "provider"
-        },
-        reviewText: "Thank you so much, Ama. It was a pleasure working with you.",
-        createdAt: "2025-02-09T20:10:00Z",
-        replies: []
-      }
-    ]
-  }
-]);
+// [API] GET /providers/:id/reviews — fill in table/column once reviews table is created
+const [REVIEWS, setREVIEWS] = useState([]);
+useEffect(() => {
+  if (!id) return;
+  supabase
+    .from('YOUR_REVIEWS_TABLE')
+    .select('*')
+    .eq('YOUR_PROVIDER_ID_COLUMN', id)
+    .order('created_at', { ascending: false })
+    .then(({ data, error }) => {
+      if (!error && data) setREVIEWS(data);
+    });
+}, [id]);
 
 
 
@@ -481,7 +482,7 @@ const handlePostReply = () => {
   parentId: replyTarget.id,
   author: {
     id: id ?? "PROV-101",
-    name: PROFILE_DATA.name || "Provider",
+    name: PROFILE_DATA?.name || "Provider",
     role: "provider"
   },
   reviewText: replyText.trim(), // ✅ FIX HERE
@@ -539,6 +540,15 @@ const handlePostReply = () => {
   };
 
   if (isLoading) return <GeneralProfileSkeleton />;
+
+  if (!PROFILE_DATA) return (
+    <div className="min-h-screen bg-gray-50 dark:bg-[#0f1117] flex flex-col items-center justify-center gap-4">
+      <button onClick={handleBack} className="self-start ml-8 p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-lg transition-colors">
+        <ArrowLeft className="w-6 h-6 text-gray-700 dark:text-slate-300" />
+      </button>
+      <p className="text-lg text-gray-500 dark:text-slate-400">Provider profile not available.</p>
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#0f1117]">

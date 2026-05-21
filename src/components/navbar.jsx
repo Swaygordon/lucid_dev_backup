@@ -35,6 +35,7 @@ function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
+  const [providerProfile, setProviderProfile] = useState(null);
   const [notificationCount, setNotificationCount] = useState(0);
   const [messageCount, setMessageCount] = useState(0);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -50,6 +51,7 @@ function Navbar() {
         setIsLoggedIn(true);
         setUser(session.user);
         fetchUserProfile(session.user.id);
+        fetchProviderProfile(session.user.id);
         fetchNotificationCounts(session.user.id);
       }
     });
@@ -60,11 +62,13 @@ function Navbar() {
         setIsLoggedIn(true);
         setUser(session.user);
         fetchUserProfile(session.user.id);
+        fetchProviderProfile(session.user.id);
         fetchNotificationCounts(session.user.id);
       } else {
         setIsLoggedIn(false);
         setUser(null);
         setUserProfile(null);
+        setProviderProfile(null);
         setNotificationCount(0);
         setMessageCount(0);
       }
@@ -91,6 +95,15 @@ function Navbar() {
       .eq('id', userId)
       .single();
     if (data) setUserProfile(data);
+  };
+
+  const fetchProviderProfile = async (userId) => {
+    const { data } = await supabase
+      .from('provider_profiles')
+      .select('avatar_url, first_name, last_name')
+      .eq('user_id', userId)
+      .single();
+    if (data) setProviderProfile(data);
   };
 
   const fetchNotificationCounts = async (userId) => {
@@ -121,16 +134,31 @@ function Navbar() {
   const handleLinkClick = () => { setIsOpen(false); };
 
   const getUserDisplayName = () => {
+    if (providerProfile?.first_name) return providerProfile.first_name;
     if (userProfile?.first_name) return userProfile.first_name;
     return user?.email?.split('@')[0] || 'User';
   };
 
   const getFullName = () => {
-    if (!userProfile) return 'User';
-    return [userProfile.first_name, userProfile.last_name].filter(Boolean).join(' ') || 'User';
+    if (providerProfile?.first_name || providerProfile?.last_name) {
+      return [providerProfile.first_name, providerProfile.last_name].filter(Boolean).join(' ') || 'User';
+    }
+    if (userProfile?.first_name || userProfile?.last_name) {
+      return [userProfile.first_name, userProfile.last_name].filter(Boolean).join(' ') || 'User';
+    }
+    return 'User';
   };
 
-  const getDashboardPath = () => '/lucid/dashboard';
+  const getAvatarUrl = () => {
+    if (providerProfile?.avatar_url) return providerProfile.avatar_url;
+    if (userProfile?.avatar_url) return userProfile.avatar_url;
+    return null;
+  };
+
+  const getDashboardPath = () => {
+    if (userProfile?.role === 'service_provider') return '/lucid/account/profile';
+    return '/lucid/dashboard';
+  };
 
   const totalNotifications = notificationCount + messageCount;
 
@@ -141,10 +169,10 @@ function Navbar() {
   ];
 
   const userMenuLinks = [
-    { to: getDashboardPath(), label: "Dashboard" },
     ...(userProfile?.role === 'service_provider'
       ? [{ to: '/lucid/account/profile', label: "My Profile" }]
       : []),
+    { to: getDashboardPath(), label: "Dashboard" },
     { to: "/lucid/messages",       label: "Messages",      badge: messageCount },
     { to: "/lucid/notifications",  label: "Notifications", badge: notificationCount },
   ];
@@ -189,9 +217,9 @@ function Navbar() {
                 className="relative flex items-center space-x-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-[#252b3b] p-2 rounded-lg transition-colors"
               >
                 <NotificationBadge count={totalNotifications} className="top-1 right-20" />
-                {userProfile?.avatar_url ? (
+                {getAvatarUrl() ? (
                   <img
-                    src={userProfile.avatar_url}
+                    src={getAvatarUrl()}
                     alt={getFullName()}
                     className="w-9 h-9 rounded-full object-cover"
                   />
@@ -286,8 +314,8 @@ function Navbar() {
           {isLoggedIn && (
             <div className="mb-6 pb-6 border-b border-gray-200 dark:border-[#1e293b]">
               <div className="flex items-center space-x-3">
-                {userProfile?.avatar_url ? (
-                  <img src={userProfile.avatar_url} alt={getFullName()} className="w-12 h-12 rounded-full object-cover" width="48" height="48" loading="lazy" />
+                {getAvatarUrl() ? (
+                  <img src={getAvatarUrl()} alt={getFullName()} className="w-12 h-12 rounded-full object-cover" width="48" height="48" loading="lazy" />
                 ) : (
                   <Avatar name={getFullName()} size="lg" />
                 )}

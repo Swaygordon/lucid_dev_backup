@@ -37,9 +37,10 @@ import ProfileSetupBanner from './components/ProfileSetupBanner.jsx';
 const Home               = lazy(() => import('./pages/home.jsx'));
 const About              = lazy(() => import('./pages/about.jsx'));
 const HelpSupport        = lazy(() => import('./pages/help_support.jsx'));
+
+// Auth & onboarding (Phase 1)
 const Signup             = lazy(() => import('./pages/sign_up.jsx'));
 const Signin             = lazy(() => import('./pages/sign_in.jsx'));
-
 // Services discovery (Phase 2)
 const Service            = lazy(() => import('./pages/Services.jsx'));
 const AllCategories      = lazy(() => import('./pages/AllCategories.jsx'));
@@ -81,6 +82,7 @@ const NotificationSettings    = lazy(() => import('./pages/notificationSettings.
 // Messaging (Phase 7)
 const MessagesListPage  = lazy(() => import('./pages/messagelist.jsx'));
 const ChatMessagingPage = lazy(() => import('./pages/messaging.jsx'));
+
 
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -179,7 +181,7 @@ function Layout({ children }) {
     '/lucid/help',                   // Help & Support page
     '/lucid/account/settings',       // AccountSettings (user info edits)
     '/lucid/providers/me',        // GeneralProfile (public provider profile)
-    '/lucid/favourites',              // Favourites (client's saved providers)  
+    '/lucid/favourites',              // Favourites (client's saved providers)
   ];
 
   // Prefix-based hide — catches dynamic segments like /lucid/messages/abc123
