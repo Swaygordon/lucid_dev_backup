@@ -296,8 +296,7 @@ function Home() {
 
   return (
     <>
-      <main>
-      <div className="flex flex-col lg:min-h-screen bg-white dark:bg-[#0f1117]">
+      <div className="flex flex-col min-h-screen bg-white dark:bg-[#0f1117]">
         <div
           className="flex flex-col items-center justify-center flex-1 w-full relative z-10 transition-colors duration-700"
           style={{
@@ -439,7 +438,6 @@ function Home() {
 
       <ProviderCTA />
       <Section1 />
-      </main>
       <BackToTop />
     </>
   );
