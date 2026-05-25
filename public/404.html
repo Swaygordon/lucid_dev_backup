@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Lucid</title>
+    <script>
+      // GitHub Pages SPA routing trick.
+      // GH Pages returns this file for any path it doesn't recognise.
+      // We encode the original path into a query string and redirect to
+      // the repo root (index.html), which decodes it and pushes the real
+      // URL into the history so React Router picks it up.
+      //
+      // pathSegmentsToKeep = 1  →  keep /lucid_dev_backup (one segment deep)
+      var pathSegmentsToKeep = 1;
+      var l = window.location;
+      l.replace(
+        l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+        l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
+        l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
+        (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+        l.hash
+      );
+    </script>
+  </head>
+  <body></body>
+</html>

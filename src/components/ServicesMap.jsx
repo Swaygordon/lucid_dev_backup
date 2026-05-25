@@ -16,13 +16,8 @@ import {
 } from 'lucide-react';
 import 'leaflet/dist/leaflet.css';
 
-// [MOCK] mockProviders is used as a fallback when no providers prop is passed.
-// In production, the parent component fetches nearby providers and passes them as a prop:
-//   GET /providers/nearby?lat={userLat}&lng={userLng}&radius=5  (radius in km)
-//   → [{ id, name, profession, location: { lat, lng }, rating, isAvailable, ... }]
-// Requires browser Geolocation API: navigator.geolocation.getCurrentPosition()
-// Each provider's location.lat / location.lng must be stored in the DB (providers table).
-import { mockProviders } from '../data/mockProfiles';
+// [API] GET /providers/nearby?lat={userLat}&lng={userLng}&radius=5
+// Parent fetches nearby providers and passes them via the `providers` prop.
 
 // Fix for default marker icons in Leaflet
 delete L.Icon.Default.prototype._getIconUrl;
@@ -253,13 +248,13 @@ const ProviderInfoWindow = ({ provider, distance, onClose, onBookNow }) => {
 };
 
 // Main Services Map Component
-const ServicesMap = ({ userLocation = [5.6037, -0.1870] }) => {
+const ServicesMap = ({ providers = [], userLocation = [5.6037, -0.1870] }) => {
   const mapRef = useRef();
   const [selectedProvider, setSelectedProvider] = useState(null);
 
   // Transform providers data for map
   const mappedProviders = useMemo(() => {
-    return mockProviders.map(provider => ({
+    return providers.map(provider => ({
       ...provider,
       position: [
         provider.location.coordinates.lat,
@@ -287,7 +282,7 @@ const ServicesMap = ({ userLocation = [5.6037, -0.1870] }) => {
 
   const handleBookNow = (provider) => {
     console.log('Booking with:', provider.fullName);
-    // Navigate to booking page: navigate(`/booking_request/${provider.id}`);
+    // Navigate to booking page: navigate(`/lucid/bookings/new/${provider.id}`);
     setSelectedProvider(null);
   };
 

@@ -6,6 +6,11 @@ import Review from '../assets/Ratings.webp';
 import Book from '../assets/book.webp';
 import InstantQuotes from '../assets/instant_qoutes.webp';
 
+import SearchDark from '../assets/search_options-black.webp';
+import ReviewDark from '../assets/Ratings-black.webp';
+import BookDark from '../assets/book-black.webp';
+import InstantQuotesDark from '../assets/instant_qoutes-black.webp';
+
 // Lazy load heavy components
 const Carousel = lazy(() => import('../components/carousal_slider.jsx'));
 
@@ -101,15 +106,21 @@ const HowItWorksStep = memo(({ step, index }) => (
     viewport={{ once: true, margin: "-100px" }}
     transition={{ duration: 0.5, delay: index * 0.15 }}
   >
-    <motion.div 
-      className="w-full h-44 mt-2 bg-blue-700 rounded-2xl transition-all duration-300 overflow-hidden flex items-center justify-center flex-shrink-0"
+    <motion.div
+      className="w-full h-44 mt-2 bg-blue-700 dark:bg-[#1a1f2e] rounded-2xl transition-all duration-300 overflow-hidden flex items-center justify-center flex-shrink-0"
       whileHover={{ scale: 1.05, boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.2)" }}
       transition={{ duration: 0.3 }}
     >
       <img
         src={step.imageUrl}
         alt={step.alt}
-        className="object-cover w-full h-full"
+        className="object-cover w-full h-full dark:hidden"
+        loading="lazy"
+      />
+      <img
+        src={step.darkImageUrl}
+        alt={step.alt}
+        className="object-cover w-full h-full hidden dark:block"
         loading="lazy"
       />
     </motion.div>
@@ -234,36 +245,40 @@ const PLATFORM_FEATURES_DATA = [
 const STEPS_DATA = [
   {
     id: 1,
-    alt: "pic",
+    alt: "Search for a service",
     num: "1",
     title: "Search",
     description: "Search for your desired service or browse through our diverse categories.",
-    imageUrl: Search
+    imageUrl: Search,
+    darkImageUrl: SearchDark,
   },
   {
     id: 2,
-    alt: "pic",
+    alt: "Get instant quotes",
     num: "2",
     title: "Get Instant Quotes",
     description: "Receive offers from local workers within minutes. Compare prices, reviews, and availability.",
-    imageUrl: InstantQuotes
+    imageUrl: InstantQuotes,
+    darkImageUrl: InstantQuotesDark,
   },
   {
     id: 3,
-    alt: "pic",
+    alt: "Choose and book a provider",
     num: "3",
     title: "Choose & Book",
     description: "Select the best worker for your task based on reviews, ratings, and price. Book instantly through our secure platform.",
-    imageUrl: Book
+    imageUrl: Book,
+    darkImageUrl: BookDark,
   },
   {
     id: 4,
-    alt: "pic",
+    alt: "Leave feedback and review",
     num: "4",
     title: "Feedback & Review",
     description: "Leave feedback to help future customers and build our trusted community network.",
-    imageUrl: Review
-  }
+    imageUrl: Review,
+    darkImageUrl: ReviewDark,
+  },
 ];
 
 const FAQ_DATA = [

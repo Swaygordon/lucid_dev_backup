@@ -68,7 +68,7 @@ export const DownloadSection = memo(() => (
                     viewport={{ once: true }}
                   >
                     <motion.div variants={scaleIn}>
-                      <Link to="/">
+                      <Link to="/lucid/">
                         <motion.button
                           className="inline-flex items-center justify-center bg-black border border-white/40 hover:border-orange-500 rounded-xl overflow-hidden cursor-pointer transition-colors"
                           whileHover={{ scale: 1.05 }}
@@ -86,7 +86,7 @@ export const DownloadSection = memo(() => (
                       </Link>
                     </motion.div>
                     <motion.div variants={scaleIn}>
-                      <Link to="/">
+                      <Link to="/lucid/">
                         <motion.button
                           className="inline-flex items-center justify-center bg-black border border-white/40 hover:border-orange-500 rounded-xl overflow-hidden cursor-pointer transition-colors"
                           whileHover={{ scale: 1.05 }}

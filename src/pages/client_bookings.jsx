@@ -4,8 +4,6 @@ import { useNavigateBack } from '../hooks/useNavigateBack.js';
 import { useNotification } from '../contexts/NotificationContext';
 import { PageHeader, FilterBar, EmptyState } from '../components/ui';
 import { BookingCard, BookingDetailsModal, CancelBookingModal } from '../components/shared';
-import { getBookingsByClient } from '../data/mockDataUtils'; // [MOCK] Replace with GET /bookings?userId={id}&status={filter}&page={n}
-import { CURRENT_CLIENT_ID } from '../data/mockCurrentUser'; // [AUTH] Replace with authenticated user ID from session/token
 import { Search, Calendar, AlertCircle } from 'lucide-react';
 
 const fadeIn = {
@@ -105,9 +103,8 @@ const ClientBookings = () => {
     showNotification('Completion rejected. Communicated changes needed.', 'info');
   };
 
-  // [MOCK] Replace with GET /bookings?userId={CURRENT_CLIENT_ID} — returns paginated booking list
-  // [API] Move filter/sort to query params; backend paginates: GET /bookings?userId={id}&status={filter}&sort=date&page={n}&limit={n}
-  const bookings = useMemo(() => getBookingsByClient(CURRENT_CLIENT_ID), []);
+  // [API] GET /bookings?userId={authenticatedUserId}&status={filter}&sort=date&page={n}&limit={n}
+  const bookings = useMemo(() => [], []);
 
   // [API] Move status counts to API response metadata: GET /bookings?userId={id}&countByStatus=true → {counts: {pending, confirmed, ...}}
   const filters = [
@@ -185,7 +182,7 @@ const ClientBookings = () => {
                 ? 'Try adjusting your search terms'
                 : "You don't have any bookings in this category"
             }
-            action={!searchQuery ? { label: 'Book a Service', to: '/Service' } : undefined}
+            action={!searchQuery ? { label: 'Book a Service', to: '/lucid/services' } : undefined}
           />
         )}
       </div>

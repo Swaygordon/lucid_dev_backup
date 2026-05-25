@@ -4,8 +4,6 @@ import { useNavigateBack } from '../hooks/useNavigateBack.js';
 import { useNotification } from '../contexts/NotificationContext.jsx';
 import { PageHeader, FilterBar, EmptyState } from '../components/ui';
 import { BookingCard, BookingDetailsModal, CancelBookingModal } from '../components/shared';
-import { getBookingsByProvider } from '../data/mockDataUtils'; // [MOCK] Replace with GET /bookings?providerId={id}&status={filter}&page={n}
-import { CURRENT_PROVIDER_ID } from '../data/mockCurrentUser'; // [AUTH] Replace with authenticated provider ID from session/token
 import { Search, Calendar, AlertCircle } from 'lucide-react';
 
 const fadeIn = {
@@ -23,9 +21,8 @@ const ProviderBookings = () => {
 
   const handleBackClick = useNavigateBack('/lucid/dashboard', 400);
 
-  // [MOCK] Replace with GET /bookings?providerId={CURRENT_PROVIDER_ID} — returns paginated booking list
-  // [API] Move filter/sort to query params; backend paginates: GET /bookings?providerId={id}&status={filter}&sort=date&page={n}&limit={n}
-  const bookings = useMemo(() => getBookingsByProvider(CURRENT_PROVIDER_ID), []);
+  // [API] GET /bookings?providerId={authenticatedProviderId}&status={filter}&sort=date&page={n}&limit={n}
+  const bookings = useMemo(() => [], []);
 
   // [API] Move status counts to API response metadata: GET /bookings?providerId={id}&countByStatus=true → {counts: {pending, confirmed, ...}}
   const filters = [

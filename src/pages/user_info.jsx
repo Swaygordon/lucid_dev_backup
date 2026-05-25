@@ -4,8 +4,6 @@ import { useNavigateBack } from "../hooks/useNavigateBack.js";
 import { useNotification } from '../contexts/NotificationContext';
 import { useSearchLocation } from '../contexts/LocationContext';
 import { useRole } from '../hooks/useRole';
-import { MOCK_PROVIDER } from '../data/mockProvider';
-import { MOCK_CLIENT } from '../data/mockClient';
 import {
   ArrowLeft,
   User,
@@ -88,36 +86,12 @@ const UserInfo = () => {
   const { showNotification } = useNotification();
   const { updateDefaultLocation } = useSearchLocation();
   const role = useRole(); // null while loading, then 'client' | 'service_provider'
-  const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('personal');
   const [confirmModal, setConfirmModal] = useState({ open: false, type: null });
   const handleBackClick = useNavigateBack('/lucid/account', 400);
 
-  // [MOCK] Populated from centralized mock once role resolves.
-  // Replace with GET /users/me on mount when backend is ready.
   const [personalInfo, setPersonalInfo] = useState(EMPTY_PERSONAL);
   const [locationInfo, setLocationInfo] = useState(EMPTY_LOCATION);
-
-  useEffect(() => {
-    if (role === null) return; // still resolving from Supabase
-    const mock = role === 'service_provider' ? MOCK_PROVIDER : MOCK_CLIENT;
-    setPersonalInfo({
-      firstName:   mock.firstName,
-      lastName:    mock.lastName,
-      otherName:   mock.otherName,
-      email:       mock.email,
-      phone:       mock.phone,
-      dateOfBirth: mock.dateOfBirth,
-      gender:      mock.gender,
-    });
-    setLocationInfo({
-      address:    mock.address,
-      city:       mock.city,
-      region:     mock.region,
-      area:       mock.area,
-      postalCode: mock.postalCode,
-    });
-  }, [role]);
 
   const [passwordInfo, setPasswordInfo] = useState({
     currentPassword: '',
@@ -129,36 +103,19 @@ const UserInfo = () => {
   const handleLocationInfoChange   = (e) => setLocationInfo(l => ({ ...l, [e.target.name]: e.target.value }));
   const handlePasswordChange       = (e) => setPasswordInfo(p => ({ ...p, [e.target.name]: e.target.value }));
 
-  const handleSavePersonalInfo = async () => {
-    setLoading(true);
+  const handleSavePersonalInfo = () => {
     // [API] PUT /users/me/personal — {firstName, lastName, email, phone, dateOfBirth, gender}
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1200)); // [MOCK] remove when real API wired
-      showNotification('Personal information updated successfully!', 'success');
-    } catch {
-      showNotification('Failed to update personal information', 'error');
-    } finally {
-      setLoading(false);
-    }
+    showNotification('Personal information updated successfully!', 'success');
   };
 
-  const handleSaveLocationInfo = async () => {
-    setLoading(true);
+  const handleSaveLocationInfo = () => {
     // [API] PUT /users/me/location — {address, city, region, area, postalCode}
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1200)); // [MOCK] remove when real API wired
-      updateDefaultLocation({
-        area:   locationInfo.area,
-        city:   locationInfo.city,
-        region: locationInfo.region,
-      });
-      showNotification('Location information updated successfully!', 'success');
-    } catch {
-      setLoading(false);
-      showNotification('Failed to update location information', 'error');
-    } finally {
-      setLoading(false);
-    }
+    updateDefaultLocation({
+      area:   locationInfo.area,
+      city:   locationInfo.city,
+      region: locationInfo.region,
+    });
+    showNotification('Location information updated successfully!', 'success');
   };
 
   const handleChangePassword = async () => {
@@ -170,17 +127,9 @@ const UserInfo = () => {
       showNotification('Password must be at least 8 characters!', 'error');
       return;
     }
-    setLoading(true);
     // [API] PUT /users/me/password — {currentPassword, newPassword}
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1200)); // [MOCK] remove when real API wired
-      setPasswordInfo({ currentPassword: '', newPassword: '', confirmPassword: '' });
-      showNotification('Password changed successfully!', 'success');
-    } catch {
-      showNotification('Failed to change password', 'error');
-    } finally {
-      setLoading(false);
-    }
+    setPasswordInfo({ currentPassword: '', newPassword: '', confirmPassword: '' });
+    showNotification('Password changed successfully!', 'success');
   };
 
   const openConfirmModal = (type) => setConfirmModal({ open: true, type });
@@ -381,7 +330,7 @@ const UserInfo = () => {
                       />
                     </div>
                   </div>
-                  <Button onClick={handleSavePersonalInfo} loading={loading} className="mt-4">
+                  <Button onClick={handleSavePersonalInfo} className="mt-4">
                     <Save className="w-4 h-4" />
                     Save Changes
                   </Button>
@@ -432,7 +381,7 @@ const UserInfo = () => {
                       onChange={handleLocationInfoChange}
                     />
                   </div>
-                  <Button onClick={handleSaveLocationInfo} loading={loading} className="mt-4">
+                  <Button onClick={handleSaveLocationInfo} className="mt-4">
                     <Save className="w-4 h-4" />
                     Save Changes
                   </Button>
@@ -474,7 +423,7 @@ const UserInfo = () => {
                       required
                       endIcon={<Lock className="w-5 h-5 text-gray-400" />}
                     />
-                    <Button onClick={handleChangePassword} loading={loading} className="mt-4">
+                    <Button onClick={handleChangePassword} className="mt-4">
                       <Shield className="w-4 h-4" />
                       Change Password
                     </Button>

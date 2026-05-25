@@ -1,13 +1,11 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React from "react";
 import BackToTop from '../components/back_the_top_btn.jsx';
 import { Link } from "react-router-dom";
 import { useNotification } from "../contexts/NotificationContext.jsx";
 import { useImageUpload } from "../hooks/useImageUpload.js";
 import { ImageUploadModal } from "../components/shared";
 import { useNavigateBack } from "../hooks/useNavigateBack.js";
-import { supabase } from '../lib/supabaseClient';
-import { useProviderProfile } from '../hooks/useProviderProfile';
-import { getBookingsByClient, calculateBookingStats, CURRENT_CLIENT_ID } from '../data/mockData';
+import { MOCK_CURRENT_CLIENT } from '../data/mockCurrentUser';
 import { 
   ArrowLeft, 
   Upload, 
@@ -27,21 +25,19 @@ function ClientAccountOverview() {
   const handleBackClick = useNavigateBack('/lucid/dashboard', 600);
   const upload = useImageUpload();
 
-  const [currentUserId, setCurrentUserId] = useState(null);
-  const [currentUserEmail, setCurrentUserEmail] = useState('');
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        setCurrentUserId(session.user.id);
-        setCurrentUserEmail(session.user.email || '');
-      }
-    });
-  }, []);
-  const { profile } = useProviderProfile(currentUserId);
-  const displayName     = profile?.name || '';
+  // [MOCK] Current user — replace with supabase.auth.getSession() + profiles fetch when integrating Phase 6.
+  const currentUserEmail = MOCK_CURRENT_CLIENT.email || '';
+  const profile = {
+    name: MOCK_CURRENT_CLIENT.fullName || '',
+    location: MOCK_CURRENT_CLIENT.location
+      ? `${MOCK_CURRENT_CLIENT.location.area}, ${MOCK_CURRENT_CLIENT.location.city}`
+      : '',
+    avatar_url: MOCK_CURRENT_CLIENT.profileImage || null,
+  };
+  const displayName     = profile.name;
   const displayInitials = displayName.split(' ').filter(Boolean).map(w => w[0]).join('').slice(0, 2).toUpperCase() || '?';
-  const displayLocation = profile?.location || '';
-  const clientStats     = calculateBookingStats(getBookingsByClient(CURRENT_CLIENT_ID));
+  const displayLocation = profile.location;
+  const clientStats     = { completed: 0, active: 0 };
 
   // Navigation items configuration
   const navigationItems = [

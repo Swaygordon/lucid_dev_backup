@@ -9,12 +9,13 @@
 
 import React, { useState, useMemo, useEffect, useRef, lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
-import { Link, useParams, useSearchParams } from 'react-router-dom';
+import { Link, useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { ChevronRight, ChevronDown, Filter, MapPin, Star } from 'lucide-react';
 import BusinessCategorySection from '../components/suggested_category.jsx';
 import { DownloadSection } from '../components/download_ad.jsx';
 import Breadcrumb from '../components/Breadcrumb.jsx';
 import { getCategoryBySlug, getServiceBySlug } from '../data/categories.js';
+import { supabase } from '../lib/supabaseClient';
 
 // Lazy load heavy components
 const BackToTop = lazy(() => import('../components/back_the_top_btn'));
@@ -22,19 +23,7 @@ const BackToTop = lazy(() => import('../components/back_the_top_btn'));
 // Import ProfileCard directly (not lazy) since it's needed immediately
 import { ProfileCard } from '../components/shared';
 
-// ============================================
-// IMPORT MOCK DATA
-// ============================================
-// [MOCK] mockProviders and helpers — replace with GET /providers?serviceId={id}&lat={}&lng={}&radius={}
-import {
-  mockProviders,
-  getProvidersBySkill,
-  getProvidersByArea,
-  getTopRatedProviders,
-  getAvailableProviders
-} from '../data/mockProfiles';
 import { useSearchLocation } from '../contexts/LocationContext';
-
 
 // ============================================
 // ANIMATION VARIANTS
@@ -62,59 +51,6 @@ const scaleIn = {
 // ============================================
 // MEMOIZED COMPONENTS
 // ============================================
-
-// Hero Section Component
-const HeroSection = React.memo(({ backgroundImage, icon: Icon, title, subtitle }) => (
-  <div className='h-1/2'>
-    <div
-      className="relative w-full h-96 flex items-center justify-center"
-      style={{
-        backgroundImage: `url(${backgroundImage})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-      }}
-    >
-      <div className="absolute inset-0 bg-black bg-opacity-40"></div>
-      <motion.div
-        className="relative z-10 flex flex-col gap-4 justify-start items-start w-full"
-        initial="hidden"
-        animate="visible"
-        variants={fadeInUp}
-        transition={{ duration: 0.6 }}
-      >
-        <div className="max-w-3xl px-6 text-left">
-          {/* Icon */}
-          <motion.div
-            className="mb-4"
-            initial={{ scale: 0, rotate: -180 }}
-            animate={{ scale: 1, rotate: 0 }}
-            transition={{ duration: 0.5, type: "spring" }}
-          >
-            <Icon size={46} className="text-white" />
-          </motion.div>
-
-          {/* Heading */}
-          <motion.h1
-            className="text-2xl md:text-4xl font-bold text-white leading-tight mb-4 drop-shadow-lg"
-            variants={fadeInUp}
-            transition={{ delay: 0.2 }}
-          >
-            {title}
-          </motion.h1>
-          <motion.p
-            className="text-white text-lg md:text-xl drop-shadow-md"
-            variants={fadeInUp}
-            transition={{ delay: 0.3 }}
-          >
-            {subtitle}
-          </motion.p>
-        </div>
-      </motion.div>
-    </div>
-  </div>
-));
-
 
 const RATING_OPTIONS = [
   { value: 0,   label: 'All Ratings'  },
@@ -171,7 +107,6 @@ const RatingDropdown = ({ value, onChange }) => {
 };
 
 // Filter Section Component
-// [API] Pass filter values as query params: ?sortBy=rating&minRating=4&availability=today&verified=true
 const FilterSection = React.memo(({ onFilterChange, activeFilters }) => {
   const [showFilters, setShowFilters] = useState(false);
 
@@ -196,7 +131,6 @@ const FilterSection = React.memo(({ onFilterChange, activeFilters }) => {
 
       {showFilters && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* [API] Pass as query param: ?minRating=4.0 */}
           <RatingDropdown value={activeFilters.rating} onChange={(v) => onFilterChange('rating', v)} />
         </div>
       )}
@@ -205,7 +139,6 @@ const FilterSection = React.memo(({ onFilterChange, activeFilters }) => {
 });
 
 // Stats Bar Component
-// [MOCK] totalProviders and averageRating — replace with aggregates from GET /providers response metadata
 const StatsBar = React.memo(({ totalProviders, averageRating }) => (
   <motion.div
     className="bg-blue-50 dark:bg-primary/10 rounded-lg p-4 mb-6"
@@ -240,7 +173,6 @@ const ProfileCardSkeleton = () => (
 
 const SelectedServiceSkeleton = () => (
   <div className="min-h-screen bg-gray-100 pb-20 animate-pulse">
-    {/* Hero */}
     <div className="relative w-full h-52 md:h-64 bg-gray-300">
       <div className="absolute inset-0 bg-black/20" />
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
@@ -248,20 +180,19 @@ const SelectedServiceSkeleton = () => (
         <div className="h-4 w-36 bg-gray-200 rounded" />
       </div>
     </div>
-
-    {/* Breadcrumb */}
+    {/* Breadcrumb — 5 crumbs: Home › Services › All Services › Category › Service */}
     <div className="max-w-6xl mx-auto px-5 pt-4 pb-2 flex items-center gap-2">
       <div className="h-4 w-10 bg-gray-200 rounded" />
-      <div className="h-3 w-3 bg-gray-200 rounded" />
-      <div className="h-4 w-20 bg-gray-200 rounded" />
       <div className="h-3 w-3 bg-gray-200 rounded" />
       <div className="h-4 w-16 bg-gray-200 rounded" />
       <div className="h-3 w-3 bg-gray-200 rounded" />
       <div className="h-4 w-24 bg-gray-200 rounded" />
+      <div className="h-3 w-3 bg-gray-200 rounded" />
+      <div className="h-4 w-32 bg-gray-200 rounded" />
+      <div className="h-3 w-3 bg-gray-200 rounded" />
+      <div className="h-4 w-28 bg-gray-200 rounded" />
     </div>
-
     <div className="container mx-auto px-6 pb-16">
-      {/* Stats bar */}
       <div className="bg-blue-50 dark:bg-primary/10 rounded-lg p-4 mb-6">
         <div className="grid grid-cols-2 gap-4">
           {[0, 1].map(i => (
@@ -272,20 +203,14 @@ const SelectedServiceSkeleton = () => (
           ))}
         </div>
       </div>
-
-      {/* Filter bar */}
       <div className="bg-white dark:bg-[#1a1f2e] rounded-lg shadow-sm p-4 mb-6 flex items-center justify-between">
         <div className="h-5 w-20 bg-gray-200 rounded" />
         <div className="h-4 w-24 bg-gray-200 rounded" />
       </div>
-
-      {/* Section heading */}
       <div className="text-center mb-12 space-y-3">
         <div className="h-10 w-80 bg-gray-200 rounded mx-auto" />
         <div className="h-5 w-56 bg-gray-200 rounded mx-auto" />
       </div>
-
-      {/* Profile card grid — matches real grid breakpoints */}
       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-6">
         {Array.from({ length: 10 }).map((_, i) => (
           <ProfileCardSkeleton key={i} />
@@ -295,26 +220,25 @@ const SelectedServiceSkeleton = () => (
   </div>
 );
 
-// ============================================
-// STATIC DATA — built from shared categories taxonomy
-// ============================================
+// [API] GET /categories/featured?limit=4 → [{id, name, slug, icon}]
+// Hardcoded until admin can configure featured categories
 const _FEATURED_SLUGS = ['home-repairs', 'moving', 'auto-repairs', 'construction'];
 
 const SERVICE_ICONS = _FEATURED_SLUGS.map((slug, i) => {
   const cat = getCategoryBySlug(slug);
-  return { id: i + 1, icon: cat.icon, name: cat.name, slug };
+  return { id: i + 1, icon: cat?.icon || MapPin, name: cat?.name || slug, slug };
 });
 
 const BUSINESS_CARDS = Object.fromEntries(
   SERVICE_ICONS.map(({ name, slug }) => {
     const cat = getCategoryBySlug(slug);
     return [name, {
-      cat:                name,
+      cat: name,
       slug,
-      mainCardBackground: cat.image,
-      cardIcon:           cat.icon,
-      heading:            cat.description,
-      seeAll:             `See all ${name.toLowerCase()} services`,
+      mainCardBackground: cat?.image,
+      cardIcon: cat?.icon,
+      heading: cat?.description || `${name} services`,
+      seeAll: `See all ${name.toLowerCase()} services`,
     }];
   })
 );
@@ -322,11 +246,11 @@ const BUSINESS_CARDS = Object.fromEntries(
 const BUSINESS_SERVICES = SERVICE_ICONS.flatMap(({ name, slug }) => {
   const cat = getCategoryBySlug(slug);
   return (cat?.services ?? []).slice(0, 3).map(svc => ({
-    cat:      name,
-    catSlug:  slug,
-    slug:     svc.slug,
-    image:    svc.image,
-    title:    svc.name,
+    cat: name,
+    catSlug: slug,
+    slug: svc.slug,
+    image: svc.image,
+    title: svc.name,
     subtitle: 'See workers near you',
   }));
 });
@@ -335,243 +259,259 @@ const BUSINESS_SERVICES = SERVICE_ICONS.flatMap(({ name, slug }) => {
 // MAIN COMPONENT
 // ============================================
 const SelectedService = () => {
+  const navigate = useNavigate();
   const { category: categorySlug, service: serviceSlug } = useParams();
   const [searchParams] = useSearchParams();
   const { searchLocation } = useSearchLocation();
-  // Explicit ?area= param takes priority; fall back to the active search location.
   const area = searchParams.get('area') || searchLocation.area;
 
-  // Resolve category + service from shared taxonomy
-  const catData  = getCategoryBySlug(categorySlug);
-  const svcData  = getServiceBySlug(categorySlug, serviceSlug);
-
-  // Skill keyword for provider filtering (use service slug or name)
-  const skill = svcData?.name ?? serviceSlug ?? 'service';
+  const catData = getCategoryBySlug(categorySlug);
+  const svcData = getServiceBySlug(categorySlug, serviceSlug);
+  const skill = svcData?.name ?? serviceSlug ?? categorySlug ?? 'service';
 
   const [isLoading, setIsLoading] = useState(true);
+  const [providers, setProviders] = useState([]);
+  const [loadingProviders, setLoadingProviders] = useState(true);
+  const [filters, setFilters] = useState({ rating: 0 });
 
   useEffect(() => {
-    const id = setTimeout(() => setIsLoading(false), 800);
-    return () => clearTimeout(id);
+    fetchProviders();
   }, [categorySlug, serviceSlug]);
 
-  // State for filters
-  const [filters, setFilters] = useState({
-    rating: 0,
-    priceRange: 'all',
-  });
+  const fetchProviders = async () => {
+    setLoadingProviders(true);
+    try {
+      const { data, error } = await supabase
+        .from('provider_profiles')
+        .select('*')
+        .eq('is_profile_complete', true);
 
-  // ============================================
-  // FETCH AND FILTER PROVIDERS
-  // ============================================
-  // [MOCK] Provider list — replace with GET /providers?serviceId={id}&lat={}&lng={}&radius={}
-  // [API] GET /providers?serviceId={id}&lat={}&lng={}&radius={} — returns [{id, name, rating, location, verified, availability}]
-  const providers = useMemo(() => {
-    // Start with providers that match the skill
-    let filteredProviders = getProvidersBySkill(skill);
+      if (error) throw error;
 
-    // If no providers found by skill, show all available providers
-    if (filteredProviders.length === 0) {
-      filteredProviders = getAvailableProviders();
+      let filteredProviders = data || [];
+
+      const categorySearchTerms = {
+        'home-repairs':   ['home repair', 'home repairs', 'house repair', 'maintenance', 'handyman', 'repair'],
+        'moving':         ['moving', 'mover', 'relocation', 'packing', 'transport', 'delivery', 'furniture moving'],
+        'auto-repairs':   ['auto repair', 'automotive', 'car repair', 'vehicle repair', 'mechanic', 'garage'],
+        'construction':   ['construction', 'building', 'renovation', 'contractor', 'masonry', 'roofing'],
+        'beauty':         ['beauty', 'hair', 'makeup', 'fashion', 'tailoring', 'barber', 'grooming', 'salon'],
+        'events':         ['event', 'catering', 'decoration', 'photography', 'dj', 'entertainment', 'party'],
+        'skilled-trades': ['carpentry', 'welding', 'solar', 'ac repair', 'furniture making', 'technician', 'trade'],
+        'cleaning':       ['cleaning', 'cleaner', 'janitorial', 'maid', 'laundry', 'sanitation', 'waste'],
+        'education':      ['tutoring', 'tutor', 'teaching', 'lessons', 'training', 'coaching', 'education'],
+        'tech':           ['tech', 'phone repair', 'laptop repair', 'cctv', 'network', 'it support', 'electronics'],
+      };
+
+      const serviceSearchTerms = {
+        // home-repairs
+        'electrical-repairs': ['electrical', 'electrician', 'wiring', 'circuit', 'electric', 'power'],
+        'plumbing':           ['plumbing', 'plumber', 'pipe', 'water heater', 'faucet', 'toilet repair'],
+        'painting':           ['painting', 'painter', 'paint', 'house painting', 'wall painting'],
+        'tiling':             ['tiling', 'tile', 'flooring', 'floor', 'mosaic', 'ceramics'],
+        'handyman':           ['handyman', 'general repair', 'odd jobs', 'fix', 'maintenance'],
+        // moving
+        'furniture-moving':   ['furniture moving', 'moving', 'mover', 'relocation', 'furniture'],
+        'packing':            ['packing', 'packing services', 'packaging', 'boxes', 'pack'],
+        'storage':            ['storage', 'warehouse', 'storage solutions', 'store items'],
+        'office-relocation':  ['office relocation', 'office moving', 'commercial moving', 'business relocation'],
+        // auto-repairs
+        'engine-repair':      ['engine repair', 'engine', 'auto repair', 'car repair', 'mechanic', 'automotive'],
+        'brake-service':      ['brake', 'brakes', 'brake service', 'brake repair', 'brake pad'],
+        'oil-change':         ['oil change', 'oil service', 'lubrication', 'oil filter', 'engine oil'],
+        'vulcanizing':        ['vulcanizing', 'tyre', 'tire', 'puncture', 'wheel', 'rim'],
+        'car-wash':           ['car wash', 'vehicle wash', 'detailing', 'auto detailing', 'car cleaning'],
+        // construction
+        'building':           ['building', 'construction', 'contractor', 'structural', 'civil'],
+        'roofing':            ['roofing', 'roof', 'roof repair', 'gutter', 'shingles', 'roofing contractor'],
+        'renovation':         ['renovation', 'remodel', 'refurbish', 'interior', 'upgrade'],
+        'fencing':            ['fencing', 'fence', 'gate', 'boundary wall', 'compound wall'],
+        'masonry':            ['masonry', 'plastering', 'bricklaying', 'concrete', 'block'],
+        // beauty
+        'hair-braiding':      ['hair braiding', 'braiding', 'cornrows', 'dreadlocks', 'hair stylist'],
+        'natural-hair':       ['natural hair', 'natural hair styling', 'loc', 'afro', 'twists'],
+        'makeup':             ['makeup', 'beauty', 'cosmetics', 'bridal makeup', 'artist'],
+        'tailoring':          ['tailoring', 'tailor', 'seamstress', 'sewing', 'fashion', 'clothes'],
+        'barbering':          ['barbering', 'barber', 'haircut', 'shave', 'grooming'],
+        // events
+        'event-planning':     ['event planning', 'event planner', 'events', 'coordination', 'organiser'],
+        'catering':           ['catering', 'caterer', 'food', 'meals', 'cooking', 'chef'],
+        'decoration':         ['decoration', 'decorator', 'decor', 'floral', 'setup', 'backdrop'],
+        'photography':        ['photography', 'photographer', 'videography', 'video', 'pictures'],
+        'music-dj':           ['dj', 'music', 'disc jockey', 'sound system', 'entertainment', 'band'],
+        // skilled-trades
+        'carpentry':          ['carpentry', 'carpenter', 'woodwork', 'cabinet', 'furniture', 'joinery'],
+        'welding':            ['welding', 'welder', 'fabrication', 'metalwork', 'steel', 'iron'],
+        'solar-installation': ['solar', 'solar panel', 'generator', 'inverter', 'power installation'],
+        'ac-repair':          ['ac repair', 'air conditioning', 'ac', 'hvac', 'cooling', 'refrigeration'],
+        'furniture-making':   ['furniture making', 'furniture', 'custom furniture', 'woodwork', 'cabinet'],
+        // cleaning
+        'house-cleaning':     ['house cleaning', 'home cleaning', 'cleaning', 'janitorial', 'maid', 'housekeep'],
+        'office-cleaning':    ['office cleaning', 'commercial cleaning', 'workspace cleaning', 'corporate'],
+        'deep-cleaning':      ['deep cleaning', 'thorough cleaning', 'spring cleaning', 'scrubbing'],
+        'laundry':            ['laundry', 'ironing', 'washing', 'dry cleaning', 'clothes'],
+        'waste-collection':   ['waste', 'garbage', 'trash', 'refuse', 'collection', 'sanitation'],
+        // education
+        'math-tutoring':      ['maths', 'math', 'mathematics', 'tutoring', 'tutor', 'algebra', 'calculus'],
+        'english-tutoring':   ['english', 'grammar', 'writing', 'reading', 'literature', 'language'],
+        'music-lessons':      ['music lessons', 'music', 'instrument', 'piano', 'guitar', 'singing'],
+        'driving-lessons':    ['driving', 'driving lessons', 'driving school', 'license', 'road'],
+        'computer-training':  ['computer', 'computer training', 'it training', 'software', 'ms office'],
+        // tech
+        'phone-repair':       ['phone repair', 'mobile repair', 'smartphone', 'screen repair', 'battery'],
+        'laptop-repair':      ['laptop repair', 'computer repair', 'pc repair', 'hardware', 'software fix'],
+        'cctv-installation':  ['cctv', 'cctv installation', 'surveillance', 'camera', 'security system'],
+        'network-setup':      ['network', 'wifi', 'wi-fi', 'internet', 'router', 'cable', 'networking'],
+        'it-support':         ['it support', 'tech support', 'helpdesk', 'troubleshooting', 'it'],
+      };
+
+      // Filter by category
+      if (categorySlug) {
+        const searchTerms = categorySearchTerms[categorySlug] || [categorySlug.replace(/-/g, ' ')];
+        filteredProviders = filteredProviders.filter(provider => {
+          const searchableText = [
+            ...(provider.categories || []),
+            ...(provider.skills || []),
+            provider.occupation || '',
+          ].join(' ').toLowerCase();
+          return searchTerms.some(term => searchableText.includes(term));
+        });
+      }
+
+      // Filter by service
+      if (serviceSlug && svcData?.name) {
+        const searchTerms = serviceSearchTerms[serviceSlug] || [svcData.name.toLowerCase()];
+        filteredProviders = filteredProviders.filter(provider => {
+          const searchableText = [
+            ...(provider.skills || []),
+            ...(provider.categories || []),
+            provider.occupation || '',
+          ].join(' ').toLowerCase();
+          return searchTerms.some(term => searchableText.includes(term));
+        });
+      }
+
+      // Filter by location
+      if (area) {
+        filteredProviders = filteredProviders.filter(provider =>
+          provider.location && provider.location.includes(area)
+        );
+      }
+
+      const transformedProviders = filteredProviders.map(provider => ({
+        id: provider.user_id,
+        name: `${provider.first_name || ''} ${provider.last_name || ''}`.trim() || 'Professional',
+        role: provider.occupation || categorySlug || 'Service Provider',
+        location: provider.location || 'Accra, Ghana',
+        rating: provider.rating ?? null,
+        image: provider.avatar_url,
+        verified: provider.verification_status === 'verified',
+        totalJobs: provider.work_experience || 0,
+      }));
+
+      setProviders(transformedProviders);
+    } catch (error) {
+      console.error('Error fetching providers:', error);
+    } finally {
+      setLoadingProviders(false);
+      setIsLoading(false);
     }
+  };
 
-    // Filter by active search area (from URL param or LocationContext).
-    // Only applies the filter when it actually returns results — prevents an
-    // empty grid when mock data doesn't have providers in every area.
-    if (area) {
-      const areaFiltered = filteredProviders.filter(p =>
-        p.location.area.toLowerCase().includes(area.toLowerCase()) ||
-        p.location.city.toLowerCase().includes(area.toLowerCase())
-      );
-      if (areaFiltered.length > 0) filteredProviders = areaFiltered;
-    }
-
-    // Apply rating filter
+  const filteredProviders = useMemo(() => {
+    let filtered = [...providers];
     if (filters.rating > 0) {
-      filteredProviders = filteredProviders.filter(p =>
-        p.rating.overall >= filters.rating
-      );
+      filtered = filtered.filter(p => p.rating >= filters.rating);
     }
+    return filtered;
+  }, [providers, filters]);
 
-    return filteredProviders;
-  }, [skill, area, filters]);
-
-  // ============================================
-  // TRANSFORM PROVIDERS TO PROFILE CARD FORMAT
-  // ============================================
-  const profiles = useMemo(() => {
-    return providers.map(provider => ({
-      id: provider.id,
-      name: provider.fullName,
-      role: provider.occupation,
-      location: `${provider.location.area}, ${provider.location.city}`,
-      rating: provider.rating.overall,
-      image: provider.profileImage,
-      // Additional data for ProfileCard if needed
-      verified: provider.isVerified,
-      premium: false,
-      responseTime: null,
-      totalJobs: provider.workExperience.totalJobs
-    }));
-  }, [providers]);
-
-  // ============================================
-  // CALCULATE STATS
-  // ============================================
-  // [MOCK] stats — in production derive from API response metadata (total, averageRating fields)
   const stats = useMemo(() => {
-    if (profiles.length === 0) {
-      return { totalProviders: 0, averageRating: 0 };
-    }
-
-    const totalRating = profiles.reduce((sum, p) => sum + p.rating, 0);
-
-    return {
-      totalProviders: profiles.length,
-      averageRating: (totalRating / profiles.length).toFixed(1)
-    };
-  }, [profiles]);
+    if (filteredProviders.length === 0) return { totalProviders: 0, averageRating: '—' };
+    const ratedProviders = filteredProviders.filter(p => p.rating != null);
+    const averageRating = ratedProviders.length === 0
+      ? '—'
+      : (ratedProviders.reduce((sum, p) => sum + p.rating, 0) / ratedProviders.length).toFixed(1);
+    return { totalProviders: filteredProviders.length, averageRating };
+  }, [filteredProviders]);
 
   const breadcrumbCrumbs = useMemo(() => [
     { label: 'Home',         href: '/lucid/' },
+    { label: 'Services',     href: '/lucid/services' },
     { label: 'All Services', href: '/lucid/services/all' },
     { label: catData?.name ?? categorySlug, href: `/lucid/services/${categorySlug}` },
     { label: svcData?.name ?? serviceSlug },
   ], [catData, svcData, categorySlug, serviceSlug]);
 
-  // ============================================
-  // FILTER CHANGE HANDLER
-  // ============================================
   const handleFilterChange = (filterType, value) => {
     setFilters(prev => ({ ...prev, [filterType]: value }));
   };
 
-  if (isLoading) return <SelectedServiceSkeleton />;
+  if (isLoading || loadingProviders) return <SelectedServiceSkeleton />;
+
+  const heroImage = svcData?.image ?? catData?.image ?? 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&auto=format';
+  const heroTitle = svcData?.name ?? catData?.name ?? skill;
+  const heroSubtitle = `${catData?.name ?? 'Lucid'} · Ghana`;
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-[#0f1117] pb-20">
-      {/* Hero */}
       <div className="relative w-full h-52 md:h-64 overflow-hidden">
-        <img
-          src={svcData?.image ?? catData?.image ?? 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&auto=format'}
-          alt={svcData?.name ?? skill}
-          className="w-full h-full object-cover"
-        />
+        <img src={heroImage} alt={heroTitle} className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-black bg-opacity-50" />
         <div className="absolute inset-0 flex flex-col items-center justify-center text-white px-5 text-center">
-          <h1 className="text-2xl md:text-3xl font-bold mb-1">
-            {svcData?.name ?? skill} Services
-          </h1>
-          <p className="text-white/80 text-sm">
-            {catData?.name ?? 'Lucid'} · Ghana
-          </p>
+          <h1 className="text-2xl md:text-3xl font-bold mb-1">{heroTitle} Services</h1>
+          <p className="text-white/80 text-sm">{heroSubtitle}</p>
         </div>
       </div>
 
-      {/* Breadcrumb */}
       <div className="max-w-6xl mx-auto px-5 pt-4 pb-2">
         <Breadcrumb crumbs={breadcrumbCrumbs} />
       </div>
 
-      {/* Main Content */}
       <div className="container mx-auto px-6 pb-16">
-        {/* Stats Bar */}
-        <StatsBar {...stats} />
+        <StatsBar totalProviders={stats.totalProviders} averageRating={stats.averageRating} />
+        <FilterSection onFilterChange={handleFilterChange} activeFilters={filters} />
 
-        {/* Filter Section */}
-        <FilterSection
-          onFilterChange={handleFilterChange}
-          activeFilters={filters}
-        />
-
-        {/* Section Header */}
-        <motion.div
-          className="text-center mb-12"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={fadeInUp}
-          transition={{ duration: 0.6 }}
-        >
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-slate-200 mb-4">
-            {svcData?.name ?? skill} Services Near You
-          </h2>
+        <motion.div className="text-center mb-12" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp} transition={{ duration: 0.6 }}>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-slate-200 mb-4">{heroTitle} Services Near You</h2>
           <p className="text-gray-600 dark:text-slate-400 text-lg">
-            {area
-              ? `Showing ${profiles.length} professionals in ${area}`
-              : `Choose from ${profiles.length} verified professionals`}
+            {area ? `Showing ${filteredProviders.length} professionals in ${area}` : `${filteredProviders.length} verified professionals available`}
           </p>
         </motion.div>
 
-        {/* Profile Cards Grid */}
-        {/* [API] GET /providers/:id — fetch full provider profile before navigating to booking; triggered on card click */}
-        {profiles.length > 0 ? (
-          <motion.div
-            className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-6"
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-          >
-            {profiles.map((profile) => (
-              <motion.div
-                key={profile.id}
-                variants={scaleIn}
-                transition={{ duration: 0.3 }}
-              >
+        {filteredProviders.length > 0 ? (
+          <motion.div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-6" variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }}>
+            {filteredProviders.map((profile, index) => (
+              <motion.div key={profile.id} variants={scaleIn} transition={{ duration: 0.3, delay: index * 0.05 }}>
                 <ProfileCard
-                  {...profile}
-                  onViewProfile={() => console.log('View profile:', profile.id)}
+                  id={profile.id}
+                  name={profile.name}
+                  role={profile.role}
+                  location={profile.location}
+                  rating={profile.rating}
+                  image={profile.image}
+                  verified={profile.verified}
+                  totalJobs={profile.totalJobs}
+                  onViewProfile={() => navigate(`/lucid/providers/${profile.id}`)}
                 />
               </motion.div>
             ))}
           </motion.div>
         ) : (
-          // No Results Found
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center py-16"
-          >
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
             <MapPin className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-slate-100 mb-2">
-              No providers found
-            </h3>
-            <p className="text-gray-600 dark:text-slate-400 mb-6">
-              Try adjusting your filters or search in a different area
-            </p>
-            <button
-              onClick={() => setFilters({ rating: 0, priceRange: 'all' })}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              Clear Filters
-            </button>
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-slate-100 mb-2">No providers found</h3>
+            <p className="text-gray-600 dark:text-slate-400 mb-6">Try adjusting your filters or check back later for new professionals</p>
+            <button onClick={() => setFilters({ rating: 0 })} className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">Clear Filters</button>
           </motion.div>
         )}
       </div>
 
-      {/* Download Section */}
       <DownloadSection />
-
-      {/* Business Category Section */}
-      <motion.div
-        className="w-full"
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
-      >
-        <BusinessCategorySection
-          serviceIcons={SERVICE_ICONS}
-          businessCards={BUSINESS_CARDS}
-          businessServices={BUSINESS_SERVICES}
-        />
+      <motion.div className="w-full" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
+        <BusinessCategorySection serviceIcons={SERVICE_ICONS} businessCards={BUSINESS_CARDS} businessServices={BUSINESS_SERVICES} />
       </motion.div>
-
-      {/* Back to Top Button */}
-      <Suspense fallback={null}>
-        <BackToTop />
-      </Suspense>
+      <Suspense fallback={null}><BackToTop /></Suspense>
     </div>
   );
 };

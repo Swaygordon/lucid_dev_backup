@@ -3,7 +3,7 @@ import { ArrowLeft, Settings, Bell, CreditCard, MessageSquare, UserCheck, AlertC
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigateBack } from "../hooks/useNavigateBack.js";
 import { useNotification } from '../contexts/NotificationContext';
-import emptyNotificationsImage from '../assets/No Messages.png';
+import emptyNotificationsImage from '../assets/No Messages.webp';
 import { NotificationBadge } from '../components/ui';
 import { Link } from 'react-router-dom';
 

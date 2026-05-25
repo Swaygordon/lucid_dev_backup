@@ -4,10 +4,6 @@ import { useNavigateBack } from '../hooks/useNavigateBack.js';
 import { PageHeader } from '../components/ui';
 import { BookingDetailsModal, ReceiptModal } from '../components/shared';
 import { StatusBadge } from '../components/ui/StatusBadge';
-// [MOCK] getBookingsByProvider, filterBookingsByPeriod, calculateBookingStats — replace with API calls
-import { getBookingsByProvider, filterBookingsByPeriod, calculateBookingStats } from '../data/mockDataUtils.js';
-// [MOCK] CURRENT_PROVIDER_ID — replace with providerId from auth context / JWT token
-import { CURRENT_PROVIDER_ID } from '../data/mockCurrentUser';
 import {
   Calendar, Clock, DollarSign, Filter, Download, FileText,
   Star, MapPin, User, BarChart3, Eye
@@ -36,34 +32,10 @@ const ProviderHistory = () => {
 
   const handleBackClick = useNavigateBack('/lucid/dashboard', 400);
 
-  // [MOCK] allProviderBookings — replace with GET /bookings?userId={id}&status=completed,cancelled&page={n}
-  // [AUTH] userId sourced from authenticated session; CURRENT_PROVIDER_ID is a placeholder
-  const allProviderBookings = useMemo(() => getBookingsByProvider(CURRENT_PROVIDER_ID), []);
+  const filteredHistory = [];
 
-  // [DB] Filter to history-only statuses; in production pass status filter as query param
-  const historyData = useMemo(() =>
-    allProviderBookings.filter(b => ['completed', 'cancelled'].includes(b.status)),
-    [allProviderBookings]
-  );
-
-  // [API] In production pass ?period={week|month|quarter|year} as a query param instead of client-side filtering
-  const filteredHistory = useMemo(() =>
-    filterBookingsByPeriod(historyData, selectedPeriod),
-    [historyData, selectedPeriod]
-  );
-
-  // [MOCK] stats — in production derive from GET /bookings/stats?userId={id}&period={n} response
-  const stats = useMemo(() => {
-    const calculated = calculateBookingStats(filteredHistory);
-    return {
-      totalJobs: calculated.total,
-      completedJobs: calculated.completed,
-      cancelledJobs: calculated.cancelled,
-      completionRate: calculated.completionRate,
-      totalEarnings: calculated.totalEarnings,
-      avgRating: calculated.avgRating
-    };
-  }, [filteredHistory]);
+  // [API] GET /bookings/stats?providerId={id} → {totalJobs, completedJobs, cancelledJobs, completionRate, totalEarnings, avgRating}
+  const stats = { totalJobs: 0, completedJobs: 0, cancelledJobs: 0, completionRate: 0, totalEarnings: 0, avgRating: 0 };
 
   const HistoryItem = ({ item }) => {
     const clientName = item.client?.name ?? 'Client';

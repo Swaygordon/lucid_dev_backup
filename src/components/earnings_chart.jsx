@@ -2,42 +2,11 @@ import React, { useState } from 'react';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
 import { TrendingUp, DollarSign, Calendar, Eye, EyeOff } from 'lucide-react';
 
-// [MOCK] All chart data below is hardcoded. Replace with:
-//   GET /providers/:id/earnings?period=week|month|year
+// [API] GET /providers/:id/earnings?period=week|month|year
 //   → { data: [{ name: string, earnings: number, jobs: number }], total: number, avg: number }
-// The timeframe selector (week/month/year) should be passed as a query param when fetching.
-// Mock data for different time periods
-const weeklyData = [
-  { name: 'Mon', earnings: 180, jobs: 2 },
-  { name: 'Tue', earnings: 250, jobs: 3 },
-  { name: 'Wed', earnings: 320, jobs: 4 },
-  { name: 'Thu', earnings: 200, jobs: 2 },
-  { name: 'Fri', earnings: 280, jobs: 3 },
-  { name: 'Sat', earnings: 150, jobs: 1 },
-  { name: 'Sun', earnings: 220, jobs: 2 }
-];
-
-const monthlyData = [
-  { name: 'Week 1', earnings: 950, jobs: 8 },
-  { name: 'Week 2', earnings: 1200, jobs: 12 },
-  { name: 'Week 3', earnings: 1350, jobs: 14 },
-  { name: 'Week 4', earnings: 1320, jobs: 13 }
-];
-
-const yearlyData = [
-  { name: 'Jan', earnings: 3200, jobs: 28 },
-  { name: 'Feb', earnings: 3500, jobs: 32 },
-  { name: 'Mar', earnings: 4100, jobs: 38 },
-  { name: 'Apr', earnings: 3800, jobs: 35 },
-  { name: 'May', earnings: 4200, jobs: 40 },
-  { name: 'Jun', earnings: 4500, jobs: 42 },
-  { name: 'Jul', earnings: 4800, jobs: 45 },
-  { name: 'Aug', earnings: 4600, jobs: 43 },
-  { name: 'Sep', earnings: 4900, jobs: 46 },
-  { name: 'Oct', earnings: 5200, jobs: 48 },
-  { name: 'Nov', earnings: 4820, jobs: 45 },
-  { name: 'Dec', earnings: 5100, jobs: 47 }
-];
+const weeklyData = [];
+const monthlyData = [];
+const yearlyData = [];
 
 const EarningsChart = () => {
   const [timeframe, setTimeframe] = useState('month');

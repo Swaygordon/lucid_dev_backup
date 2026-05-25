@@ -7,11 +7,7 @@ import { Avatar, StatCard } from '../components/ui';
 import EarningsDashboard from '../components/earningsDashboard.jsx';
 import { BookingDetailsModal } from '../components/shared';
 import EarningsChart from '../components/earnings_chart.jsx';
-// [MOCK] Replace with: GET /bookings?providerId={id}&status=pending,confirmed,in-progress
-// and GET /providers/:id/stats  for pre-aggregated stats with period filtering.
-import { getBookingsByProvider, calculateBookingStats } from '../data/mockDataUtils';
-import { CURRENT_PROVIDER_ID } from '../data/mockCurrentUser';
-import { supabase } from '../lib/supabaseClient';
+import { MOCK_CURRENT_PROVIDER } from '../data/mockCurrentUser';
 import {
   ArrowLeft, TrendingUp, Calendar, DollarSign, Star, Clock,
   CheckCircle, Award, Briefcase, MapPin, MessageSquare, Bell,
@@ -188,19 +184,8 @@ const QuickAction = ({ icon: Icon, label, to, badgeCount }) => (
 );
 
 const ProviderDashboard = () => {
-  const [currentUserName, setCurrentUserName] = useState('Provider');
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) return;
-      supabase.from('profiles').select('first_name, last_name').eq('id', session.user.id).single()
-        .then(({ data }) => {
-          if (data) {
-            const name = [data.first_name, data.last_name].filter(Boolean).join(' ');
-            if (name) setCurrentUserName(name);
-          }
-        });
-    });
-  }, []);
+  // [MOCK] Current user — replace with supabase.auth.getSession() + profiles fetch when integrating.
+  const [currentUserName] = useState(MOCK_CURRENT_PROVIDER.fullName || 'Provider');
 
   const [timeframe, setTimeframe] = useState('week');
   const [selectedBooking, setSelectedBooking] = useState(null);
@@ -254,8 +239,12 @@ const ProviderDashboard = () => {
     showNotification('Price adjustment request sent to client.', 'success');
   };
 
-  const allBookings = useMemo(() => getBookingsByProvider(CURRENT_PROVIDER_ID), []);
-  const bookingStats = useMemo(() => calculateBookingStats(allBookings), [allBookings]);
+  // [API] GET /bookings?providerId={authenticatedProviderId}&status=pending,confirmed,in-progress
+  const allBookings = useMemo(() => [], []);
+  const bookingStats = useMemo(() => ({
+    total: 0, completed: 0, pending: 0, confirmed: 0, inProgress: 0, cancelled: 0,
+    totalEarnings: 0, avgRating: 'N/A', active: 0, totalRevenue: 0, completionRate: 0,
+  }), []);
 
   const activeBookings = useMemo(() =>
     allBookings.filter(b => ['pending', 'confirmed', 'in-progress'].includes(b.status)),
@@ -325,7 +314,7 @@ const ProviderDashboard = () => {
                   )}
                 </motion.button>
               </Link>
-              <Link to="/lucid/account/profile">
+              <Link to="/lucid/account">
                 <Avatar name={currentUserName} size="md" />
               </Link>
             </div>

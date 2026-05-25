@@ -513,115 +513,19 @@ const EarningsPayments = () => {
   const [pendingAutoMethod, setPendingAutoMethod] = useState(null);
 
 
-  // [MOCK] earningsData — replace with GET /providers/:id/earnings?period={week|month|year}
-  // [DB] Aggregated from completed bookings where paymentStatus='paid', grouped by period
+  // [API] GET /providers/:id/earnings?period={week|month|year}
   const earningsData = useMemo(() => ({
-    thisWeek: 1250,
-    lastWeek: 980,
-    thisMonth: 4820,
-    lastMonth: 4200,
-    thisYear: 52000,
-    lastYear: 45000,
-    pending: 650,
-    available: 4170,
-
-    // [DB] Weekly chart data — aggregated from bookings.completedAt grouped by day of week
-    weeklyData: [
-      { name: 'Mon', earnings: 180, jobs: 2, date: '2025-12-15' },
-      { name: 'Tue', earnings: 250, jobs: 3, date: '2025-12-16' },
-      { name: 'Wed', earnings: 320, jobs: 4, date: '2025-12-17' },
-      { name: 'Thu', earnings: 200, jobs: 2, date: '2025-12-18' },
-      { name: 'Fri', earnings: 280, jobs: 3, date: '2025-12-19' },
-      { name: 'Sat', earnings: 150, jobs: 1, date: '2025-12-20' },
-      { name: 'Sun', earnings: 220, jobs: 2, date: '2025-12-21' }
-    ],
-
-    // [DB] Monthly chart data — aggregated from bookings grouped by week-of-month
-    monthlyData: [
-      { name: 'Week 1', earnings: 950, jobs: 8, period: 'Dec 1-7' },
-      { name: 'Week 2', earnings: 1200, jobs: 12, period: 'Dec 8-14' },
-      { name: 'Week 3', earnings: 1350, jobs: 14, period: 'Dec 15-21' },
-      { name: 'Week 4', earnings: 1320, jobs: 13, period: 'Dec 22-28' }
-    ],
-
-    // [DB] Yearly chart data — aggregated from bookings grouped by month
-    yearlyData: [
-      { name: 'Jan', earnings: 3200, jobs: 28 },
-      { name: 'Feb', earnings: 3500, jobs: 32 },
-      { name: 'Mar', earnings: 4100, jobs: 38 },
-      { name: 'Apr', earnings: 3800, jobs: 35 },
-      { name: 'May', earnings: 4200, jobs: 40 },
-      { name: 'Jun', earnings: 4500, jobs: 42 },
-      { name: 'Jul', earnings: 4800, jobs: 45 },
-      { name: 'Aug', earnings: 4600, jobs: 43 },
-      { name: 'Sep', earnings: 4900, jobs: 46 },
-      { name: 'Oct', earnings: 5200, jobs: 48 },
-      { name: 'Nov', earnings: 4820, jobs: 45 },
-      { name: 'Dec', earnings: 5100, jobs: 47 }
-    ],
-
-    // [DB] Job counts — COUNT(*) from bookings WHERE providerId=:id AND status='completed', grouped by period
-    totalJobs: {
-      thisWeek: 17,
-      thisMonth: 45,
-      thisYear: 487
-    },
-
-    // [DB] Goals — from providers.goals or a separate provider_goals table
-    goals: {
-      monthly: 5000,
-      yearly: 60000
-    }
+    thisWeek: 0, lastWeek: 0,
+    thisMonth: 0, lastMonth: 0,
+    thisYear: 0, lastYear: 0,
+    pending: 0, available: 0,
+    weeklyData: [], monthlyData: [], yearlyData: [],
+    totalJobs: { thisWeek: 0, thisMonth: 0, thisYear: 0 },
+    goals: { monthly: 0, yearly: 0 }
   }), []);
 
-  // [MOCK] transactions — replace with GET /providers/:id/transactions?page={n}
-  // [DB] From transactions table joined with bookings; includes both credits (payments) and debits (withdrawals)
-  const transactions = useMemo(() => [
-    {
-      id: 1,
-      date: '2025-12-18',
-      description: 'Payment from Kwame Asante',
-      amount: 380,
-      status: 'completed',
-      method: 'Mobile Money',
-      jobType: 'Carpentry Work'
-    },
-    {
-      id: 2,
-      date: '2025-12-17',
-      description: 'Withdrawal to Bank',
-      amount: -1000,
-      status: 'completed',
-      method: 'Bank Transfer'
-    },
-    {
-      id: 3,
-      date: '2025-12-16',
-      description: 'Payment from Ama Frimpong',
-      amount: 150,
-      status: 'completed',
-      method: 'Cash',
-      jobType: 'Plumbing Repair'
-    },
-    {
-      id: 4,
-      date: '2025-12-15',
-      description: 'Payment from John Doe',
-      amount: 300,
-      status: 'pending',
-      method: 'Mobile Money',
-      jobType: 'Electrical Work'
-    },
-    {
-      id: 5,
-      date: '2025-12-14',
-      description: 'Payment from Mary Ansah',
-      amount: 550,
-      status: 'completed',
-      method: 'Bank Transfer',
-      jobType: 'Installation Service'
-    }
-  ], []);
+  // [API] GET /providers/:id/transactions?page={n}
+  const transactions = useMemo(() => [], []);
 
   // [MOCK] paymentMethods — replace with GET /users/:id/payment-methods — [{id, type, name, number, isPrimary}]
   // Start with an empty list to trigger auto-detect on first visit; real app seeds from API response

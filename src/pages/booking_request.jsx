@@ -3,11 +3,12 @@
 // File: src/pages/booking_request.jsx
 // ============================================
 
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useNotification } from '../contexts/NotificationContext';
 import { useNavigateBack } from "../hooks/useNavigateBack.js";
+import { MOCK_PROVIDERS } from '../data/mockData';
 import {
   ArrowLeft,
   Calendar,
@@ -24,7 +25,6 @@ import {
 } from 'lucide-react';
 import { Button, Card, Input } from '../components/ui';
 import { GHANA_LOCATIONS } from '../contexts/LocationContext';
-import { MOCK_CLIENT } from '../data/mockClient';
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
@@ -123,12 +123,29 @@ const LocationDropdown = ({ value, onChange }) => {
 const BookingRequest = () => {
   const navigate = useNavigate();
   const { showNotification } = useNotification();
-  const { providerId } = useParams(); // [API] GET /providers/:id — {} → {id, name, profession, phone, email, rating, location}
+  const { providerId } = useParams();
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [uploadedImages, setUploadedImages] = useState([]);
-  const handleBackClick = useNavigateBack('/lucid/providers/me', 600);
+  const [provider, setProvider] = useState(null);
+  const [providerLoading, setProviderLoading] = useState(true);
+  const handleBackClick = useNavigateBack(`/lucid/providers/${providerId}`, 600);
 
+  // [MOCK] GET /providers/:id — reads from MOCK_PROVIDERS; falls back to first entry if id not found
+  // [API]  When wired to backend: replace with supabase.from('provider_profiles').select(...).eq('user_id', providerId).single()
+  useEffect(() => {
+    if (!providerId) return;
+    const mock = MOCK_PROVIDERS.find(p => p.id === providerId) || MOCK_PROVIDERS[0];
+    if (mock) {
+      setProvider({
+        id: mock.id,
+        name: mock.fullName || 'Service Provider',
+        profession: mock.occupation || '',
+        location: mock.location ? `${mock.location.area}, ${mock.location.city}` : '',
+      });
+    }
+    setProviderLoading(false);
+  }, [providerId]);
 
   // Form state — contact and location fields pre-filled from the client's account profile
   const [formData, setFormData] = useState({
@@ -140,26 +157,19 @@ const BookingRequest = () => {
     preferredTime: '',
     alternateDate: '',
     alternateTime: '',
-    address:    MOCK_CLIENT.address    ?? '',
-    city:       MOCK_CLIENT.region     ?? '',
-    area:       MOCK_CLIENT.area       ?? '',
+    address:    '',
+    city:       '',
+    area:       '',
     landmark:   '',
-    postalCode: MOCK_CLIENT.postalCode ?? '',
+    postalCode: '',
     estimatedDuration: '',
     budgetMin: '',
     budgetMax: '',
-    contactName:  MOCK_CLIENT.name  ?? '',
-    contactPhone: MOCK_CLIENT.phone ?? '',
-    contactEmail: MOCK_CLIENT.email ?? '',
+    contactName:  '',
+    contactPhone: '',
+    contactEmail: '',
     additionalNotes: ''
   });
-
-  // [MOCK] Fetch provider by ID from route params: GET /providers/:id
-  const provider = {
-    name: 'Gabriel A. Gordon-Mensah',
-    profession: 'Master Plumber & Electrician',
-    location: 'Achimota, Accra'
-  };
 
   // [API] Consider GET /services?providerId={id} to return the provider's offered service types
   const serviceTypes = [
@@ -306,7 +316,7 @@ const BookingRequest = () => {
     profession: provider.profession,
     phone: provider.phone || null,
     email: provider.email || null,
-    rating: provider.rating || 4.8
+    rating: provider.rating ?? null
   },
 
   client: {
@@ -335,8 +345,6 @@ const BookingRequest = () => {
 };
 
     // [API] POST /bookings — {providerId, serviceType, description, urgency, preferredDate, preferredTime, alternateDate, alternateTime, estimatedDuration, address, area, city, landmark, postalCode, budgetMin, budgetMax, contactName, contactPhone, contactEmail, additionalNotes} → {bookingId, bookingReference, status}
-    // In real app: await api.createBooking(transformedBooking);
-    await new Promise(resolve => setTimeout(resolve, 2000));
 
     showNotification('Booking request sent successfully!', 'success');
 
@@ -360,6 +368,72 @@ const BookingRequest = () => {
     { number: 3, title: 'Location', icon: MapPin },
     { number: 4, title: 'Contact & Review', icon: CheckCircle }
   ];
+
+  if (providerLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-[#0f1117] animate-pulse">
+        {/* Sticky header */}
+        <div className="bg-white dark:bg-[#1a1f2e] shadow-sm sticky top-0 z-40">
+          <div className="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div className="w-9 h-9 bg-gray-200 dark:bg-[#252b3b] rounded-lg" />
+            <div className="flex flex-col items-center gap-1">
+              <div className="h-5 w-32 bg-gray-200 dark:bg-[#252b3b] rounded" />
+              <div className="h-4 w-44 bg-gray-200 dark:bg-[#252b3b] rounded" />
+            </div>
+            <div className="w-9 h-9 bg-gray-200 dark:bg-[#252b3b] rounded-lg" />
+          </div>
+        </div>
+
+        <div className="max-w-3xl mx-auto px-4 py-8 space-y-6">
+          {/* Progress steps */}
+          <div className="flex items-center justify-between">
+            {[0, 1, 2, 3].map(i => (
+              <div key={i} className="flex items-center gap-2 flex-1">
+                <div className="w-9 h-9 rounded-full bg-gray-200 dark:bg-[#252b3b] flex-shrink-0" />
+                {i < 3 && <div className="h-1 flex-1 bg-gray-200 dark:bg-[#252b3b] rounded" />}
+              </div>
+            ))}
+          </div>
+
+          {/* Form card */}
+          <div className="bg-white dark:bg-[#1a1f2e] rounded-2xl shadow-sm p-6 space-y-5">
+            <div className="h-6 w-40 bg-gray-200 dark:bg-[#252b3b] rounded" />
+            <div className="grid grid-cols-2 gap-3">
+              {[0, 1, 2, 3].map(i => (
+                <div key={i} className="h-20 bg-gray-200 dark:bg-[#252b3b] rounded-xl" />
+              ))}
+            </div>
+            <div className="h-28 bg-gray-200 dark:bg-[#252b3b] rounded-xl" />
+            <div className="grid grid-cols-3 gap-3">
+              {[0, 1, 2].map(i => (
+                <div key={i} className="h-14 bg-gray-200 dark:bg-[#252b3b] rounded-xl" />
+              ))}
+            </div>
+          </div>
+
+          {/* Nav buttons */}
+          <div className="flex justify-between gap-4">
+            <div className="h-12 w-28 bg-gray-200 dark:bg-[#252b3b] rounded-xl" />
+            <div className="h-12 w-36 bg-gray-200 dark:bg-[#252b3b] rounded-xl" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!provider) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-[#0f1117] flex flex-col items-center justify-center gap-4">
+        <p className="text-gray-600 dark:text-slate-400 text-lg">Provider not found.</p>
+        <button
+          onClick={() => navigate(-1)}
+          className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+        >
+          Go back
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#0f1117]">

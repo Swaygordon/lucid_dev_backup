@@ -13,24 +13,8 @@ import {
   Filter,
 } from 'lucide-react';
 
-// [MOCK] Replace with GET /providers/:id/transactions?page={n}&status={}&type={}
-const ALL_TRANSACTIONS = [
-  { id: 1,  date: '2025-12-18', description: 'Payment from Kwame Asante',    amount:  380, status: 'completed', method: 'Mobile Money',  jobType: 'Carpentry Work'       },
-  { id: 2,  date: '2025-12-17', description: 'Withdrawal to Bank',            amount: -1000,status: 'completed', method: 'Bank Transfer'                                    },
-  { id: 3,  date: '2025-12-16', description: 'Payment from Ama Frimpong',    amount:  150, status: 'completed', method: 'Cash',          jobType: 'Plumbing Repair'      },
-  { id: 4,  date: '2025-12-15', description: 'Payment from John Doe',        amount:  300, status: 'pending',   method: 'Mobile Money',  jobType: 'Electrical Work'      },
-  { id: 5,  date: '2025-12-14', description: 'Payment from Mary Ansah',      amount:  550, status: 'completed', method: 'Bank Transfer', jobType: 'Installation Service' },
-  { id: 6,  date: '2025-12-12', description: 'Payment from Kofi Mensah',     amount:  200, status: 'completed', method: 'Mobile Money',  jobType: 'Painting'             },
-  { id: 7,  date: '2025-12-10', description: 'Withdrawal to Mobile Money',   amount: -500, status: 'completed', method: 'Mobile Money'                                    },
-  { id: 8,  date: '2025-12-09', description: 'Payment from Abena Owusu',     amount:  420, status: 'completed', method: 'Cash',          jobType: 'Roofing'              },
-  { id: 9,  date: '2025-12-07', description: 'Payment from Yaw Darko',       amount:  180, status: 'failed',    method: 'Mobile Money',  jobType: 'Cleaning Service'     },
-  { id: 10, date: '2025-12-05', description: 'Payment from Akosua Boateng',  amount:  650, status: 'completed', method: 'Bank Transfer', jobType: 'Construction Work'    },
-  { id: 11, date: '2025-12-03', description: 'Payment from Kwesi Acheampong',amount:  310, status: 'pending',   method: 'Mobile Money',  jobType: 'Tiling'               },
-  { id: 12, date: '2025-12-01', description: 'Withdrawal to Bank',           amount: -800, status: 'completed', method: 'Bank Transfer'                                   },
-  { id: 13, date: '2025-11-28', description: 'Payment from Efua Asante',     amount:  275, status: 'completed', method: 'Cash',          jobType: 'Welding'              },
-  { id: 14, date: '2025-11-25', description: 'Payment from Nana Yeboah',     amount:  490, status: 'completed', method: 'Mobile Money',  jobType: 'Plumbing Repair'      },
-  { id: 15, date: '2025-11-22', description: 'Payment from Adjoa Mensah',    amount:  120, status: 'failed',    method: 'Mobile Money',  jobType: 'Cleaning Service'     },
-];
+// [API] GET /providers/:id/transactions?page={n}&status={}&type={}
+const ALL_TRANSACTIONS = [];
 
 const STATUS_FILTERS = ['All', 'Completed', 'Pending', 'Failed'];
 const TYPE_FILTERS   = ['All', 'Payments', 'Withdrawals'];

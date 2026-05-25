@@ -7,14 +7,7 @@ import { useNotification } from '../contexts/NotificationContext';
 import { useFavourites } from '../contexts/FavouritesContext';
 import { Avatar, StatCard } from '../components/ui';
 import { BookingDetailsModal, CancelBookingModal } from '../components/shared';
-// [MOCK] getBookingsByClient and calculateBookingStats read from local mock data.
-// Replace with: GET /bookings?clientId={id}&status=pending,confirmed,in-progress
-// and GET /users/:id/stats  (or compute stats from the bookings response).
-import { getBookingsByClient, calculateBookingStats } from '../data/mockDataUtils';
-import { CURRENT_CLIENT_ID } from '../data/mockCurrentUser';
-import { supabase } from '../lib/supabaseClient';
-// [MOCK] mockProviders will be replaced by: GET /providers/nearby?lat={lat}&lng={lng}&radius=5
-import { mockProviders } from '../data/mockProfiles.js';
+import { MOCK_CURRENT_CLIENT } from '../data/mockCurrentUser';
 import {
   ArrowLeft, Search, Calendar, DollarSign, Star, Clock, CheckCircle,
   Heart, MapPin, MessageSquare, Bell, ChevronRight, ChevronDown, Filter, User
@@ -131,7 +124,7 @@ const DashboardBookingCard = ({ booking, onViewDetails }) => {
   );
 };
 
-const ProviderCard = ({ name, profession, rating, jobs, isFavorite }) => {
+const ProviderCard = ({ id, name, profession, rating, jobs, isFavorite }) => {
   const [favorite, setFavorite] = useState(isFavorite);
 
   return (
@@ -163,7 +156,7 @@ const ProviderCard = ({ name, profession, rating, jobs, isFavorite }) => {
         </div>
       </div>
 
-      <Link to="/lucid/providers/me">
+      <Link to={id ? `/lucid/providers/${id}` : '/lucid/services'}>
         <button className="w-full py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors font-semibold">
           View Profile
         </button>
@@ -225,19 +218,8 @@ const ActivityItem = ({ icon: Icon, title, description, time, actionLabel, to })
 );
 
 const ClientDashboard = () => {
-  const [currentUserName, setCurrentUserName] = useState('there');
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) return;
-      supabase.from('profiles').select('first_name, last_name').eq('id', session.user.id).single()
-        .then(({ data }) => {
-          if (data) {
-            const name = [data.first_name, data.last_name].filter(Boolean).join(' ');
-            if (name) setCurrentUserName(name);
-          }
-        });
-    });
-  }, []);
+  // [MOCK] Current user — replace with supabase.auth.getSession() + profiles fetch when integrating.
+  const [currentUserName] = useState(MOCK_CURRENT_CLIENT.fullName || 'there');
 
   const [timeframe, setTimeframe] = useState('month');
   const [selectedBooking, setSelectedBooking] = useState(null);
@@ -311,8 +293,12 @@ const ClientDashboard = () => {
     showNotification('Booking marked as complete!', 'success');
   };
 
-  const allBookings = useMemo(() => getBookingsByClient(CURRENT_CLIENT_ID), []);
-  const bookingStats = useMemo(() => calculateBookingStats(allBookings), [allBookings]);
+  // [API] GET /bookings?clientId={authenticatedUserId}&status=pending,confirmed,in-progress
+  const allBookings = useMemo(() => [], []);
+  const bookingStats = useMemo(() => ({
+    total: 0, completed: 0, pending: 0, confirmed: 0, inProgress: 0, cancelled: 0,
+    totalEarnings: 0, avgRating: 'N/A', active: 0, totalRevenue: 0, completionRate: 0,
+  }), []);
 
   const activeBookings = useMemo(() =>
     allBookings.filter(b => ['pending', 'confirmed', 'in-progress'].includes(b.status)),
@@ -463,7 +449,8 @@ const ClientDashboard = () => {
               {/* [API] GET /providers/nearby?lat={userLat}&lng={userLng}&radius=5
                    Requires browser Geolocation API (navigator.geolocation.getCurrentPosition).
                    The ServicesMap component will need real lat/lng coords, not mock provider objects. */}
-              <ServicesMap providers={mockProviders} />
+              {/* [API] GET /providers/nearby?lat={userLat}&lng={userLng}&radius=5 */}
+              <ServicesMap providers={[]} />
             </div>
           </motion.section>
         </motion.div>

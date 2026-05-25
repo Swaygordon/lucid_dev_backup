@@ -159,6 +159,69 @@ function ScrollToTop() {
   return null;
 }
 
+// Page-level skeleton shown while a lazy route chunk is loading.
+// Mirrors the home layout (hero → search → category row → ProviderCTA) using
+// the same gray-pulse pattern the rest of the app's skeletons use, so it sits
+// at viewport height and keeps the Footer below the fold on first paint.
+function PageSkeleton() {
+  return (
+    <div className="bg-white dark:bg-[#0f1117]">
+      {/* Hero stand-in — neutral surface, matches gradient slot in light/dark */}
+      <div className="flex flex-col items-center justify-center w-full bg-white dark:bg-[#0f1117] px-4 sm:px-6 py-16 sm:py-20">
+        <div className="w-full max-w-3xl mx-auto flex flex-col items-center gap-5">
+          {/* Cycling badge pill */}
+          <div className="h-9 w-64 rounded-full bg-gray-200 dark:bg-[#252b3b] animate-pulse" />
+          {/* Heading — 2 lines */}
+          <div className="h-10 sm:h-12 w-full max-w-xl rounded bg-gray-200 dark:bg-[#252b3b] animate-pulse" />
+          <div className="h-10 sm:h-12 w-3/4 max-w-md rounded bg-gray-200 dark:bg-[#252b3b] animate-pulse" />
+          {/* Paragraph */}
+          <div className="h-4 w-full max-w-lg rounded bg-gray-200 dark:bg-[#252b3b] animate-pulse mt-2" />
+          <div className="h-4 w-5/6 max-w-md rounded bg-gray-200 dark:bg-[#252b3b] animate-pulse" />
+          {/* Search bar */}
+          <div className="h-12 w-full max-w-2xl rounded-xl bg-gray-200 dark:bg-[#252b3b] animate-pulse mt-6" />
+          {/* Category icon row */}
+          <div className="hidden md:flex justify-center gap-10 mt-10 w-full">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="flex flex-col items-center gap-2">
+                <div className="w-16 h-16 rounded-lg bg-gray-200 dark:bg-[#252b3b] animate-pulse" />
+                <div className="w-12 h-3 rounded bg-gray-200 dark:bg-[#252b3b] animate-pulse" />
+              </div>
+            ))}
+          </div>
+          {/* Mobile category scroll */}
+          <div className="flex md:hidden gap-6 mt-8 overflow-hidden w-full px-2">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="flex flex-col items-center gap-2 flex-shrink-0">
+                <div className="w-16 h-16 rounded-lg bg-gray-200 dark:bg-[#252b3b] animate-pulse" />
+                <div className="w-12 h-3 rounded bg-gray-200 dark:bg-[#252b3b] animate-pulse" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ProviderCTA section stand-in */}
+      <div className="py-20 bg-gray-100 dark:bg-[#1a1f2e]">
+        <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
+          <div className="space-y-5">
+            <div className="h-4 w-32 rounded bg-gray-200 dark:bg-[#252b3b] animate-pulse" />
+            <div className="h-10 w-full max-w-sm rounded bg-gray-200 dark:bg-[#252b3b] animate-pulse" />
+            <div className="h-10 w-2/3 max-w-xs rounded bg-gray-200 dark:bg-[#252b3b] animate-pulse" />
+            <div className="h-4 w-full max-w-md rounded bg-gray-200 dark:bg-[#252b3b] animate-pulse mt-3" />
+            <div className="h-4 w-5/6 max-w-sm rounded bg-gray-200 dark:bg-[#252b3b] animate-pulse" />
+            <div className="h-12 w-48 rounded-xl bg-gray-200 dark:bg-[#252b3b] animate-pulse mt-4" />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="h-32 rounded-2xl bg-gray-200 dark:bg-[#252b3b] animate-pulse" />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function Layout({ children }) {
   const location = useLocation(); // current URL — re-evaluates on every navigation
 
@@ -180,13 +243,13 @@ function Layout({ children }) {
     '/lucid/account/profile/setup',  // ProviderProfileSetup (onboarding)
     '/lucid/help',                   // Help & Support page
     '/lucid/account/settings',       // AccountSettings (user info edits)
-    '/lucid/providers/me',        // GeneralProfile (public provider profile)
     '/lucid/favourites',              // Favourites (client's saved providers)
   ];
 
   // Prefix-based hide — catches dynamic segments like /lucid/messages/abc123
   const hideNavAndFooterPrefix = [
-    '/lucid/messages/', // individual chat threads — /lucid/messages/:id
+    '/lucid/messages/',   // individual chat threads — /lucid/messages/:id
+    '/lucid/providers/',  // public provider profiles — /lucid/providers/:id (has its own header)
   ];
 
   const shouldHideLayout =
@@ -222,12 +285,12 @@ function App() {
     <NotificationProvider>
       <FavouritesProvider>
       <LocationProvider>
-      <Router>
+      <Router basename={import.meta.env.BASE_URL.replace(/\/$/, '')}>
         {/* ScrollToTop resets scroll position on every route change */}
         <ScrollToTop />
         {/* Layout reads location from Router context — must be inside <Router> */}
         <Layout>
-          <Suspense fallback={<div className="min-h-screen bg-white dark:bg-[#0f1117]" />}>
+          <Suspense fallback={<PageSkeleton />}>
           <Routes>
 
             {/* ── PUBLIC ROUTES ─────────────────────────────────────────────
@@ -321,9 +384,11 @@ function App() {
               element={<ProtectedRoute><BookingsPage /></ProtectedRoute>} />
             {/* Role-switcher: renders ClientBookings or ProviderBookings. */}
 
-            <Route path="/lucid/bookings/new"
+            <Route path="/lucid/bookings/new/:providerId"
               element={<ProtectedRoute><BookingRequest /></ProtectedRoute>} />
-            {/* Client fills out the booking request form for a specific provider. */}
+            {/* Client fills out the booking request form for a specific provider.
+                booking_request.jsx reads :providerId via useParams() to load the provider
+                and submit the booking — without the param, the page can't load anything. */}
 
             <Route path="/lucid/bookings/confirmation"
               element={<ProtectedRoute><BookingConfirmation /></ProtectedRoute>} />
