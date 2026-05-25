@@ -1,1 +1,0 @@
-const e={name:"Gabriel Gordon-Mensah",firstName:"Gabriel",lastName:"Gordon-Mensah",otherName:"",email:"gordongabriel2004@gmail.com",phone:"+233 24 123 4567",dateOfBirth:"2004-01-15",gender:"male",address:"123 Main Street",city:"Accra",region:"Greater Accra",area:"Achimota",postalCode:"GA-123-4567"};export{e as M};
