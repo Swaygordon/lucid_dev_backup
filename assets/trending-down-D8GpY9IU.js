@@ -1,1 +1,0 @@
-import{ao as o,c as e}from"./index-nQ7gu5AT.js";var a=o();const t=[["path",{d:"M16 17h6v-6",key:"t6n2it"}],["path",{d:"m22 17-8.5-8.5-5 5L2 7",key:"x473p"}]],n=e("trending-down",t);export{n as T,a as r};
