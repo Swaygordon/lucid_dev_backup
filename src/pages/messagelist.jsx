@@ -8,6 +8,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNotification } from '../contexts/NotificationContext';
 import { useNavigateBack } from "../hooks/useNavigateBack.js";
 import Profilepic from '../assets/profile.svg';
+// [MOCK] Replace with real fetch + WebSocket subscription when Phase 7 backend lands; delete this import.
+import { getConversations } from '../data/mockPhase7';
 
 // Animation variants
 const fadeInUp = {
@@ -282,80 +284,17 @@ const MessagesListPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [confirmDelete, setConfirmDelete] = useState(null);
   const [selectedConversation, setSelectedConversation] = useState(null);
-  // [MOCK] Replace with GET /conversations?userId={id} — sorted by lastMessageAt desc → [{id, name, avatar, lastMessage, time, unreadCount, online, pinned, muted, archived, isOutgoing, status}]
-  // [WS] Listen for 'conversation:updated' event to bump updated conversation to top and refresh lastMessage/unreadCount
-  const [conversations, setConversations] = useState([
-    {
-      id: 1,
-      name: 'Gabriel A. Gordon-Mensah',
-      avatar: Profilepic,
-      lastMessage: 'Hey, how are you doing today?',
-      time: '10:30 AM',
-      unreadCount: 3,
-      online: true,
-      pinned: true,
-      muted: false,
-      archived: false,
-      isOutgoing: false,
-      status: null
-    },
-    {
-      id: 2,
-      name: 'Sarah Johnson',
-      avatar: null,
-      lastMessage: 'Thanks for your help earlier!',
-      time: 'Yesterday',
-      unreadCount: 0,
-      online: false,
-      pinned: false,
-      muted: false,
-      archived: false,
-      isOutgoing: true,
-      status: 'read'
-    },
-    {
-      id: 3,
-      name: 'Michael Chen',
-      avatar: null,
-      lastMessage: 'Can we meet tomorrow at 3pm?',
-      time: 'Yesterday',
-      unreadCount: 1,
-      online: true,
-      pinned: false,
-      muted: false,
-      archived: false,
-      isOutgoing: false,
-      status: null
-    },
-    {
-      id: 4,
-      name: 'Project Team',
-      avatar: null,
-      lastMessage: 'Meeting scheduled for next week',
-      time: '2 days ago',
-      unreadCount: 0,
-      online: false,
-      pinned: true,
-      muted: true,
-      archived: false,
-      isOutgoing: true,
-      status: 'delivered'
-    },
-    {
-      id: 5,
-      name: 'Emma Wilson',
-      avatar: null,
-      lastMessage: 'Did you receive my email?',
-      time: '3 days ago',
-      unreadCount: 0,
-      online: false,
-      pinned: false,
-      muted: false,
-      archived: true,
-      isOutgoing: false,
-      status: null
-    }
-  ]);
+  // [API] GET /conversations?userId={id}  (sorted by lastMessageAt desc)
+  // [WS] Listen for 'conversation:updated' to bump conversation to top.
+  // [MOCK] Currently fed by getConversations() from mockPhase7.
+  const [conversations, setConversations] = useState([]);
+  useEffect(() => {
+    getConversations().then(list =>
+      // Use the local Profilepic for the first conversation so avatars render
+      // until Phase 7 wires avatar URLs through the API.
+      setConversations(list.map((c, i) => i === 0 ? { ...c, avatar: Profilepic } : c))
+    );
+  }, []);
 
   // Close actions menu on outside click
   useEffect(() => {

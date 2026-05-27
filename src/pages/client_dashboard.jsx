@@ -7,11 +7,17 @@ import { useNotification } from '../contexts/NotificationContext';
 import { useFavourites } from '../contexts/FavouritesContext';
 import { Avatar, StatCard } from '../components/ui';
 import { BookingDetailsModal, CancelBookingModal } from '../components/shared';
-import { MOCK_CURRENT_CLIENT } from '../data/mockCurrentUser';
+import { supabase } from '../lib/supabaseClient';
+// [MOCK] Replace with real fetch calls when Phase 5 backend lands; delete this import.
+import {
+  getClientBookings, getClientStats, getClientActivityFeed, getBadgeCounts,
+} from '../data/mockPhase5';
 import {
   ArrowLeft, Search, Calendar, DollarSign, Star, Clock, CheckCircle,
   Heart, MapPin, MessageSquare, Bell, ChevronRight, ChevronDown, Filter, User
 } from 'lucide-react';
+
+const ACTIVITY_ICONS = { CheckCircle, MessageSquare, Calendar, Star };
 
 const PERIODS = [
   { value: 'week',  label: 'This Week'  },
@@ -124,7 +130,7 @@ const DashboardBookingCard = ({ booking, onViewDetails }) => {
   );
 };
 
-const ProviderCard = ({ id, name, profession, rating, jobs, isFavorite }) => {
+const ProviderCard = ({ name, profession, rating, jobs, isFavorite }) => {
   const [favorite, setFavorite] = useState(isFavorite);
 
   return (
@@ -156,7 +162,7 @@ const ProviderCard = ({ id, name, profession, rating, jobs, isFavorite }) => {
         </div>
       </div>
 
-      <Link to={id ? `/lucid/providers/${id}` : '/lucid/services'}>
+      <Link to="/lucid/providers/me">
         <button className="w-full py-2 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors font-semibold">
           View Profile
         </button>
@@ -218,20 +224,36 @@ const ActivityItem = ({ icon: Icon, title, description, time, actionLabel, to })
 );
 
 const ClientDashboard = () => {
-  // [MOCK] Current user — replace with supabase.auth.getSession() + profiles fetch when integrating.
-  const [currentUserName] = useState(MOCK_CURRENT_CLIENT.fullName || 'there');
+  const [currentUserName, setCurrentUserName] = useState('there');
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) return;
+      supabase.from('profiles').select('first_name, last_name').eq('id', session.user.id).single()
+        .then(({ data }) => {
+          if (data) {
+            const name = [data.first_name, data.last_name].filter(Boolean).join(' ');
+            if (name) setCurrentUserName(name);
+          }
+        });
+    });
+  }, []);
 
   const [timeframe, setTimeframe] = useState('month');
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [bookingToCancel, setBookingToCancel] = useState(null);
-  // [API] GET /notifications/count?userId={id}&read=false → { count: number }
-  // [WS] Subscribe to 'notification' events on the user's WebSocket channel to update in real time.
-  const [notificationCount, setNotificationCount] = useState(5);
-  // [API] GET /messages/unread-count?userId={id} → { count: number }
-  const [unreadMessages] = useState(3);
-  // [API] GET /bookings/new-count?clientId={id} — bookings not yet viewed by client
-  const [unreadBookings] = useState(5);
+  // [API] GET /notifications/count, /messages/unread-count, /bookings/new-count
+  // [MOCK] Currently fed by getBadgeCounts() from mockPhase5.
+  const [notificationCount, setNotificationCount] = useState(0);
+  const [unreadMessages, setUnreadMessages]       = useState(0);
+  const [unreadBookings, setUnreadBookings]       = useState(0);
+  useEffect(() => {
+    getBadgeCounts().then(c => {
+      setNotificationCount(c.notifications);
+      setUnreadMessages(c.unreadMessages);
+      setUnreadBookings(c.unreadBookings);
+    });
+  }, []);
 
   const handleBackClick = useNavigateBack('/lucid/', 600);
   const { showNotification } = useNotification();
@@ -294,11 +316,30 @@ const ClientDashboard = () => {
   };
 
   // [API] GET /bookings?clientId={authenticatedUserId}&status=pending,confirmed,in-progress
-  const allBookings = useMemo(() => [], []);
-  const bookingStats = useMemo(() => ({
+  // [MOCK] Currently fed by getClientBookings() + getClientStats() from mockPhase5.
+  const [allBookings, setAllBookings] = useState([]);
+  const [bookingStats, setBookingStats] = useState({
     total: 0, completed: 0, pending: 0, confirmed: 0, inProgress: 0, cancelled: 0,
     totalEarnings: 0, avgRating: 'N/A', active: 0, totalRevenue: 0, completionRate: 0,
-  }), []);
+  });
+  useEffect(() => {
+    Promise.all([getClientBookings(), getClientStats()]).then(([bookings, stats]) => {
+      setAllBookings(bookings);
+      setBookingStats({
+        total: bookings.length,
+        completed:  stats.completedJobs,
+        pending:    bookings.filter(b => b.status === 'pending').length,
+        confirmed:  bookings.filter(b => b.status === 'confirmed').length,
+        inProgress: bookings.filter(b => b.status === 'in-progress').length,
+        cancelled:  bookings.filter(b => b.status === 'cancelled').length,
+        totalEarnings: 0,
+        avgRating: 'N/A',
+        active: stats.activeBookings,
+        totalRevenue: stats.totalSpent,
+        completionRate: 0,
+      });
+    });
+  }, []);
 
   const activeBookings = useMemo(() =>
     allBookings.filter(b => ['pending', 'confirmed', 'in-progress'].includes(b.status)),
@@ -317,16 +358,14 @@ const ClientDashboard = () => {
 
   const bookings = useMemo(() => activeBookings.slice(0, 3), [activeBookings]);
 
-  // [MOCK] Replace with: GET /activity-feed?userId={id}&limit=4
-  // → [{ type: 'booking_completed'|'new_message'|'booking_confirmed'|'review_posted',
-  //       title, description, timestamp, relatedId, relatedRoute }]
-  // The `time` field should use a relative-time formatter (e.g. date-fns formatDistanceToNow).
-  const recentActivities = [
-    { icon: CheckCircle, title: 'Service Completed', description: 'Plumbing repair at Osu completed successfully', time: '2 hours ago', actionLabel: 'Leave Review', to: '/lucid/bookings' },
-    { icon: MessageSquare, title: 'New Message', description: 'Gabriel replied to your inquiry', time: '4 hours ago', actionLabel: 'View Message', to: '/lucid/messages' },
-    { icon: Calendar, title: 'Booking Confirmed', description: 'Electrical installation scheduled for tomorrow', time: '1 day ago', actionLabel: null, to: '/lucid/bookings' },
-    { icon: Star, title: 'Review Posted', description: 'Your review for John Mensah has been published', time: '2 days ago', actionLabel: null, to: '/lucid/providers/me' }
-  ];
+  // [API] GET /activity-feed?userId={id}&limit=4
+  // [MOCK] Currently fed by getClientActivityFeed() from mockPhase5.
+  const [recentActivities, setRecentActivities] = useState([]);
+  useEffect(() => {
+    getClientActivityFeed().then(items => {
+      setRecentActivities(items.map(a => ({ ...a, icon: ACTIVITY_ICONS[a.iconName] })));
+    });
+  }, []);
 
   const quickActions = [
     { icon: Search, label: 'Find Services', to: '/lucid/services' },

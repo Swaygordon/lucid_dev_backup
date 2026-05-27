@@ -70,7 +70,7 @@ const staggerContainer = {
 // Hero Section
 const HeroSection = memo(({ heroUrl }) => (
   <motion.div
-    className="relative overflow-hidden"
+    className="relative max-h-64 lg:min-h-72 h-60 overflow-hidden group"
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
     transition={{ duration: 0.6 }}

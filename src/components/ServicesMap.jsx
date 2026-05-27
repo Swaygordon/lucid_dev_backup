@@ -282,7 +282,7 @@ const ServicesMap = ({ providers = [], userLocation = [5.6037, -0.1870] }) => {
 
   const handleBookNow = (provider) => {
     console.log('Booking with:', provider.fullName);
-    // Navigate to booking page: navigate(`/lucid/bookings/new/${provider.id}`);
+    // Navigate to booking page: navigate(`/booking_request/${provider.id}`);
     setSelectedProvider(null);
   };
 

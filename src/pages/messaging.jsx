@@ -6,21 +6,16 @@ import {
 import { useNavigateBack } from "../hooks/useNavigateBack.js";
 import BackToBottom from '../components/back_to_bottom_btn.jsx';
 import Profilepic from '../assets/profile.svg';
+// [MOCK] Replace with real fetch + WebSocket subscription when Phase 7 backend lands; delete this import.
+import { getMessagesForConversation } from '../data/mockPhase7';
 
 export default function ChatMessagingPage() {
   const [message, setMessage] = useState('');
-  // [MOCK] Replace with GET /conversations/:id/messages?page={n} — paginated, newest last → {messages: [{id, text, sender, time, type, edited}]}
-  // [WS] Subscribe to ws://…/conversations/:id — receive new message events and append to this array
-  const [messages, setMessages] = useState([
-    { id: 1, text: 'Hey There!', sender: 'other', time: 'Today, 8:30pm', type: 'text' },
-    { id: 2, text: 'How are you?', sender: 'other', time: 'Today, 8:30pm', type: 'text' },
-    { id: 3, text: 'Hello!', sender: 'user', time: 'Today, 8:33pm', type: 'text' },
-    { id: 4, text: 'I am fine and how are you?', sender: 'user', time: 'Today, 8:34pm', type: 'text' },
-    { id: 5, text: 'I am doing well, Can we meet tomorrow?', sender: 'other', time: 'Today, 8:36pm', type: 'text' },
-    { id: 6, text: 'Yes Sure!', sender: 'user', time: 'Today, 8:58pm', type: 'text' },
-    { id: 7, text: 'Are you there?', sender: 'user', time: 'Today, 9:02pm', type: 'text' },
-    { id: 8, text: 'Hey', sender: 'user', time: 'Today, 9:05pm', type: 'text' },
-  ]);
+  // [API] GET /conversations/:id/messages?page={n}
+  // [WS] Subscribe to ws://…/conversations/:id for new message events.
+  // [MOCK] Currently fed by getMessagesForConversation() from mockPhase7.
+  const [messages, setMessages] = useState([]);
+  useEffect(() => { getMessagesForConversation('current').then(setMessages); }, []);
   const messagesContainerRef = useRef(null);
   const handleBackClick = useNavigateBack('/lucid/messages', 400);
   // UI state

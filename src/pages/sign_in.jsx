@@ -84,12 +84,9 @@ const Signin = () => {
         .eq('user_id', data.user.id)
         .single();
       const setupDone = !!providerProfile?.first_name;
-      // Provider lands on the dashboard (role-switcher renders ProviderDashboard).
-      // If setup isn't done yet, force them through onboarding first.
-      navigate(setupDone ? '/lucid/dashboard' : '/lucid/account/profile/setup', { replace: true });
+      navigate(setupDone ? '/lucid/account/profile' : '/lucid/account/profile/setup', { replace: true });
     } else {
-      // Client lands on the dashboard (role-switcher renders ClientDashboard).
-      navigate('/lucid/dashboard', { replace: true });
+      navigate('/lucid/', { replace: true });
     }
 
     setLoading(false);
@@ -99,7 +96,7 @@ const Signin = () => {
     const { error } = await supabase.auth.resend({
       type: 'signup',
       email: formData.email,
-      options: { emailRedirectTo: `${window.location.origin}${import.meta.env.BASE_URL}lucid/signin` },
+      options: { emailRedirectTo: `${window.location.origin}/lucid/signin` },
     });
     if (error) {
       showNotification(error.message, 'error');
@@ -111,7 +108,7 @@ const Signin = () => {
   const handleGoogleSignin = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: `${window.location.origin}${import.meta.env.BASE_URL}lucid/` },
+      options: { redirectTo: `${window.location.origin}/lucid/` },
     });
     if (error) showNotification(error.message, 'error');
   };
@@ -119,7 +116,7 @@ const Signin = () => {
   const handleFacebookSignin = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'facebook',
-      options: { redirectTo: `${window.location.origin}${import.meta.env.BASE_URL}lucid/` },
+      options: { redirectTo: `${window.location.origin}/lucid/` },
     });
     if (error) showNotification(error.message, 'error');
   };

@@ -3,6 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
 import { useNavigateBack } from "../hooks/useNavigateBack.js";
 import EarningsChart from '../components/earnings_chart.jsx';
+// [MOCK] Replace with real fetch calls when Phase 5 backend lands; delete this import.
+import {
+  getProviderEarnings, getProviderTransactions,
+} from '../data/mockPhase5';
 import {
   ArrowLeft,
   DollarSign,
@@ -514,7 +518,8 @@ const EarningsPayments = () => {
 
 
   // [API] GET /providers/:id/earnings?period={week|month|year}
-  const earningsData = useMemo(() => ({
+  // [MOCK] Currently fed by getProviderEarnings() from mockPhase5.
+  const [earningsData, setEarningsData] = useState({
     thisWeek: 0, lastWeek: 0,
     thisMonth: 0, lastMonth: 0,
     thisYear: 0, lastYear: 0,
@@ -522,15 +527,17 @@ const EarningsPayments = () => {
     weeklyData: [], monthlyData: [], yearlyData: [],
     totalJobs: { thisWeek: 0, thisMonth: 0, thisYear: 0 },
     goals: { monthly: 0, yearly: 0 }
-  }), []);
+  });
+  useEffect(() => { getProviderEarnings().then(setEarningsData); }, []);
 
   // [API] GET /providers/:id/transactions?page={n}
-  const transactions = useMemo(() => [], []);
+  // [MOCK] Currently fed by getProviderTransactions() from mockPhase5.
+  const [transactions, setTransactions] = useState([]);
+  useEffect(() => { getProviderTransactions().then(setTransactions); }, []);
 
-  // [MOCK] paymentMethods — replace with GET /users/:id/payment-methods — [{id, type, name, number, isPrimary}]
-  // Start with an empty list to trigger auto-detect on first visit; real app seeds from API response
-  // [MOCK] Start empty to simulate a new provider with no saved methods yet.
-  // Replace with data from GET /users/:id/payment-methods on mount.
+  // [API] GET /users/:id/payment-methods — kept empty in demo to showcase the
+  // auto-detect banner that suggests the sign-up phone as a payout account.
+  // Backend will seed this from the API response on mount.
   const [paymentMethods, setPaymentMethods] = useState([]);
 
   const handleAddMethod = (newMethod) => {

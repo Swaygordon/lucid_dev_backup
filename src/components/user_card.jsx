@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { Star, MapPin, Heart, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-const ProfileCard = ({
-  providerId = null,
+const ProfileCard = ({ 
   name = "Gabriel A. Gordon-Mensah",
   role = "Web Developer",
   location = "Kwabenya, Accra",
@@ -76,7 +75,7 @@ const ProfileCard = ({
         <span className="font-semibold">{rating.toFixed(1)}</span>
       </div>
 
-      <Link to={providerId ? `/lucid/providers/${providerId}` : '/lucid/services'}>
+      <Link to="/generalProfile">
         <button
           onClick={onViewProfile}
           className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition"

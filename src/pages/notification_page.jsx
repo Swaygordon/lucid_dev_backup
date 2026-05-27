@@ -6,6 +6,8 @@ import { useNotification } from '../contexts/NotificationContext';
 import emptyNotificationsImage from '../assets/No Messages.webp';
 import { NotificationBadge } from '../components/ui';
 import { Link } from 'react-router-dom';
+// [MOCK] Replace with real fetch call when Phase 6 backend lands; delete this import.
+import { getNotifications } from '../data/mockPhase6';
 
 // Animation variants
 const fadeInUp = {
@@ -293,114 +295,11 @@ const NotificationsPage = () => {
   const [confirmDelete, setConfirmDelete] = useState(null);
   const [confirmClearAll, setConfirmClearAll] = useState(false);
   const [selectedNotification, setSelectedNotification] = useState(null);
-  // [MOCK] Replace with GET /notifications?userId={id}&page={n} — sorted by createdAt desc → [{id, type, status, title, message, time, read, date, category, bookmarked, loc}]
-  // [WS] Subscribe to user notification channel — on 'notification:new' event, prepend to this array and update badge counts
-  const [notifications, setNotifications] = useState([
-    {
-      id: 1,
-      type: 'payment',
-      status: 'success',
-      title: 'Payment Successful!',
-      message: 'Thank you for your purchase! A confirmation email has been sent to your address.',
-      time: '10 min',
-      read: false,
-      date: 'Today',
-      category: 'payment',
-      bookmarked: false,
-      loc: '#'
-    },
-    {
-      id: 2,
-      type: 'payment',
-      status: 'error',
-      title: 'Payment Failed!',
-      message: 'Your payment could not be processed. Please check your payment details and try again.',
-      time: '25 min',
-      read: false,
-      date: 'Today',
-      category: 'payment',
-      bookmarked: false,
-      loc: '#'
-    },
-    {
-      id: 3,
-      type: 'profile',
-      status: 'success',
-      title: 'Profile Updated!',
-      message: 'Your profile information has been successfully updated.',
-      time: '1 hr',
-      read: false,
-      date: 'Today',
-      category: 'bookmark',
-      bookmarked: true,
-      loc: '#'
-    },
-    {
-      id: 4,
-      type: 'message',
-      status: 'info',
-      title: 'New Message',
-      message: 'You have a new message from your Client.',
-      time: '2 hrs',
-      read: true,
-      date: 'Yesterday',
-      category: 'read',
-      bookmarked: false,
-      loc: '/lucid/messages'
-    },
-    {
-      id: 5,
-      type: 'payment',
-      status: 'error',
-      title: 'Payment Failed!',
-      message: 'Your payment could not be processed. Please check your payment details and try again.',
-      time: '1 day',
-      read: true,
-      date: 'Yesterday',
-      category: 'payment',
-      bookmarked: false,
-      loc: '#'
-    },
-    {
-      id: 6,
-      type: 'message',
-      status: 'info',
-      title: 'New Message',
-      message: 'You have a new message from your Client.',
-      time: '3 days',
-      read: true,
-      date: 'October 21, 2025',
-      category: 'read',
-      bookmarked: false,
-      loc: '/lucid/messages'
-    },
-    {
-      id: 7,
-      type: 'message',
-      status: 'info',
-      title: 'New Message',
-      message: 'You have a new message from your Client.',
-      time: '4 days',
-      read: true,
-      date: 'October 20, 2025',
-      category: 'bookmark',
-      bookmarked: true,
-      loc: '/lucid/messages'
-    },
-    {
-      id: 8,
-      type: 'message',
-      status: 'info',
-      title: 'New Message',
-      message: 'You have a new message from your Client.',
-      time: '4 days',
-      read: false,
-      date: 'October 20, 2025',
-      category: 'bookmark',
-      bookmarked: true,
-      loc: '/lucid/messages'
-    },
-  ]);
+  // [API] GET /notifications?userId={id}&page={n}
+  // [WS] Subscribe to user notification channel for 'notification:new' events.
+  // [MOCK] Currently fed by getNotifications() from mockPhase6.
+  const [notifications, setNotifications] = useState([]);
+  useEffect(() => { getNotifications().then(setNotifications); }, []);
 
   // Close actions menu on outside click
   useEffect(() => {

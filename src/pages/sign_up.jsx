@@ -131,7 +131,7 @@ const Signup = () => {
           address:      formData.address,
           city:         formData.city,
         },
-        emailRedirectTo: `${window.location.origin}${import.meta.env.BASE_URL}lucid/signin`,
+        emailRedirectTo: `${window.location.origin}/lucid/signin`,
       },
     });
 
@@ -163,7 +163,7 @@ const Signup = () => {
   const handleGoogleSignup = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: `${window.location.origin}${import.meta.env.BASE_URL}lucid/` },
+      options: { redirectTo: `${window.location.origin}/lucid/` },
     });
     if (error) showNotification(error.message, 'error');
   };
@@ -171,7 +171,7 @@ const Signup = () => {
   const handleFacebookSignup = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'facebook',
-      options: { redirectTo: `${window.location.origin}${import.meta.env.BASE_URL}lucid/` },
+      options: { redirectTo: `${window.location.origin}/lucid/` },
     });
     if (error) showNotification(error.message, 'error');
   };

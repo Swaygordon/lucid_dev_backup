@@ -28,4 +28,4 @@ export const useNavigateBack = (fallbackRoute = '/lucid/', delay = 200) => {
 };
 
 // Usage example:
-// const handleBackClick = useNavigateBack('/lucid/dashboard', 800);
+// const handleBackClick = useNavigateBack('/dashboard', 800);

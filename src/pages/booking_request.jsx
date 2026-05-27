@@ -6,9 +6,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useParams } from 'react-router-dom';
+import { supabase } from '../lib/supabaseClient';
 import { useNotification } from '../contexts/NotificationContext';
 import { useNavigateBack } from "../hooks/useNavigateBack.js";
-import { MOCK_PROVIDERS } from '../data/mockData';
 import {
   ArrowLeft,
   Calendar,
@@ -131,20 +131,26 @@ const BookingRequest = () => {
   const [providerLoading, setProviderLoading] = useState(true);
   const handleBackClick = useNavigateBack(`/lucid/providers/${providerId}`, 600);
 
-  // [MOCK] GET /providers/:id — reads from MOCK_PROVIDERS; falls back to first entry if id not found
-  // [API]  When wired to backend: replace with supabase.from('provider_profiles').select(...).eq('user_id', providerId).single()
+  // [API] GET /providers/:id → {name, profession, location}
   useEffect(() => {
     if (!providerId) return;
-    const mock = MOCK_PROVIDERS.find(p => p.id === providerId) || MOCK_PROVIDERS[0];
-    if (mock) {
-      setProvider({
-        id: mock.id,
-        name: mock.fullName || 'Service Provider',
-        profession: mock.occupation || '',
-        location: mock.location ? `${mock.location.area}, ${mock.location.city}` : '',
-      });
+    async function fetchProvider() {
+      const { data } = await supabase
+        .from('provider_profiles')
+        .select('user_id, first_name, last_name, occupation, location')
+        .eq('user_id', providerId)
+        .single();
+      if (data) {
+        setProvider({
+          id: data.user_id,
+          name: `${data.first_name || ''} ${data.last_name || ''}`.trim() || 'Service Provider',
+          profession: data.occupation || '',
+          location: data.location || '',
+        });
+      }
+      setProviderLoading(false);
     }
-    setProviderLoading(false);
+    fetchProvider();
   }, [providerId]);
 
   // Form state — contact and location fields pre-filled from the client's account profile

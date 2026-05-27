@@ -1,11 +1,14 @@
-import React from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import BackToTop from '../components/back_the_top_btn.jsx';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useNotification } from "../contexts/NotificationContext.jsx";
 import { useImageUpload } from "../hooks/useImageUpload.js";
-import { ImageUploadModal } from "../components/shared";
+import { ImageUploadModal, LogoutConfirmModal } from "../components/shared";
 import { useNavigateBack } from "../hooks/useNavigateBack.js";
-import { MOCK_CURRENT_CLIENT } from '../data/mockCurrentUser';
+import { supabase } from '../lib/supabaseClient';
+import { useProviderProfile } from '../hooks/useProviderProfile';
+// [MOCK] Replace with real fetch call when Phase 6 backend lands; delete this import.
+import { getClientAccountOverview } from '../data/mockPhase6';
 import { 
   ArrowLeft, 
   Upload, 
@@ -24,20 +27,37 @@ import {
 function ClientAccountOverview() {
   const handleBackClick = useNavigateBack('/lucid/dashboard', 600);
   const upload = useImageUpload();
+  const navigate = useNavigate();
+  const { showNotification } = useNotification();
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
-  // [MOCK] Current user — replace with supabase.auth.getSession() + profiles fetch when integrating Phase 6.
-  const currentUserEmail = MOCK_CURRENT_CLIENT.email || '';
-  const profile = {
-    name: MOCK_CURRENT_CLIENT.fullName || '',
-    location: MOCK_CURRENT_CLIENT.location
-      ? `${MOCK_CURRENT_CLIENT.location.area}, ${MOCK_CURRENT_CLIENT.location.city}`
-      : '',
-    avatar_url: MOCK_CURRENT_CLIENT.profileImage || null,
+  const confirmLogout = async () => {
+    await supabase.auth.signOut();
+    showNotification('Logged out successfully', 'success');
+    setShowLogoutConfirm(false);
+    navigate('/lucid/', { replace: true });
   };
-  const displayName     = profile.name;
+
+  const [currentUserId, setCurrentUserId] = useState(null);
+  const [currentUserEmail, setCurrentUserEmail] = useState('');
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        setCurrentUserId(session.user.id);
+        setCurrentUserEmail(session.user.email || '');
+      }
+    });
+  }, []);
+  const { profile } = useProviderProfile(currentUserId);
+  const displayName     = profile?.name || '';
   const displayInitials = displayName.split(' ').filter(Boolean).map(w => w[0]).join('').slice(0, 2).toUpperCase() || '?';
-  const displayLocation = profile.location;
-  const clientStats     = { completed: 0, active: 0 };
+  const displayLocation = profile?.location || '';
+  // [API] GET /users/:id/overview → { completedJobs, activeBookings, memberSince }
+  // [MOCK] Currently fed by getClientAccountOverview() from mockPhase6.
+  const [clientStats, setClientStats] = useState({ completed: 0, active: 0 });
+  useEffect(() => {
+    getClientAccountOverview().then(o => setClientStats({ completed: o.completedJobs, active: o.activeBookings }));
+  }, []);
 
   // Navigation items configuration
   const navigationItems = [
@@ -181,15 +201,14 @@ function ClientAccountOverview() {
           })}
 
           {/* Logout Button */}
-          {/* [AUTH] POST /auth/logout — invalidate session/token on server before redirecting */}
           <div className="mt-2">
-            <Link
-              to="/lucid/signin"
+            <button
+              onClick={() => setShowLogoutConfirm(true)}
               className="bg-gradient-to-r w-full from-red-600 to-red-700 text-white px-6 py-4 rounded-2xl font-semibold cursor-pointer transition-all duration-300 flex items-center justify-center gap-2 shadow-md hover:-translate-y-0.5 hover:shadow-xl"
             >
               <LogOut size={20} />
               Log out
-            </Link>
+            </button>
           </div>
         </div>
       </div>
@@ -200,6 +219,12 @@ function ClientAccountOverview() {
         onClose={upload.closeModal}
         onUpload={() => {}}
         title="Upload Image"
+      />
+
+      <LogoutConfirmModal
+        isOpen={showLogoutConfirm}
+        onClose={() => setShowLogoutConfirm(false)}
+        onConfirm={confirmLogout}
       />
 
       <BackToTop />

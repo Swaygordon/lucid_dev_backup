@@ -1,4 +1,7 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
+// [MOCK] Seed favourites from mockPhase5 when sessionStorage is empty.
+// Delete this import + the seed effect when Phase 5 backend lands.
+import { getFavouriteProviders } from '../data/mockPhase5';
 
 // [API] POST /users/:id/favourites   { providerId }  → { saved: true }
 // [API] DELETE /users/:id/favourites/:providerId      → { removed: true }
@@ -22,6 +25,23 @@ export const FavouritesProvider = ({ children }) => {
       return [];
     }
   });
+
+  // [MOCK] On first mount, if nothing was loaded from sessionStorage, seed from
+  // the mock so the favourites page has something to show. Remove with mockPhase5.
+  useEffect(() => {
+    if (favouriteProviders.length === 0) {
+      const seeded = sessionStorage.getItem('lucid_favourites_seeded');
+      if (!seeded) {
+        getFavouriteProviders().then(list => {
+          setFavouriteProviders(list);
+          try {
+            sessionStorage.setItem('lucid_favourites', JSON.stringify(list));
+            sessionStorage.setItem('lucid_favourites_seeded', '1');
+          } catch {}
+        });
+      }
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const isFavourite = useCallback(
     (id) => favouriteProviders.some(p => p.id === id),

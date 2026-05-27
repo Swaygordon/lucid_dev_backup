@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { Button } from './ui/Button.jsx';
 import { Avatar } from './ui/Avatar.jsx';
+import { LogoutConfirmModal } from './shared';
 import { useNotification } from '../contexts/NotificationContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { supabase } from '../lib/supabaseClient';
@@ -40,6 +41,7 @@ function Navbar() {
   const [notificationCount, setNotificationCount] = useState(0);
   const [messageCount, setMessageCount] = useState(0);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const dropdownRef = useRef(null);
   const { showNotification } = useNotification();
   const { isDark, toggle: toggleTheme } = useTheme();
@@ -124,10 +126,16 @@ function Navbar() {
     setMessageCount(msgCount || 0);
   };
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
+    setIsDropdownOpen(false);
+    setIsOpen(false);
+    setShowLogoutConfirm(true);
+  };
+
+  const confirmLogout = async () => {
     await supabase.auth.signOut();
     showNotification('Logged out successfully', 'success');
-    handleLinkClick();
+    setShowLogoutConfirm(false);
     navigate('/lucid/', { replace: true });
   };
 
@@ -156,8 +164,6 @@ function Navbar() {
     return null;
   };
 
-  // Both roles land on /lucid/dashboard — DashboardPage role-switcher renders the
-  // appropriate variant. Providers get a separate "My Profile" entry in the menu.
   const getDashboardPath = () => '/lucid/dashboard';
 
   const totalNotifications = notificationCount + messageCount;
@@ -392,6 +398,12 @@ function Navbar() {
           </div>
         </div>
       </div>
+
+      <LogoutConfirmModal
+        isOpen={showLogoutConfirm}
+        onClose={() => setShowLogoutConfirm(false)}
+        onConfirm={confirmLogout}
+      />
     </>
   );
 }

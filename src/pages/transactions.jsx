@@ -1,6 +1,8 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigateBack } from '../hooks/useNavigateBack.js';
+// [MOCK] Replace with real fetch call when Phase 5 backend lands; delete this import.
+import { getProviderTransactions } from '../data/mockPhase5';
 import {
   ArrowLeft,
   DollarSign,
@@ -13,9 +15,6 @@ import {
   Filter,
 } from 'lucide-react';
 
-// [API] GET /providers/:id/transactions?page={n}&status={}&type={}
-const ALL_TRANSACTIONS = [];
-
 const STATUS_FILTERS = ['All', 'Completed', 'Pending', 'Failed'];
 const TYPE_FILTERS   = ['All', 'Payments', 'Withdrawals'];
 
@@ -25,8 +24,13 @@ const TransactionsPage = () => {
   const [statusFilter, setStatus] = useState('All');
   const [typeFilter, setType]     = useState('All');
 
+  // [API] GET /providers/:id/transactions?page={n}&status={}&type={}
+  // [MOCK] Currently fed by getProviderTransactions() from mockPhase5.
+  const [allTransactions, setAllTransactions] = useState([]);
+  useEffect(() => { getProviderTransactions().then(setAllTransactions); }, []);
+
   const filtered = useMemo(() => {
-    return ALL_TRANSACTIONS.filter(t => {
+    return allTransactions.filter(t => {
       const matchesSearch = !search ||
         t.description.toLowerCase().includes(search.toLowerCase()) ||
         t.method.toLowerCase().includes(search.toLowerCase()) ||
@@ -42,7 +46,7 @@ const TransactionsPage = () => {
 
       return matchesSearch && matchesStatus && matchesType;
     });
-  }, [search, statusFilter, typeFilter]);
+  }, [allTransactions, search, statusFilter, typeFilter]);
 
   const exportToCSV = () => {
     const headers = ['Date', 'Description', 'Amount (GH₵)', 'Type', 'Status', 'Method', 'Job Type'];

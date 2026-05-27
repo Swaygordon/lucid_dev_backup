@@ -79,7 +79,7 @@ const SearchBar = ({ onSearch, isLoading }) => {
 
   return (
     <motion.div
-      className="mt-8 sm:mt-12 flex justify-center px-4"
+      className="relative z-30 mt-8 sm:mt-12 flex justify-center px-4"
       variants={fadeInUp}
       initial={false}
       animate="visible"
@@ -338,18 +338,20 @@ function Home() {
                   style={{ willChange: 'transform, opacity' }}
                   className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-64 bg-blue-700/25 blur-[80px] rounded-full"
                 />
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px)',
-                    backgroundSize: '28px 28px',
-                  }}
-                />
               </>
             )}
+
+            {/* Dot grid — both themes (white dots on dark, slate dots on light) */}
+            <div
+              className="absolute inset-0"
+              style={{
+                backgroundImage: `radial-gradient(circle, ${isDark ? 'rgba(255,255,255,0.06)' : 'rgba(15,23,42,0.08)'} 1px, transparent 1px)`,
+                backgroundSize: '28px 28px',
+              }}
+            />
           </div>
 
-          <div className="relative z-10 w-full text-center px-4 sm:px-6 py-16 sm:py-20">
+          <div className="relative z-20 w-full text-center px-4 sm:px-6 py-16 sm:py-20">
             <div className="w-full max-w-3xl mx-auto">
               {/* Cycling word badge */}
               <CyclingBadge />
