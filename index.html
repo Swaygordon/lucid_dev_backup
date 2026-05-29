@@ -2,26 +2,23 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png+xml" href="/src/assets/Lucid_L.png" />
-    <script>
-      // Restore the path encoded by 404.html (GitHub Pages SPA routing).
-      // Runs before React loads so the router sees the correct pathname.
-      (function (l) {
-        if (l.search[1] === '/') {
-          var decoded = l.search.slice(1).split('&').map(function (s) {
-            return s.replace(/~and~/g, '&');
-          }).join('?');
-          window.history.replaceState(null, null, l.pathname.slice(0, -1) + decoded + l.hash);
-        }
-      }(window.location));
-    </script>
+    <link rel="icon" type="image/png" href="/lucid_dev_backup/favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Lucid connects you with trusted, verified local workers for home repairs, cleaning, moving, and more. Find and book skilled professionals near you instantly." />
+
+    <!-- Fonts: Plus Jakarta Sans (display, headings) + Inter (body). Both swap to avoid FOIT. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
     <title>Lucid — Trusted Local Services, Instantly</title>
-    <script type="module" crossorigin src="/lucid_dev_backup/assets/index-DaolUmlI.js"></script>
-    <link rel="stylesheet" crossorigin href="/lucid_dev_backup/assets/index-wgHq3Gka.css">
+    <script type="module" crossorigin src="/lucid_dev_backup/assets/index-B3u5X2iX.js"></script>
+    <link rel="stylesheet" crossorigin href="/lucid_dev_backup/assets/index-CdgjToYY.css">
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root"></div>
   </body>
 </html>
