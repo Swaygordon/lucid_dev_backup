@@ -112,18 +112,18 @@ const FilterSection = React.memo(({ onFilterChange, activeFilters }) => {
 
   return (
     <motion.div
-      className="bg-white dark:bg-[#1a1f2e] rounded-lg shadow-sm p-4 mb-6"
+      className="bg-white dark:bg-[#1a1f2e] rounded-2xl shadow-sm ring-1 ring-slate-900/5 dark:ring-white/10 p-4 mb-6"
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
     >
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-semibold text-gray-900 dark:text-slate-100 flex items-center gap-2">
+        <h2 className="font-semibold text-gray-900 dark:text-slate-100 flex items-center gap-2">
           <Filter className="w-5 h-5" />
           Filters
-        </h3>
+        </h2>
         <button
           onClick={() => setShowFilters(!showFilters)}
-          className="text-blue-600 hover:text-blue-700 font-medium text-sm"
+          className="text-sky-700 dark:text-blue-400 hover:text-sky-800 font-medium text-sm"
         >
           {showFilters ? 'Hide' : 'Show'} Filters
         </button>
@@ -141,18 +141,18 @@ const FilterSection = React.memo(({ onFilterChange, activeFilters }) => {
 // Stats Bar Component
 const StatsBar = React.memo(({ totalProviders, averageRating }) => (
   <motion.div
-    className="bg-blue-50 dark:bg-primary/10 rounded-lg p-4 mb-6"
+    className="bg-sky-50 dark:bg-primary/10 rounded-lg p-4 mb-6"
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
   >
     <div className="grid grid-cols-2 gap-4 text-center">
       <div>
-        <p className="text-2xl font-bold text-blue-600">{totalProviders}</p>
+        <p className="text-2xl font-bold text-sky-700">{totalProviders}</p>
         <p className="text-sm text-gray-600 dark:text-slate-400">Professionals</p>
       </div>
       <div>
-        <p className="text-2xl font-bold text-blue-600 flex items-center justify-center gap-1">
-          <Star className="w-5 h-5 fill-blue-600" />
+        <p className="text-2xl font-bold text-sky-700 flex items-center justify-center gap-1">
+          <Star className="w-5 h-5 fill-sky-600" />
           {averageRating}
         </p>
         <p className="text-sm text-gray-600 dark:text-slate-400">Avg Rating</p>
@@ -193,7 +193,7 @@ const SelectedServiceSkeleton = () => (
       <div className="h-4 w-28 bg-gray-200 rounded" />
     </div>
     <div className="container mx-auto px-6 pb-16">
-      <div className="bg-blue-50 dark:bg-primary/10 rounded-lg p-4 mb-6">
+      <div className="bg-sky-50 dark:bg-primary/10 rounded-lg p-4 mb-6">
         <div className="grid grid-cols-2 gap-4">
           {[0, 1].map(i => (
             <div key={i} className="flex flex-col items-center gap-2">
@@ -457,7 +457,7 @@ const SelectedService = () => {
     <div className="min-h-screen bg-gray-100 dark:bg-[#0f1117] pb-20">
       <div className="relative w-full h-52 md:h-64 overflow-hidden">
         <img src={heroImage} alt={heroTitle} className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-black bg-opacity-50" />
+        <div className="absolute inset-0 bg-gradient-to-t from-sky-950/80 via-sky-950/50 to-sky-950/30" />
         <div className="absolute inset-0 flex flex-col items-center justify-center text-white px-5 text-center">
           <h1 className="text-2xl md:text-3xl font-bold mb-1">{heroTitle} Services</h1>
           <p className="text-white/80 text-sm">{heroSubtitle}</p>
@@ -502,7 +502,7 @@ const SelectedService = () => {
             <MapPin className="w-16 h-16 text-gray-400 mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-gray-900 dark:text-slate-100 mb-2">No providers found</h3>
             <p className="text-gray-600 dark:text-slate-400 mb-6">Try adjusting your filters or check back later for new professionals</p>
-            <button onClick={() => setFilters({ rating: 0 })} className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">Clear Filters</button>
+            <button onClick={() => setFilters({ rating: 0 })} className="px-6 py-3 bg-sky-700 text-white rounded-lg hover:bg-sky-800 transition-colors">Clear Filters</button>
           </motion.div>
         )}
       </div>

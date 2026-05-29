@@ -1,10 +1,13 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigateBack } from '../hooks/useNavigateBack.js';
+import { useModalBackButton } from '../hooks/useModalBackButton.js';
 import { useNotification } from '../contexts/NotificationContext';
 import { PageHeader, FilterBar, EmptyState } from '../components/ui';
 import { BookingCard, BookingDetailsModal, CancelBookingModal } from '../components/shared';
 import { Search, Calendar, AlertCircle } from 'lucide-react';
+// [MOCK] Phase 5 demo bookings; delete this import when the bookings endpoint lands.
+import { getClientBookings } from '../data/mockPhase5';
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
@@ -20,6 +23,10 @@ const ClientBookings = () => {
 
   const handleBackClick = useNavigateBack('/lucid/dashboard', 600);
   const { showNotification } = useNotification();
+
+  // Browser back / mobile gesture closes the modal instead of leaving the page
+  useModalBackButton(!!selectedBooking, () => setSelectedBooking(null));
+  useModalBackButton(showCancelModal, () => setShowCancelModal(false));
 
   // [API] PATCH /bookings/:id/status — {status: 'cancelled', reason?} → {bookingId, status}
   const handleCancel = (booking) => {
@@ -103,8 +110,9 @@ const ClientBookings = () => {
     showNotification('Completion rejected. Communicated changes needed.', 'info');
   };
 
-  // [API] GET /bookings?userId={authenticatedUserId}&status={filter}&sort=date&page={n}&limit={n}
-  const bookings = useMemo(() => [], []);
+  // [MOCK] Phase 5 demo bookings; replace with GET /bookings?userId={id}&status={filter}&... when backend lands.
+  const [bookings, setBookings] = useState([]);
+  useEffect(() => { getClientBookings().then(setBookings); }, []);
 
   // [API] Move status counts to API response metadata: GET /bookings?userId={id}&countByStatus=true → {counts: {pending, confirmed, ...}}
   const filters = [

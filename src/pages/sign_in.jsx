@@ -84,7 +84,7 @@ const Signin = () => {
         .eq('user_id', data.user.id)
         .single();
       const setupDone = !!providerProfile?.first_name;
-      navigate(setupDone ? '/lucid/account/profile' : '/lucid/account/profile/setup', { replace: true });
+      navigate(setupDone ? '/lucid/dashboard' : '/lucid/account/profile/setup', { replace: true });
     } else {
       navigate('/lucid/', { replace: true });
     }
@@ -174,7 +174,7 @@ const Signin = () => {
                     <button
                       type="button"
                       onClick={handleResendConfirmation}
-                      className="text-blue-600 hover:underline"
+                      className="text-sky-700 hover:underline"
                     >
                       Resend
                     </button>
@@ -214,7 +214,7 @@ const Signin = () => {
 
           <div className="mb-6 mt-2 text-gray-900 dark:text-slate-300">
             Don't have an account?
-            <Link to="/lucid/signup" className="text-blue-700 dark:text-blue-400 hover:text-secondary underline ml-2">
+            <Link to="/lucid/signup" className="text-sky-700 dark:text-blue-400 hover:text-secondary underline ml-2">
               Sign Up
             </Link>
           </div>

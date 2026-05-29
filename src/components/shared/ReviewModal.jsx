@@ -150,21 +150,21 @@ const ReviewModalComponent = ({ booking, isOpen, onClose, onSubmit }) => {
           {/* Content */}
           <div className="p-6 space-y-6">
             {/* Booking Info */}
-            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 border-l-4 border-blue-400 dark:border-blue-600">
-              <p className="text-sm text-blue-800 dark:text-blue-300">
+            <div className="bg-sky-50 dark:bg-blue-900/20 rounded-lg p-4 border-l-4 border-sky-400 dark:border-blue-600">
+              <p className="text-sm text-sky-800 dark:text-blue-300">
                 <strong>Service:</strong> {booking.title}
               </p>
-              <p className="text-sm text-blue-800 dark:text-blue-300">
+              <p className="text-sm text-sky-800 dark:text-blue-300">
                 <strong>Date:</strong> {booking.date}
               </p>
-              <p className="text-sm text-blue-800 dark:text-blue-300">
+              <p className="text-sm text-sky-800 dark:text-blue-300">
                 <strong>Price:</strong> GH₵{booking.price}
               </p>
             </div>
 
             {/* Overall Rating */}
             <div>
-              <label className="block text-lg font-semibold text-blue-600 mb-3">
+              <label className="block text-lg font-semibold text-sky-700 mb-3">
                 Overall Rating <span className="text-red-500">*</span>
               </label>
               
@@ -183,7 +183,7 @@ const ReviewModalComponent = ({ booking, isOpen, onClose, onSubmit }) => {
                       <Star
                         className={`w-12 h-12 ${
                           star <= (hoveredRating || rating)
-                            ? 'fill-blue-600 text-blue-600'
+                            ? 'fill-sky-600 text-sky-700'
                             : 'text-gray-300 dark:text-slate-600'
                         }`}
                       />
@@ -209,7 +209,7 @@ const ReviewModalComponent = ({ booking, isOpen, onClose, onSubmit }) => {
 
             {/* Category Ratings */}
             <div>
-              <label className="block text-lg font-semibold text-blue-600 mb-3">
+              <label className="block text-lg font-semibold text-sky-700 mb-3">
                 Rate Specific Areas
               </label>
               
@@ -234,7 +234,7 @@ const ReviewModalComponent = ({ booking, isOpen, onClose, onSubmit }) => {
                           <Star
                             className={`w-6 h-6 ${
                               star <= categories[key]
-                                ? 'fill-blue-600 text-blue-600'
+                                ? 'fill-sky-600 text-sky-700'
                                 : 'text-gray-300 dark:text-slate-600'
                             }`}
                           />
@@ -248,14 +248,14 @@ const ReviewModalComponent = ({ booking, isOpen, onClose, onSubmit }) => {
 
             {/* Written Review */}
             <div>
-              <label className="block text-lg font-semibold text-blue-600 mb-3">
+              <label className="block text-lg font-semibold text-sky-700 mb-3">
                 Write Your Review <span className="text-red-500">*</span>
               </label>
               <textarea
                 value={reviewText}
                 onChange={(e) => setReviewText(e.target.value)}
                 rows="6"
-                className="w-full px-4 py-3 bg-white dark:bg-[#252b3b] text-gray-900 dark:text-slate-200 placeholder:text-gray-400 dark:placeholder-slate-500 border-2 border-gray-300 dark:border-[#2d3748] rounded-lg focus:border-blue-600 focus:outline-none resize-none"
+                className="w-full px-4 py-3 bg-white dark:bg-[#252b3b] text-gray-900 dark:text-slate-200 placeholder:text-gray-400 dark:placeholder-slate-500 border-2 border-gray-300 dark:border-[#2d3748] rounded-lg focus:border-sky-600 focus:outline-none resize-none"
                 placeholder="Share details about your experience with this service provider. What did they do well? What could be improved?"
                 required
               />
@@ -289,7 +289,7 @@ const ReviewModalComponent = ({ booking, isOpen, onClose, onSubmit }) => {
               <button
                 onClick={handleSubmit}
                 disabled={isSubmitting || rating === 0 || reviewText.trim().length < 10}
-                className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="flex-1 px-6 py-3 bg-sky-700 text-white rounded-lg hover:bg-sky-800 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {isSubmitting ? (
                   <>

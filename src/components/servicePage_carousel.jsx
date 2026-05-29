@@ -29,7 +29,7 @@ export default function ServicesCarousel({ services = [] }) {
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl md:text-3xl font-bold">
           <span className="text-gray-900 dark:text-slate-100">Services you might </span>
-          <span className="text-blue-600">also like</span>
+          <span className="text-sky-700">also like</span>
         </h2>
       </div>
 
@@ -90,7 +90,7 @@ export default function ServicesCarousel({ services = [] }) {
               className="p-2 flex items-center justify-center"
             >
               <span className={`h-2 rounded-full transition-all duration-300 block ${
-                currentIndex === i ? 'bg-blue-600 w-6' : 'bg-gray-300 dark:bg-slate-600 w-2'
+                currentIndex === i ? 'bg-sky-700 w-6' : 'bg-gray-300 dark:bg-slate-600 w-2'
               }`} />
             </button>
           ))}

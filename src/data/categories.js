@@ -11,8 +11,8 @@ export const ALL_CATEGORIES = [
     icon: Hammer,
     description: 'Electricians, plumbers, painters and more',
     image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&auto=format',
-    color: 'bg-blue-100',
-    iconColor: 'text-blue-700',
+    color: 'bg-sky-100',
+    iconColor: 'text-sky-700',
     services: [
       { slug: 'electrical-repairs', name: 'Electrician',       image: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=600&auto=format' },
       { slug: 'plumbing',           name: 'Plumber',           image: 'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=600&auto=format' },

@@ -101,14 +101,14 @@ export const QuotePriceModal = ({
 
           <div className="p-6 space-y-6">
             {/* Job Summary */}
-            <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-400 dark:border-blue-600 p-4 rounded-lg">
+            <div className="bg-sky-50 dark:bg-blue-900/20 border-l-4 border-sky-400 dark:border-blue-600 p-4 rounded-lg">
               <div className="flex items-start gap-3">
-                <FileText className="w-5 h-5 text-blue-600 mt-0.5" />
+                <FileText className="w-5 h-5 text-sky-700 mt-0.5" />
                 <div>
-                  <p className="font-semibold text-blue-900 dark:text-blue-300">{booking.title}</p>
-                  <p className="text-sm text-blue-800 dark:text-blue-400 mt-1">{booking.description}</p>
+                  <p className="font-semibold text-sky-900 dark:text-blue-300">{booking.title}</p>
+                  <p className="text-sm text-sky-800 dark:text-blue-400 mt-1">{booking.description}</p>
                   {booking.budget?.min && (
-                    <p className="text-sm text-blue-700 dark:text-blue-400 mt-2">
+                    <p className="text-sm text-sky-700 dark:text-blue-400 mt-2">
                       Client's budget: GH₵{booking.budget.min} - GH₵{booking.budget.max}
                     </p>
                   )}
@@ -119,7 +119,7 @@ export const QuotePriceModal = ({
             {/* Price Breakdown */}
             <div className="space-y-4">
               <h3 className="font-bold text-gray-900 dark:text-slate-100 flex items-center gap-2">
-                <DollarSign className="w-5 h-5 text-blue-600" />
+                <DollarSign className="w-5 h-5 text-sky-700" />
                 Price Breakdown
               </h3>
 
@@ -140,7 +140,7 @@ export const QuotePriceModal = ({
                         ...prev,
                         laborCost: e.target.value
                       }))}
-                      className="w-full pl-12 pr-4 py-3 border-2 border-gray-300 dark:border-[#2d3748] dark:bg-[#252b3b] dark:text-slate-200 rounded-lg focus:border-blue-500 focus:outline-none"
+                      className="w-full pl-12 pr-4 py-3 border-2 border-gray-300 dark:border-[#2d3748] dark:bg-[#252b3b] dark:text-slate-200 rounded-lg focus:border-sky-500 focus:outline-none"
                       placeholder="0.00"
                     />
                   </div>
@@ -162,7 +162,7 @@ export const QuotePriceModal = ({
                         ...prev,
                         materialsCost: e.target.value
                       }))}
-                      className="w-full pl-12 pr-4 py-3 border-2 border-gray-300 dark:border-[#2d3748] dark:bg-[#252b3b] dark:text-slate-200 rounded-lg focus:border-blue-500 focus:outline-none"
+                      className="w-full pl-12 pr-4 py-3 border-2 border-gray-300 dark:border-[#2d3748] dark:bg-[#252b3b] dark:text-slate-200 rounded-lg focus:border-sky-500 focus:outline-none"
                       placeholder="0.00"
                     />
                   </div>
@@ -184,7 +184,7 @@ export const QuotePriceModal = ({
                         ...prev,
                         additionalFees: e.target.value
                       }))}
-                      className="w-full pl-12 pr-4 py-3 border-2 border-gray-300 dark:border-[#2d3748] dark:bg-[#252b3b] dark:text-slate-200 rounded-lg focus:border-blue-500 focus:outline-none"
+                      className="w-full pl-12 pr-4 py-3 border-2 border-gray-300 dark:border-[#2d3748] dark:bg-[#252b3b] dark:text-slate-200 rounded-lg focus:border-sky-500 focus:outline-none"
                       placeholder="0.00"
                     />
                   </div>
@@ -211,7 +211,7 @@ export const QuotePriceModal = ({
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 rows="4"
-                className="w-full px-4 py-3 border-2 border-gray-300 dark:border-[#2d3748] dark:bg-[#252b3b] dark:text-slate-200 dark:placeholder-slate-500 rounded-lg focus:border-blue-500 focus:outline-none resize-none"
+                className="w-full px-4 py-3 border-2 border-gray-300 dark:border-[#2d3748] dark:bg-[#252b3b] dark:text-slate-200 dark:placeholder-slate-500 rounded-lg focus:border-sky-500 focus:outline-none resize-none"
                 placeholder="Add any details about the quote (e.g., warranty info, timeline, payment terms)..."
               />
             </div>
@@ -244,7 +244,7 @@ export const QuotePriceModal = ({
             <button
               onClick={handleSubmit}
               disabled={isSubmitting || parseFloat(calculateTotal()) <= 0}
-              className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 px-6 py-3 bg-sky-700 text-white rounded-lg hover:bg-sky-800 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? 'Submitting...' : 'Submit Quote & Accept Booking'}
             </button>
@@ -523,15 +523,15 @@ export const PaymentModal = ({
 
           <div className="p-6 space-y-6">
             {/* Service Summary */}
-            <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-400 dark:border-blue-600 p-4 rounded-lg">
+            <div className="bg-sky-50 dark:bg-blue-900/20 border-l-4 border-sky-400 dark:border-blue-600 p-4 rounded-lg">
               <div className="flex items-start gap-3">
-                <FileText className="w-5 h-5 text-blue-600 mt-0.5" />
+                <FileText className="w-5 h-5 text-sky-700 mt-0.5" />
                 <div className="flex-1">
-                  <p className="font-semibold text-blue-900 dark:text-blue-300">{booking.title}</p>
-                  <p className="text-sm text-blue-800 dark:text-blue-400 mt-1">
+                  <p className="font-semibold text-sky-900 dark:text-blue-300">{booking.title}</p>
+                  <p className="text-sm text-sky-800 dark:text-blue-400 mt-1">
                     Provider: {booking.provider?.name}
                   </p>
-                  <p className="text-sm text-blue-700 dark:text-blue-400 mt-1">
+                  <p className="text-sm text-sky-700 dark:text-blue-400 mt-1">
                     {booking.date} at {booking.time}
                   </p>
                 </div>
@@ -598,12 +598,12 @@ export const PaymentModal = ({
 
                 <div className="border-t-2 border-gray-300 dark:border-[#2d3748] pt-2 flex justify-between text-lg">
                   <span className="font-bold text-gray-900 dark:text-slate-100">Your Total Payment</span>
-                  <span className="font-bold text-blue-600">GH₵ {totalAmount}</span>
+                  <span className="font-bold text-sky-700">GH₵ {totalAmount}</span>
                 </div>
               </div>
 
-              <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-400 dark:border-blue-600 p-3 mt-3">
-                <p className="text-xs text-blue-800 dark:text-blue-300">
+              <div className="bg-sky-50 dark:bg-blue-900/20 border-l-4 border-sky-400 dark:border-blue-600 p-3 mt-3">
+                <p className="text-xs text-sky-800 dark:text-blue-300">
                   <strong>Note:</strong> You pay GH₵ {totalAmount}. The provider receives GH₵ {providerReceives} after the 18% platform service fee.
                 </p>
               </div>
@@ -618,8 +618,8 @@ export const PaymentModal = ({
               <div className="space-y-3">
                 <label className={`flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all ${
                   paymentMethod === 'mobile_money'
-                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                    : 'border-gray-300 dark:border-[#2d3748] hover:border-blue-300 dark:hover:border-blue-600'
+                    ? 'border-sky-500 bg-sky-50 dark:bg-blue-900/20'
+                    : 'border-gray-300 dark:border-[#2d3748] hover:border-sky-300 dark:hover:border-blue-600'
                 }`}>
                   <input
                     type="radio"
@@ -632,13 +632,13 @@ export const PaymentModal = ({
                     <p className="font-semibold text-gray-900 dark:text-slate-100">Mobile Money</p>
                     <p className="text-sm text-gray-600 dark:text-slate-400">MTN, Vodafone, AirtelTigo</p>
                   </div>
-                  <CreditCard className="w-6 h-6 text-blue-600" />
+                  <CreditCard className="w-6 h-6 text-sky-700" />
                 </label>
 
                 <label className={`flex items-center gap-3 p-4 border-2 rounded-lg cursor-pointer transition-all ${
                   paymentMethod === 'card'
-                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                    : 'border-gray-300 dark:border-[#2d3748] hover:border-blue-300 dark:hover:border-blue-600'
+                    ? 'border-sky-500 bg-sky-50 dark:bg-blue-900/20'
+                    : 'border-gray-300 dark:border-[#2d3748] hover:border-sky-300 dark:hover:border-blue-600'
                 }`}>
                   <input
                     type="radio"
@@ -651,7 +651,7 @@ export const PaymentModal = ({
                     <p className="font-semibold text-gray-900 dark:text-slate-100">Debit/Credit Card</p>
                     <p className="text-sm text-gray-600 dark:text-slate-400">Visa, Mastercard</p>
                   </div>
-                  <CreditCard className="w-6 h-6 text-blue-600" />
+                  <CreditCard className="w-6 h-6 text-sky-700" />
                 </label>
               </div>
 
@@ -665,7 +665,7 @@ export const PaymentModal = ({
                     type="tel"
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value)}
-                    className="w-full px-4 py-3 border-2 border-gray-300 dark:border-[#2d3748] dark:bg-[#252b3b] dark:text-slate-200 dark:placeholder-slate-500 rounded-lg focus:border-blue-500 focus:outline-none"
+                    className="w-full px-4 py-3 border-2 border-gray-300 dark:border-[#2d3748] dark:bg-[#252b3b] dark:text-slate-200 dark:placeholder-slate-500 rounded-lg focus:border-sky-500 focus:outline-none"
                     placeholder="024 XXX XXXX"
                   />
                 </div>

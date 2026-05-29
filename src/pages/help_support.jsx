@@ -255,7 +255,7 @@ const HelpSupport = () => {
                   placeholder="Search FAQs..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-white dark:bg-[#252b3b] dark:text-slate-200 dark:placeholder-slate-500 pl-12 pr-4 py-3 border-2 border-gray-200 dark:border-[#2d3748] rounded-lg focus:border-blue-600 focus:outline-none"
+                  className="w-full bg-white dark:bg-[#252b3b] dark:text-slate-200 dark:placeholder-slate-500 pl-12 pr-4 py-3 border-2 border-gray-200 dark:border-[#2d3748] rounded-lg focus:border-sky-600 focus:outline-none"
                 />
               </div>
 
@@ -304,7 +304,7 @@ const HelpSupport = () => {
                   </div>
                 </button>
 
-                <button className="flex items-center gap-4 p-4 bg-gray-50 dark:bg-[#252b3b] rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors text-left">
+                <button className="flex items-center gap-4 p-4 bg-gray-50 dark:bg-[#252b3b] rounded-lg hover:bg-sky-50 dark:hover:bg-blue-900/20 transition-colors text-left">
                   <div className="p-3 bg-orange-100 dark:bg-orange-900/20 rounded-lg">
                     <Video className="w-6 h-6 text-orange-600 dark:text-orange-400" />
                   </div>
@@ -341,7 +341,7 @@ const HelpSupport = () => {
                     id="support-category"
                     value={contactForm.category}
                     onChange={(e) => setContactForm({...contactForm, category: e.target.value})}
-                    className="w-full px-4 py-3 border-2 rounded-lg bg-white dark:bg-[#252b3b] text-gray-700 dark:text-slate-200 border-gray-300 dark:border-[#2d3748] focus:border-blue-600 focus:outline-none"
+                    className="w-full px-4 py-3 border-2 rounded-lg bg-white dark:bg-[#252b3b] text-gray-700 dark:text-slate-200 border-gray-300 dark:border-[#2d3748] focus:border-sky-600 focus:outline-none"
                   >
                     <option value="general">General Inquiry</option>
                     <option value="technical">Technical Issue</option>
@@ -357,7 +357,7 @@ const HelpSupport = () => {
                     value={contactForm.message}
                     onChange={(e) => setContactForm({...contactForm, message: e.target.value})}
                     rows="6"
-                    className="w-full px-4 py-3 border-2 rounded-lg text-gray-700 dark:text-slate-200 bg-white dark:bg-[#252b3b] border-gray-300 dark:border-[#2d3748] focus:border-blue-600 focus:outline-none dark:placeholder-slate-500"
+                    className="w-full px-4 py-3 border-2 rounded-lg text-gray-700 dark:text-slate-200 bg-white dark:bg-[#252b3b] border-gray-300 dark:border-[#2d3748] focus:border-sky-600 focus:outline-none dark:placeholder-slate-500"
                     placeholder="Describe your issue in detail..."
                     required
                   />

@@ -36,6 +36,7 @@ const ImageUploadModal = ({
             {/* Close */}
             <motion.button
                onClick={onClose}
+            aria-label="Close"
             className="absolute top-4 right-4 p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-full transition-colors"
             whileHover={{ scale: 1.1, rotate: 90 }}
             whileTap={{ scale: 0.9 }}
@@ -61,7 +62,7 @@ const ImageUploadModal = ({
                         onDragOver={onDrag}
                         onDrop={onDrop}
                         className={`border-4 border-dashed rounded-lg p-12 text-center transition-colors ${
-                          dragActive ? 'border-blue-600 bg-blue-50 dark:bg-blue-900/20' : 'border-blue-600'
+                          dragActive ? 'border-sky-600 bg-sky-50 dark:bg-blue-900/20' : 'border-sky-600'
                         }`}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -74,12 +75,12 @@ const ImageUploadModal = ({
                                   animate={{ y: 0, opacity: 1 }}
                                   transition={{ delay: 0.3 }}
                                 >
-                                  <Upload className="w-16 h-16 text-blue-600 mx-auto mb-4" />
+                                  <Upload className="w-16 h-16 text-sky-700 mx-auto mb-4" />
                                 </motion.div>
                                 
                                 <label htmlFor="file-upload" className="cursor-pointer">
                                   <motion.div 
-                                    className="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors mb-4"
+                                    className="inline-block bg-sky-700 text-white px-8 py-3 rounded-lg font-semibold hover:bg-sky-800 transition-colors mb-4"
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                   >
@@ -123,7 +124,7 @@ const ImageUploadModal = ({
                                     <line x1="70" y1="26" x2="90" y2="26" stroke="#D1D5DB" strokeWidth="1.5" />
                                     <line x1="70" y1="31" x2="90" y2="31" stroke="#D1D5DB" strokeWidth="1.5" />
                                     <line x1="70" y1="36" x2="85" y2="36" stroke="#D1D5DB" strokeWidth="1.5" />
-                                    <rect x="88" y="42" width="8" height="8" fill="#93C5FD" rx="1" />
+                                    <rect x="88" y="42" width="8" height="8" fill="#7dd3fc" rx="1" />
                                   </svg>
                                 </motion.div>
 
@@ -132,7 +133,7 @@ const ImageUploadModal = ({
                                     <div className="flex items-center space-x-4">
                                       <div className="flex-1 bg-gray-300 dark:bg-[#252b3b] rounded-full h-3 overflow-hidden">
                                         <motion.div
-                                          className="bg-blue-600 h-3 rounded-full"
+                                          className="bg-sky-700 h-3 rounded-full"
                                           initial={{ width: 0 }}
                                           animate={{ width: `${uploadProgress}%` }}
                                           transition={{ duration: 0.3 }}
@@ -163,7 +164,7 @@ const ImageUploadModal = ({
                   disabled={!selectedFile || isUploading}
                   className={`px-12 py-3 rounded-lg font-semibold transition-colors ${
                     selectedFile && !isUploading
-                      ? 'bg-blue-600 text-white hover:bg-blue-700'
+                      ? 'bg-sky-700 text-white hover:bg-sky-800'
                       : 'bg-gray-300 dark:bg-[#252b3b] text-gray-500 dark:text-slate-500 cursor-not-allowed'
                   }`}
                   whileHover={selectedFile && !isUploading ? { scale: 1.05 } : {}}
@@ -177,7 +178,7 @@ const ImageUploadModal = ({
                   className={`px-12 py-3 rounded-lg font-semibold border-2 transition-colors ${
                     isUploading
                       ? 'border-gray-300 dark:border-[#2d3748] text-gray-400 dark:text-slate-500 cursor-not-allowed'
-                      : 'border-blue-600 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20'
+                      : 'border-sky-600 text-sky-700 hover:bg-sky-50 dark:hover:bg-blue-900/20'
                   }`}
                   whileHover={!isUploading ? { scale: 1.05 } : {}}
                   whileTap={!isUploading ? { scale: 0.95 } : {}}

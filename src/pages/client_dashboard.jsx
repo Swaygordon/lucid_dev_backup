@@ -8,16 +8,12 @@ import { useFavourites } from '../contexts/FavouritesContext';
 import { Avatar, StatCard } from '../components/ui';
 import { BookingDetailsModal, CancelBookingModal } from '../components/shared';
 import { supabase } from '../lib/supabaseClient';
-// [MOCK] Replace with real fetch calls when Phase 5 backend lands; delete this import.
-import {
-  getClientBookings, getClientStats, getClientActivityFeed, getBadgeCounts,
-} from '../data/mockPhase5';
+// [MOCK] Phase 5 demo data; delete this import when the dashboard endpoints land.
+import { getClientBookings, getClientStats } from '../data/mockPhase5';
 import {
   ArrowLeft, Search, Calendar, DollarSign, Star, Clock, CheckCircle,
   Heart, MapPin, MessageSquare, Bell, ChevronRight, ChevronDown, Filter, User
 } from 'lucide-react';
-
-const ACTIVITY_ICONS = { CheckCircle, MessageSquare, Calendar, Star };
 
 const PERIODS = [
   { value: 'week',  label: 'This Week'  },
@@ -147,7 +143,7 @@ const ProviderCard = ({ name, profession, rating, jobs, isFavorite }) => {
       </button>
 
       <div className="flex flex-col items-center text-center mb-4">
-        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary-light to-purple-600 flex items-center justify-center text-white font-bold text-xl mb-3">
+        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-sky-400 to-primary flex items-center justify-center text-white font-bold text-xl mb-3">
           {name.split(' ').map(n => n[0]).join('')}
         </div>
         <h3 className="font-bold text-gray-900 dark:text-slate-100">{name}</h3>
@@ -203,19 +199,19 @@ const ActivityItem = ({ icon: Icon, title, description, time, actionLabel, to })
       <div className="flex-1 min-w-0">
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1">
-            <h4 className="font-semibold text-gray-900 dark:text-slate-100 mb-1">{title}</h4>
+            <h3 className="font-semibold text-gray-900 dark:text-slate-100 mb-1">{title}</h3>
             <p className="text-sm text-gray-600 dark:text-slate-400">{description}</p>
           </div>
         </div>
         <div className="flex items-center justify-between mt-2">
-          <p className="text-xs text-gray-500 dark:text-slate-500 flex items-center gap-1">
+          <p className="text-xs text-gray-600 dark:text-slate-400 flex items-center gap-1">
             <Clock className="w-3 h-3" />
             {time}
           </p>
           {actionLabel && (
-            <button className="text-xs text-primary font-semibold hover:text-primary-hover">
+            <span className="text-xs text-primary font-semibold">
               {actionLabel}
-            </button>
+            </span>
           )}
         </div>
       </div>
@@ -242,18 +238,13 @@ const ClientDashboard = () => {
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [bookingToCancel, setBookingToCancel] = useState(null);
-  // [API] GET /notifications/count, /messages/unread-count, /bookings/new-count
-  // [MOCK] Currently fed by getBadgeCounts() from mockPhase5.
-  const [notificationCount, setNotificationCount] = useState(0);
-  const [unreadMessages, setUnreadMessages]       = useState(0);
-  const [unreadBookings, setUnreadBookings]       = useState(0);
-  useEffect(() => {
-    getBadgeCounts().then(c => {
-      setNotificationCount(c.notifications);
-      setUnreadMessages(c.unreadMessages);
-      setUnreadBookings(c.unreadBookings);
-    });
-  }, []);
+  // [API] GET /notifications/count?userId={id}&read=false → { count: number }
+  // [WS] Subscribe to 'notification' events on the user's WebSocket channel to update in real time.
+  const [notificationCount, setNotificationCount] = useState(5);
+  // [API] GET /messages/unread-count?userId={id} → { count: number }
+  const [unreadMessages] = useState(3);
+  // [API] GET /bookings/new-count?clientId={id} — bookings not yet viewed by client
+  const [unreadBookings] = useState(5);
 
   const handleBackClick = useNavigateBack('/lucid/', 600);
   const { showNotification } = useNotification();
@@ -315,61 +306,42 @@ const ClientDashboard = () => {
     showNotification('Booking marked as complete!', 'success');
   };
 
-  // [API] GET /bookings?clientId={authenticatedUserId}&status=pending,confirmed,in-progress
-  // [MOCK] Currently fed by getClientBookings() + getClientStats() from mockPhase5.
+  // [MOCK] Phase 5 demo bookings; replace with GET /bookings?clientId={id}&status=... when backend lands.
   const [allBookings, setAllBookings] = useState([]);
-  const [bookingStats, setBookingStats] = useState({
-    total: 0, completed: 0, pending: 0, confirmed: 0, inProgress: 0, cancelled: 0,
-    totalEarnings: 0, avgRating: 'N/A', active: 0, totalRevenue: 0, completionRate: 0,
-  });
-  useEffect(() => {
-    Promise.all([getClientBookings(), getClientStats()]).then(([bookings, stats]) => {
-      setAllBookings(bookings);
-      setBookingStats({
-        total: bookings.length,
-        completed:  stats.completedJobs,
-        pending:    bookings.filter(b => b.status === 'pending').length,
-        confirmed:  bookings.filter(b => b.status === 'confirmed').length,
-        inProgress: bookings.filter(b => b.status === 'in-progress').length,
-        cancelled:  bookings.filter(b => b.status === 'cancelled').length,
-        totalEarnings: 0,
-        avgRating: 'N/A',
-        active: stats.activeBookings,
-        totalRevenue: stats.totalSpent,
-        completionRate: 0,
-      });
-    });
-  }, []);
+  useEffect(() => { getClientBookings().then(setAllBookings); }, []);
 
   const activeBookings = useMemo(() =>
     allBookings.filter(b => ['pending', 'confirmed', 'in-progress'].includes(b.status)),
     [allBookings]
   );
 
-  // [API] Stats (change %, trend) should come from: GET /users/:id/stats?period={timeframe}
-  // → { activeBookings, completedJobs, totalSpent, favouritesCount, weekOverWeekChange: {...} }
-  // All change values are hardcoded placeholders; favourites count comes from context.
+  // [MOCK] Phase 5 demo stats; replace with GET /users/:id/stats?period={timeframe} when backend lands.
+  // change/trend values remain placeholders; favourites count comes from context.
+  const [clientStats, setClientStats] = useState({ activeBookings: 0, completedJobs: 0, totalSpent: 0 });
+  useEffect(() => { getClientStats().then(setClientStats); }, []);
   const stats = useMemo(() => [
-    { icon: Calendar, title: 'Active Bookings', value: bookingStats.active.toString(), change: '+1', trend: 'up', color: 'blue' },
-    { icon: CheckCircle, title: 'Completed Jobs', value: bookingStats.completed.toString(), change: '+3', trend: 'up', color: 'green' },
-    { icon: DollarSign, title: 'Total Spent', value: `GH₵${bookingStats.totalRevenue}`, change: '+15%', trend: 'up', color: 'purple' },
+    { icon: Calendar, title: 'Active Bookings', value: clientStats.activeBookings.toString(), change: '+1', trend: 'up', color: 'blue' },
+    { icon: CheckCircle, title: 'Completed Jobs', value: clientStats.completedJobs.toString(), change: '+3', trend: 'up', color: 'green' },
+    { icon: DollarSign, title: 'Total Spent', value: `GH₵${clientStats.totalSpent.toLocaleString()}`, change: '+15%', trend: 'up', color: 'purple' },
     { icon: Heart, title: 'Favourites', value: favouriteProviders.length.toString(), change: null, trend: 'up', color: 'orange', to: '/lucid/favourites' }
-  ], [bookingStats, favouriteProviders.length]);
+  ], [clientStats, favouriteProviders.length]);
 
   const bookings = useMemo(() => activeBookings.slice(0, 3), [activeBookings]);
 
-  // [API] GET /activity-feed?userId={id}&limit=4
-  // [MOCK] Currently fed by getClientActivityFeed() from mockPhase5.
-  const [recentActivities, setRecentActivities] = useState([]);
-  useEffect(() => {
-    getClientActivityFeed().then(items => {
-      setRecentActivities(items.map(a => ({ ...a, icon: ACTIVITY_ICONS[a.iconName] })));
-    });
-  }, []);
+  // [MOCK] Replace with: GET /activity-feed?userId={id}&limit=4
+  // → [{ type: 'booking_completed'|'new_message'|'booking_confirmed'|'review_posted',
+  //       title, description, timestamp, relatedId, relatedRoute }]
+  // The `time` field should use a relative-time formatter (e.g. date-fns formatDistanceToNow).
+  const recentActivities = [
+    { icon: CheckCircle, title: 'Service Completed', description: 'Plumbing repair at Osu completed successfully', time: '2 hours ago', actionLabel: 'Leave Review', to: '/lucid/bookings' },
+    { icon: MessageSquare, title: 'New Message', description: 'Gabriel replied to your inquiry', time: '4 hours ago', actionLabel: 'View Message', to: '/lucid/messages' },
+    { icon: Calendar, title: 'Booking Confirmed', description: 'Electrical installation scheduled for tomorrow', time: '1 day ago', actionLabel: null, to: '/lucid/bookings' },
+    { icon: Star, title: 'Review Posted', description: 'Your review for John Mensah has been published', time: '2 days ago', actionLabel: null, to: '/lucid/providers/me' }
+  ];
 
   const quickActions = [
     { icon: Search, label: 'Find Services', to: '/lucid/services' },
-    { icon: Calendar, label: 'My Bookings', to: '/lucid/bookings', badgeCount: unreadBookings },
+    { icon: Calendar, label: 'Bookings', to: '/lucid/bookings', badgeCount: unreadBookings },
     { icon: Heart, label: 'Favourites', to: '/lucid/favourites' },
     { icon: User, label: 'Account', to: '/lucid/account' },
     { icon: MessageSquare, label: 'Messages', to: '/lucid/messages', badgeCount: unreadMessages }
@@ -385,12 +357,12 @@ const ClientDashboard = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <button onClick={handleBackClick} className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-lg transition-colors">
+              <button onClick={handleBackClick} aria-label="Go back" className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-lg transition-colors">
                 <ArrowLeft className="w-5 h-5 text-gray-700 dark:text-slate-300" />
               </button>
-              <div>
+              <div className="min-w-0">
                 <h1 className="text-xl font-bold text-gray-900 dark:text-slate-100">Dashboard</h1>
-                <p className="text-sm text-gray-500 dark:text-slate-500">Welcome back, {currentUserName}!</p>
+                <p className="text-sm text-gray-600 dark:text-slate-400 truncate">Welcome back, {currentUserName}!</p>
               </div>
             </div>
             <div className="flex items-center gap-4">

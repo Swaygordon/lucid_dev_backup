@@ -220,7 +220,7 @@ const filteredTransactions = useMemo(() => {
           initial="hidden"
           animate="visible"
           variants={fadeIn}
-          className="bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl p-8 text-white mb-8 shadow-xl"
+          className="bg-gradient-to-br from-sky-600 to-purple-600 rounded-2xl p-8 text-white mb-8 shadow-xl"
         >
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
@@ -239,13 +239,13 @@ const filteredTransactions = useMemo(() => {
             <p className="text-5xl font-bold mb-2">
               {showBalance ? `GH₵${walletData.availableBalance.toFixed(2)}` : '••••••'}
             </p>
-            <p className="text-blue-100">Ready to withdraw</p>
+            <p className="text-sky-100">Ready to withdraw</p>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <button
               onClick={() => setWithdrawalModal(true)}
-              className="bg-white text-blue-600 py-3 px-6 rounded-xl font-semibold hover:bg-blue-50 transition-colors flex items-center justify-center gap-2"
+              className="bg-white text-sky-700 py-3 px-6 rounded-xl font-semibold hover:bg-sky-50 transition-colors flex items-center justify-center gap-2"
             >
               <ArrowDownCircle className="w-5 h-5" />
               Withdraw
@@ -295,13 +295,13 @@ const filteredTransactions = useMemo(() => {
           initial="hidden"
           animate="visible"
           variants={fadeIn}
-          className="bg-blue-50 border-2 border-blue-200 rounded-xl p-4 mb-8"
+          className="bg-sky-50 border-2 border-sky-200 rounded-xl p-4 mb-8"
         >
           <div className="flex gap-3">
-            <Info className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+            <Info className="w-5 h-5 text-sky-700 flex-shrink-0 mt-0.5" />
             <div>
-              <h4 className="font-semibold text-blue-900 mb-1">Platform Fee</h4>
-              <p className="text-sm text-blue-800">
+              <h4 className="font-semibold text-sky-900 mb-1">Platform Fee</h4>
+              <p className="text-sm text-sky-800">
                 Lucid charges an 18% service fee on all completed jobs. This fee covers payment processing, 
                 customer support, insurance, and platform maintenance.
               </p>
@@ -343,13 +343,13 @@ const filteredTransactions = useMemo(() => {
                   placeholder="Search..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 pr-4 py-2 border-2 border-gray-200 dark:border-[#2d3748] rounded-lg focus:border-blue-600 focus:outline-none dark:bg-[#252b3b] dark:text-slate-200"
+                  className="pl-10 pr-4 py-2 border-2 border-gray-200 dark:border-[#2d3748] rounded-lg focus:border-sky-600 focus:outline-none dark:bg-[#252b3b] dark:text-slate-200"
                 />
               </div>
               <select
                 value={filterPeriod}
                 onChange={(e) => setFilterPeriod(e.target.value)}
-                className="px-4 py-2 border-2 border-gray-200 dark:border-[#2d3748] rounded-lg focus:border-blue-600 focus:outline-none dark:bg-[#252b3b] dark:text-slate-200"
+                className="px-4 py-2 border-2 border-gray-200 dark:border-[#2d3748] rounded-lg focus:border-sky-600 focus:outline-none dark:bg-[#252b3b] dark:text-slate-200"
               >
                 <option value="all">All Time</option>
                 <option value="week">This Week</option>
@@ -408,7 +408,7 @@ const TransactionItem = ({ transaction, onClick }) => {
     <motion.div
       whileHover={{ scale: 1.01 }}
       onClick={onClick}
-      className="flex items-center justify-between p-4 border-2 border-gray-100 dark:border-[#1e293b] rounded-lg hover:border-blue-200 dark:hover:border-[#2d3748] cursor-pointer transition-all dark:bg-[#252b3b]"
+      className="flex items-center justify-between p-4 border-2 border-gray-100 dark:border-[#1e293b] rounded-lg hover:border-sky-200 dark:hover:border-[#2d3748] cursor-pointer transition-all dark:bg-[#252b3b]"
     >
       <div className="flex items-center gap-4">
         <div className={`p-3 rounded-lg ${
@@ -416,10 +416,10 @@ const TransactionItem = ({ transaction, onClick }) => {
         }`}>
           {isEarning ? (
             <ArrowUpCircle className={`w-5 h-5 ${
-              isEarning ? 'text-green-600' : 'text-blue-600'
+              isEarning ? 'text-green-600' : 'text-sky-700'
             }`} />
           ) : (
-            <ArrowDownCircle className="w-5 h-5 text-blue-600" />
+            <ArrowDownCircle className="w-5 h-5 text-sky-700" />
           )}
         </div>
         
@@ -529,7 +529,7 @@ const WithdrawalModal = ({ availableBalance, onClose }) => {
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 placeholder="0.00"
-                className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 dark:border-[#2d3748] rounded-lg focus:border-blue-600 focus:outline-none dark:bg-[#252b3b] dark:text-slate-200"
+                className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 dark:border-[#2d3748] rounded-lg focus:border-sky-600 focus:outline-none dark:bg-[#252b3b] dark:text-slate-200"
               />
             </div>
             <button
@@ -576,7 +576,7 @@ const WithdrawalModal = ({ availableBalance, onClose }) => {
             <select
               value={provider}
               onChange={(e) => setProvider(e.target.value)}
-              className="w-full px-4 py-3 border-2 border-gray-200 dark:border-[#2d3748] rounded-lg focus:border-blue-600 focus:outline-none dark:bg-[#252b3b] dark:text-slate-200"
+              className="w-full px-4 py-3 border-2 border-gray-200 dark:border-[#2d3748] rounded-lg focus:border-sky-600 focus:outline-none dark:bg-[#252b3b] dark:text-slate-200"
             >
               <option value="">Select {method === 'mobile-money' ? 'provider' : 'bank'}</option>
               {(method === 'mobile-money' ? mobileProviders : banks).map((p) => (
@@ -595,7 +595,7 @@ const WithdrawalModal = ({ availableBalance, onClose }) => {
               value={accountNumber}
               onChange={(e) => setAccountNumber(e.target.value)}
               placeholder={method === 'mobile-money' ? '+233 XX XXX XXXX' : 'Account number'}
-              className="w-full px-4 py-3 border-2 border-gray-200 dark:border-[#2d3748] rounded-lg focus:border-blue-600 focus:outline-none dark:bg-[#252b3b] dark:text-slate-200"
+              className="w-full px-4 py-3 border-2 border-gray-200 dark:border-[#2d3748] rounded-lg focus:border-sky-600 focus:outline-none dark:bg-[#252b3b] dark:text-slate-200"
             />
           </div>
 
@@ -652,9 +652,9 @@ const TransactionDetailsModal = ({ transaction, onClose }) => {
 
         <div className="space-y-6">
           {/* Amount Card */}
-          <div className={`${isEarning ? 'bg-green-50' : 'bg-blue-50'} rounded-lg p-6 text-center`}>
+          <div className={`${isEarning ? 'bg-green-50' : 'bg-sky-50'} rounded-lg p-6 text-center`}>
             <p className="text-sm text-gray-600 dark:text-slate-400 mb-2">Amount</p>
-            <p className={`text-4xl font-bold ${isEarning ? 'text-green-600' : 'text-blue-600'} mb-2`}>
+            <p className={`text-4xl font-bold ${isEarning ? 'text-green-600' : 'text-sky-700'} mb-2`}>
               {isEarning ? '+' : '-'}GH₵{transaction.amount.toFixed(2)}
             </p>
             {isEarning && (

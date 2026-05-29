@@ -6,8 +6,6 @@ import { useNotification } from '../contexts/NotificationContext';
 import emptyNotificationsImage from '../assets/No Messages.webp';
 import { NotificationBadge } from '../components/ui';
 import { Link } from 'react-router-dom';
-// [MOCK] Replace with real fetch call when Phase 6 backend lands; delete this import.
-import { getNotifications } from '../data/mockPhase6';
 
 // Animation variants
 const fadeInUp = {
@@ -39,8 +37,8 @@ const NOTIFICATION_TYPES = {
   },
   message: {
     icon: MessageSquare,
-    getBg: () => 'bg-blue-100',
-    getColor: () => 'text-blue-600'
+    getBg: () => 'bg-sky-100',
+    getColor: () => 'text-sky-700'
   },
   profile: {
     icon: UserCheck,
@@ -64,7 +62,7 @@ const ConfirmationModal = memo(({ isOpen, onClose, onConfirm, title, message, pr
   if (!isOpen) return null;
 
   const colorClasses = {
-    blue: 'bg-blue-600 hover:bg-blue-700',
+    blue: 'bg-sky-700 hover:bg-sky-800',
     red: 'bg-red-600 hover:bg-red-700'
   };
 
@@ -85,8 +83,8 @@ const ConfirmationModal = memo(({ isOpen, onClose, onConfirm, title, message, pr
           className="bg-white dark:bg-[#1a1f2e] rounded-lg shadow-xl p-6 max-w-md mx-4"
         >
           <div className="flex items-center space-x-3 mb-4">
-            <div className={`${confirmColor === 'red' ? 'bg-red-100 dark:bg-red-900/30' : 'bg-blue-100 dark:bg-blue-900/30'} p-3 rounded-full`}>
-              <Trash2 className={`w-6 h-6 ${confirmColor === 'red' ? 'text-red-600' : 'text-blue-600'}`} />
+            <div className={`${confirmColor === 'red' ? 'bg-red-100 dark:bg-red-900/30' : 'bg-sky-100 dark:bg-blue-900/30'} p-3 rounded-full`}>
+              <Trash2 className={`w-6 h-6 ${confirmColor === 'red' ? 'text-red-600' : 'text-sky-700'}`} />
             </div>
             <h2 className="text-xl font-semibold text-gray-900 dark:text-slate-100">{title}</h2>
           </div>
@@ -128,7 +126,7 @@ const ActionsMenu = memo(({ notification, onMarkAsRead, onMarkAsUnread, onBookma
     {notification.read ? (
       <button
         onClick={() => onMarkAsUnread(notification.id)}
-        className="w-full px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-[#252b3b] text-blue-600 flex items-center space-x-3 text-sm"
+        className="w-full px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-[#252b3b] text-sky-700 flex items-center space-x-3 text-sm"
       >
         <EyeOff className="w-4 h-4" />
         <span>Mark as Unread</span>
@@ -136,7 +134,7 @@ const ActionsMenu = memo(({ notification, onMarkAsRead, onMarkAsUnread, onBookma
     ) : (
       <button
         onClick={() => onMarkAsRead(notification.id)}
-        className="w-full px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-[#252b3b] text-blue-600 flex items-center space-x-3 text-sm"
+        className="w-full px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-[#252b3b] text-sky-700 flex items-center space-x-3 text-sm"
       >
         <Eye className="w-4 h-4" />
         <span>Mark as Read</span>
@@ -202,7 +200,7 @@ const NotificationItem = memo(({ notification, onDelete, onMarkAsRead, onMarkAsU
       onTouchStart={startLongPress}
       onTouchEnd={cancelLongPress}
       className={`flex items-start gap-4 p-4 rounded-lg border transition-all duration-200 hover:shadow-md relative group cursor-pointer ${
-        notification.read ? 'bg-white dark:bg-[#1a1f2e] border-gray-200 dark:border-[#1e293b]' : 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700/40'
+        notification.read ? 'bg-white dark:bg-[#1a1f2e] border-gray-200 dark:border-[#1e293b]' : 'bg-sky-50 dark:bg-blue-900/20 border-sky-200 dark:border-blue-700/40'
       } ${notification.bookmarked ? 'ring-2 ring-orange-400' : ''}`}
     >
       {/* Icon */}
@@ -214,8 +212,8 @@ const NotificationItem = memo(({ notification, onDelete, onMarkAsRead, onMarkAsU
       <Link to={notification.loc}>
       <div className="flex-1 min-w-0">
         <div className="flex items-start justify-between gap-2 mb-1">
-          <h4 className="font-semibold text-gray-900 dark:text-slate-100 text-sm">{notification.title}</h4>
-          <span className="absolute bottom-2 right-2 text-xs text-gray-500 dark:text-slate-500 whitespace-nowrap">{notification.time}</span>
+          <h3 className="font-semibold text-gray-900 dark:text-slate-100 text-sm">{notification.title}</h3>
+          <span className="absolute bottom-2 right-2 text-xs text-gray-600 dark:text-slate-400 whitespace-nowrap">{notification.time}</span>
         </div>
         <p className="text-sm text-gray-600 dark:text-slate-400 leading-relaxed truncate max-w-[260px] sm:max-w-full">{notification.message}</p>
       </div>
@@ -241,7 +239,7 @@ const NotificationItem = memo(({ notification, onDelete, onMarkAsRead, onMarkAsU
 
       {/* Unread Indicator */}
       {!notification.read && (
-        <div className="absolute left-2 top-1/2 -translate-y-1/2 w-2 h-2 bg-blue-600 rounded-full"></div>
+        <div className="absolute left-2 top-1/2 -translate-y-1/2 w-2 h-2 bg-sky-700 rounded-full"></div>
       )}
     </motion.div>
   );
@@ -276,8 +274,8 @@ const FilterButton = memo(({ filter, isActive, badgeCount, onClick }) => (
     onClick={onClick}
     className={`relative my-2 px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-200 ${
       isActive
-        ? 'bg-blue-600 text-white shadow-md'
-        : 'bg-white dark:bg-[#1a1f2e] text-gray-700 dark:text-slate-300 border border-gray-300 dark:border-[#2d3748] hover:border-blue-600'
+        ? 'bg-sky-700 text-white shadow-md'
+        : 'bg-white dark:bg-[#1a1f2e] text-gray-700 dark:text-slate-300 border border-gray-300 dark:border-[#2d3748] hover:border-sky-600'
     }`}
   >
     {filter.label}
@@ -295,11 +293,114 @@ const NotificationsPage = () => {
   const [confirmDelete, setConfirmDelete] = useState(null);
   const [confirmClearAll, setConfirmClearAll] = useState(false);
   const [selectedNotification, setSelectedNotification] = useState(null);
-  // [API] GET /notifications?userId={id}&page={n}
-  // [WS] Subscribe to user notification channel for 'notification:new' events.
-  // [MOCK] Currently fed by getNotifications() from mockPhase6.
-  const [notifications, setNotifications] = useState([]);
-  useEffect(() => { getNotifications().then(setNotifications); }, []);
+  // [MOCK] Replace with GET /notifications?userId={id}&page={n} — sorted by createdAt desc → [{id, type, status, title, message, time, read, date, category, bookmarked, loc}]
+  // [WS] Subscribe to user notification channel — on 'notification:new' event, prepend to this array and update badge counts
+  const [notifications, setNotifications] = useState([
+    {
+      id: 1,
+      type: 'payment',
+      status: 'success',
+      title: 'Payment Successful!',
+      message: 'Thank you for your purchase! A confirmation email has been sent to your address.',
+      time: '10 min',
+      read: false,
+      date: 'Today',
+      category: 'payment',
+      bookmarked: false,
+      loc: '#'
+    },
+    {
+      id: 2,
+      type: 'payment',
+      status: 'error',
+      title: 'Payment Failed!',
+      message: 'Your payment could not be processed. Please check your payment details and try again.',
+      time: '25 min',
+      read: false,
+      date: 'Today',
+      category: 'payment',
+      bookmarked: false,
+      loc: '#'
+    },
+    {
+      id: 3,
+      type: 'profile',
+      status: 'success',
+      title: 'Profile Updated!',
+      message: 'Your profile information has been successfully updated.',
+      time: '1 hr',
+      read: false,
+      date: 'Today',
+      category: 'bookmark',
+      bookmarked: true,
+      loc: '#'
+    },
+    {
+      id: 4,
+      type: 'message',
+      status: 'info',
+      title: 'New Message',
+      message: 'You have a new message from your Client.',
+      time: '2 hrs',
+      read: true,
+      date: 'Yesterday',
+      category: 'read',
+      bookmarked: false,
+      loc: '/lucid/messages'
+    },
+    {
+      id: 5,
+      type: 'payment',
+      status: 'error',
+      title: 'Payment Failed!',
+      message: 'Your payment could not be processed. Please check your payment details and try again.',
+      time: '1 day',
+      read: true,
+      date: 'Yesterday',
+      category: 'payment',
+      bookmarked: false,
+      loc: '#'
+    },
+    {
+      id: 6,
+      type: 'message',
+      status: 'info',
+      title: 'New Message',
+      message: 'You have a new message from your Client.',
+      time: '3 days',
+      read: true,
+      date: 'October 21, 2025',
+      category: 'read',
+      bookmarked: false,
+      loc: '/lucid/messages'
+    },
+    {
+      id: 7,
+      type: 'message',
+      status: 'info',
+      title: 'New Message',
+      message: 'You have a new message from your Client.',
+      time: '4 days',
+      read: true,
+      date: 'October 20, 2025',
+      category: 'bookmark',
+      bookmarked: true,
+      loc: '/lucid/messages'
+    },
+    {
+      id: 8,
+      type: 'message',
+      status: 'info',
+      title: 'New Message',
+      message: 'You have a new message from your Client.',
+      time: '4 days',
+      read: false,
+      date: 'October 20, 2025',
+      category: 'bookmark',
+      bookmarked: true,
+      loc: '/lucid/messages'
+    },
+  ]);
 
   // Close actions menu on outside click
   useEffect(() => {
@@ -460,6 +561,7 @@ const NotificationsPage = () => {
           <div className="flex items-center justify-between mb-4">
             <motion.button
               onClick={handleBackClick}
+              aria-label="Go back"
               className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-full transition-colors"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
@@ -467,8 +569,9 @@ const NotificationsPage = () => {
               <ArrowLeft className="w-6 h-6 text-gray-700 dark:text-slate-300" />
             </motion.button>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-slate-100">Notifications</h1>
-            <Link to='/lucid/notifications/settings'>
+            <Link to='/lucid/notifications/settings' aria-label="Notification settings">
             <motion.button
+              aria-label="Notification settings"
               className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-full transition-colors"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
@@ -506,14 +609,14 @@ const NotificationsPage = () => {
               >
                 <button
                   onClick={handleMarkAllRead}
-                  className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
+                  className="text-sm text-sky-700 dark:text-blue-400 hover:text-sky-800 font-medium flex items-center gap-1"
                 >
                   <CheckCircle className="w-4 h-4" />
                   Mark all as read
                 </button>
                 <button
                   onClick={() => setConfirmClearAll(true)}
-                  className="text-sm text-red-600 hover:text-red-700 font-medium flex items-center gap-1"
+                  className="text-sm text-red-700 dark:text-red-400 hover:text-red-800 font-medium flex items-center gap-1"
                 >
                   <Trash2 className="w-4 h-4" />
                   Clear all
@@ -531,7 +634,7 @@ const NotificationsPage = () => {
                   animate="visible"
                   className="mb-6"
                 >
-                  <h3 className="text-sm font-semibold text-gray-500 mb-3">{date}</h3>
+                  <h2 className="text-sm font-semibold text-gray-700 dark:text-slate-300 mb-3">{date}</h2>
                   <div className="space-y-3">
                     {items.map(notification => (
                       <div key={notification.id} className="relative">

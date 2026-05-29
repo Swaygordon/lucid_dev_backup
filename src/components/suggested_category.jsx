@@ -97,7 +97,7 @@ const CategoryButton = memo(({ category, isActive, onClick, index }) => {
       <div className="relative w-14 h-14 mt-6 flex items-center justify-center">
         <motion.div
           className={`absolute top-0 left-5 right-2 w-12 h-12 rounded-lg transition-colors duration-300 ${
-            isActive ? 'bg-orange-300' : 'bg-blue-300'
+            isActive ? 'bg-orange-300' : 'bg-sky-300'
           }`}
           initial={{ x: -5, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
@@ -109,7 +109,7 @@ const CategoryButton = memo(({ category, isActive, onClick, index }) => {
           className={`relative top-2 left-1 w-12 h-12 rounded-lg flex items-center justify-center transition-all duration-300 ${
             isActive
               ? 'bg-orange-600 hover:bg-orange-700'
-              : 'bg-blue-700 hover:bg-blue-300'
+              : 'bg-sky-700 hover:bg-sky-300'
           }`}
           whileHover={{ scale: 1.1, rotate: 5 }}
           whileTap={{ scale: 0.95 }}
@@ -140,7 +140,7 @@ const MobileCategoryButton = memo(({ category, isActive, onClick }) => {
       <div className="relative mt-6 w-16 h-16">
         <motion.div
           className={`absolute top-0 left-6 right-2 w-12 h-12 rounded-lg transition-colors duration-300 ${
-            isActive ? 'bg-orange-300' : 'bg-blue-300'
+            isActive ? 'bg-orange-300' : 'bg-sky-300'
           }`}
           initial={{ x: -5, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
@@ -152,7 +152,7 @@ const MobileCategoryButton = memo(({ category, isActive, onClick }) => {
           className={`absolute top-3 left-3 w-12 h-12 rounded-lg flex items-center justify-center transition-colors duration-300 ${
             isActive
               ? 'bg-orange-600 hover:bg-orange-700'
-              : 'bg-blue-700 hover:bg-blue-300'
+              : 'bg-sky-700 hover:bg-sky-300'
           }`}
           whileTap={{ scale: 0.9 }}
         >
@@ -174,10 +174,10 @@ const MobileCategoryButton = memo(({ category, isActive, onClick }) => {
 const MoreButton = memo(({ isMobile = false }) => (
   <div className="flex flex-col items-center gap-2 snap-center">
     <div className={`relative ${isMobile ? 'w-16 h-16' : 'w-14 h-14'} mt-6 flex items-center justify-center`}>
-      <div className={`absolute top-0 ${isMobile ? 'left-6' : 'left-5'} right-2 w-12 h-12 bg-blue-300 rounded-lg`} />
+      <div className={`absolute top-0 ${isMobile ? 'left-6' : 'left-5'} right-2 w-12 h-12 bg-sky-300 rounded-lg`} />
       <Link to="/lucid/services/all" aria-label="View all categories">
         <motion.div
-          className={`${isMobile ? 'absolute top-3 left-3' : 'relative top-2 left-1'} w-12 h-12 bg-blue-700 rounded-lg hover:bg-blue-300 flex items-center justify-center transition-all duration-300 cursor-pointer`}
+          className={`${isMobile ? 'absolute top-3 left-3' : 'relative top-2 left-1'} w-12 h-12 bg-sky-700 rounded-lg hover:bg-sky-300 flex items-center justify-center transition-all duration-300 cursor-pointer`}
           whileHover={{ scale: 1.1, rotate: 5 }}
           whileTap={{ scale: 0.95 }}
         >
@@ -224,7 +224,7 @@ const ServiceCard = memo(({ service, index }) => {
               {service.title}
             </h2>
             <div className="flex items-center gap-2 text-sm text-black dark:text-slate-300">
-              <MapPin className="w-4 h-4 text-blue-600" />
+              <MapPin className="w-4 h-4 text-sky-700" />
               <span>{service.subtitle}</span>
             </div>
           </div>
@@ -363,7 +363,7 @@ const BusinessCategorySection = ({
                       </motion.p>
 
                       <motion.p
-                        className="text-orange-600 text-base md:text-base hover:text-blue-700 mt-6 drop-shadow-md"
+                        className="text-orange-600 text-base md:text-base hover:text-sky-700 mt-6 drop-shadow-md"
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.6 }}

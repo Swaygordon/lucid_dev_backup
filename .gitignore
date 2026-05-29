@@ -20,6 +20,9 @@ dist-ssr
 .claude/
 .vite/
 
+# Lighthouse audit reports — ephemeral if audits are ever run from this repo
+lh-reports/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

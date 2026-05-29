@@ -84,7 +84,7 @@ const BookingDetailsModalComponent = ({
   const getStatusConfig = (status = 'pending') => {
     const configs = {
       pending: { bg: 'bg-yellow-100 dark:bg-amber-900/20', text: 'text-yellow-700 dark:text-amber-400', icon: Clock, label: 'Pending' },
-      confirmed: { bg: 'bg-blue-100 dark:bg-blue-900/20', text: 'text-blue-700 dark:text-blue-400', icon: CheckCircle, label: 'Confirmed' },
+      confirmed: { bg: 'bg-sky-100 dark:bg-blue-900/20', text: 'text-sky-700 dark:text-blue-400', icon: CheckCircle, label: 'Confirmed' },
       'in-progress': { bg: 'bg-purple-100 dark:bg-purple-900/20', text: 'text-purple-700 dark:text-purple-400', icon: AlertCircle, label: 'In Progress' },
       completed: { bg: 'bg-green-100 dark:bg-green-900/20', text: 'text-green-700 dark:text-green-400', icon: CheckCircle, label: 'Completed' },
       cancelled: { bg: 'bg-red-100 dark:bg-red-900/20', text: 'text-red-700 dark:text-red-400', icon: XCircle, label: 'Cancelled' }
@@ -94,7 +94,7 @@ const BookingDetailsModalComponent = ({
 
   const getUrgencyConfig = (urgency) => {
     const configs = {
-      normal: { bg: 'bg-blue-100 dark:bg-blue-900/20', text: 'text-blue-700 dark:text-blue-400', label: 'Normal' },
+      normal: { bg: 'bg-sky-100 dark:bg-blue-900/20', text: 'text-sky-700 dark:text-blue-400', label: 'Normal' },
       urgent: { bg: 'bg-orange-100 dark:bg-orange-900/20', text: 'text-orange-700 dark:text-orange-400', label: 'Urgent' },
       emergency: { bg: 'bg-red-100 dark:bg-red-900/20', text: 'text-red-700 dark:text-red-400', label: 'Emergency' }
     };
@@ -219,12 +219,12 @@ const BookingDetailsModalComponent = ({
 
     if (normalizedStatus === 'confirmed') {
       return (
-        <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-400 dark:border-blue-600 p-4 rounded-lg">
+        <div className="bg-sky-50 dark:bg-blue-900/20 border-l-4 border-sky-400 dark:border-blue-600 p-4 rounded-lg">
           <div className="flex items-center gap-3">
-            <CheckCircle className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+            <CheckCircle className="w-5 h-5 text-sky-700 dark:text-blue-400 flex-shrink-0" />
             <div>
-              <p className="font-semibold text-blue-900 dark:text-blue-300">Booking Confirmed!</p>
-              <p className="text-sm text-blue-800 dark:text-blue-400">
+              <p className="font-semibold text-sky-900 dark:text-blue-300">Booking Confirmed!</p>
+              <p className="text-sm text-sky-800 dark:text-blue-400">
                 Scheduled for {booking.date} at {booking.time}
                 {userType === 'provider' && " - Don't forget to start the job when you begin work."}
               </p>
@@ -438,7 +438,7 @@ const BookingDetailsModalComponent = ({
             {/* Contact Information */}
             <div>
               <h3 className="text-lg font-bold text-gray-900 dark:text-slate-100 mb-4 flex items-center gap-2">
-                <User className="w-5 h-5 text-blue-600" />
+                <User className="w-5 h-5 text-sky-700" />
                 {contactLabel} Information
               </h3>
               <div className="grid md:grid-cols-2 gap-4 bg-gray-50 dark:bg-[#252b3b] rounded-lg p-4">
@@ -449,7 +449,7 @@ const BookingDetailsModalComponent = ({
                 {contactPhone && (
                   <div>
                     <p className="text-sm text-gray-600 dark:text-slate-400 mb-1">Phone</p>
-                    <a href={`tel:${contactPhone}`} className="font-semibold text-blue-600 hover:underline flex items-center gap-1">
+                    <a href={`tel:${contactPhone}`} className="font-semibold text-sky-700 hover:underline flex items-center gap-1">
                       <Phone className="w-4 h-4" />
                       {contactPhone}
                     </a>
@@ -458,7 +458,7 @@ const BookingDetailsModalComponent = ({
                 {contactEmail && (
                   <div>
                     <p className="text-sm text-gray-600 dark:text-slate-400 mb-1">Email</p>
-                    <a href={`mailto:${contactEmail}`} className="font-semibold text-blue-600 hover:underline flex items-center gap-1">
+                    <a href={`mailto:${contactEmail}`} className="font-semibold text-sky-700 hover:underline flex items-center gap-1">
                       <Mail className="w-4 h-4" />
                       {contactEmail}
                     </a>
@@ -476,7 +476,7 @@ const BookingDetailsModalComponent = ({
             {/* Job Details */}
             <div>
               <h3 className="text-lg font-bold text-gray-900 dark:text-slate-100 mb-4 flex items-center gap-2">
-                <FileText className="w-5 h-5 text-blue-600" />
+                <FileText className="w-5 h-5 text-sky-700" />
                 {userType === 'provider' ? 'Job' : 'Service'} Details
               </h3>
               <div className="space-y-4">
@@ -514,7 +514,7 @@ const BookingDetailsModalComponent = ({
             {/* Schedule */}
             <div>
               <h3 className="text-lg font-bold text-gray-900 dark:text-slate-100 mb-4 flex items-center gap-2">
-                <Calendar className="w-5 h-5 text-blue-600" />
+                <Calendar className="w-5 h-5 text-sky-700" />
                 Schedule
               </h3>
               <div className="grid md:grid-cols-2 gap-4 bg-gray-50 dark:bg-[#252b3b] rounded-lg p-4">
@@ -536,7 +536,7 @@ const BookingDetailsModalComponent = ({
             {/* Location */}
             <div>
               <h3 className="text-lg font-bold text-gray-900 dark:text-slate-100 mb-4 flex items-center gap-2">
-                <MapPin className="w-5 h-5 text-blue-600" />
+                <MapPin className="w-5 h-5 text-sky-700" />
                 {userType === 'provider' ? 'Service' : ''} Location
               </h3>
               <div className="bg-gray-50 dark:bg-[#252b3b] rounded-lg p-4 space-y-3">
@@ -560,7 +560,7 @@ const BookingDetailsModalComponent = ({
                   href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold"
+                  className="inline-flex items-center gap-2 text-sky-700 hover:text-sky-700 font-semibold"
                 >
                   <Navigation className="w-4 h-4" />
                   Open in Google Maps
@@ -605,7 +605,7 @@ const BookingDetailsModalComponent = ({
                     <div className="flex items-center gap-2 mb-2">
                       <div className="flex">
                         {[...Array(5)].map((_, i) => (
-                          <Star key={i} className={`w-4 h-4 ${i < booking.rating ? 'fill-blue-600 text-blue-600' : 'text-gray-300 dark:text-slate-600'}`} />
+                          <Star key={i} className={`w-4 h-4 ${i < booking.rating ? 'fill-sky-600 text-sky-700' : 'text-gray-300 dark:text-slate-600'}`} />
                         ))}
                       </div>
                       <span className="font-bold text-gray-900 dark:text-slate-100">{booking.rating}.0</span>
@@ -638,7 +638,7 @@ const BookingDetailsModalComponent = ({
                     {/* [API] PATCH /bookings/:id/status — {status: 'confirmed', quotedPrice, breakdown} on accept */}
                     <button
                       onClick={handleAcceptWithQuote}
-                      className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold"
+                      className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-sky-700 text-white rounded-lg hover:bg-sky-800 transition-colors font-semibold"
                     >
                       <ThumbsUp className="w-5 h-5" />
                       Accept & Quote Price
@@ -666,7 +666,7 @@ const BookingDetailsModalComponent = ({
                     </button>
                     <div className="flex gap-3">
                       <Link to="/lucid/messages" className="flex-1">
-                      <button className="w-full px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold flex items-center justify-center gap-2">
+                      <button className="w-full px-4 py-3 bg-sky-700 text-white rounded-lg hover:bg-sky-800 transition-colors font-semibold flex items-center justify-center gap-2">
                         <MessageCircle className="w-5 h-5" />
                         Message Provider
                       </button>
@@ -714,7 +714,7 @@ const BookingDetailsModalComponent = ({
                         </button>
                       )}
                       <Link to="/lucid/messages" className="flex-1">
-                        <button className="w-full px-4 py-2 bg-white dark:bg-transparent border-2 border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors font-semibold">
+                        <button className="w-full px-4 py-2 bg-white dark:bg-transparent border-2 border-sky-600 text-sky-700 rounded-lg hover:bg-sky-50 dark:hover:bg-blue-900/20 transition-colors font-semibold">
                           <MessageCircle className="w-4 h-4 inline mr-2" />
                           Message Client
                         </button>
@@ -741,7 +741,7 @@ const BookingDetailsModalComponent = ({
                     {booking.rating && (
                       <p className="flex items-center justify-center gap-2 text-gray-600 dark:text-slate-400 text-sm">
                         Client rated: {booking.rating}.0
-                        <Star className="w-4 h-4 fill-blue-600 text-blue-600" />
+                        <Star className="w-4 h-4 fill-sky-600 text-sky-700" />
                       </p>
                     )}
                   </div>
@@ -757,7 +757,7 @@ const BookingDetailsModalComponent = ({
                     {/* [API] PATCH /bookings/:id — {date, time, description, budget} to edit before confirmed */}
                     <button
                       onClick={() => onEdit?.(booking)}
-                      className="flex-1 px-4 py-3 bg-white dark:bg-transparent border-2 border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors font-semibold flex items-center justify-center gap-2"
+                      className="flex-1 px-4 py-3 bg-white dark:bg-transparent border-2 border-sky-600 text-sky-700 rounded-lg hover:bg-sky-50 dark:hover:bg-blue-900/20 transition-colors font-semibold flex items-center justify-center gap-2"
                     >
                       <Edit2 className="w-5 h-5" />
                       Edit Booking
@@ -776,7 +776,7 @@ const BookingDetailsModalComponent = ({
                 {normalizedStatus === 'confirmed' && (
                   <div className="flex gap-4">
                     <Link to="/lucid/messages" className="flex-1">
-                      <button className="w-full px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold flex items-center justify-center gap-2">
+                      <button className="w-full px-4 py-3 bg-sky-700 text-white rounded-lg hover:bg-sky-800 transition-colors font-semibold flex items-center justify-center gap-2">
                         <MessageCircle className="w-5 h-5" />
                         Message Provider
                       </button>
@@ -814,7 +814,7 @@ const BookingDetailsModalComponent = ({
                     )}
                     <div className="flex gap-3">
                       <Link to="/lucid/messages" className="flex-1">
-                        <button className="w-full px-4 py-2 bg-white dark:bg-transparent border-2 border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors font-semibold">
+                        <button className="w-full px-4 py-2 bg-white dark:bg-transparent border-2 border-sky-600 text-sky-700 rounded-lg hover:bg-sky-50 dark:hover:bg-blue-900/20 transition-colors font-semibold">
                           <MessageCircle className="w-4 h-4 inline mr-2" />
                           Message Provider
                         </button>
@@ -842,7 +842,7 @@ const BookingDetailsModalComponent = ({
                       // [API] POST /reviews — {bookingId, targetUserId, rating, comment} on submit
                       <button
                         onClick={() => setShowReviewModal(true)}
-                        className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold"
+                        className="px-6 py-3 bg-sky-700 text-white rounded-lg hover:bg-sky-800 transition-colors font-semibold"
                       >
                         Leave a Review
                       </button>
@@ -965,8 +965,8 @@ const BookingDetailsModalComponent = ({
                   You're marking this job as complete. The {contactLabel.toLowerCase()} will need to confirm before the booking status changes to completed.
                 </p>
 
-                <div className="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-400 dark:border-blue-600 p-3 mb-4">
-                  <p className="text-sm text-blue-800 dark:text-blue-300">
+                <div className="bg-sky-50 dark:bg-blue-900/20 border-l-4 border-sky-400 dark:border-blue-600 p-3 mb-4">
+                  <p className="text-sm text-sky-800 dark:text-blue-300">
                     <span className="font-semibold">Note:</span> This helps ensure both parties agree the work is satisfactory before finalizing.
                   </p>
                 </div>

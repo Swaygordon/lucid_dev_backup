@@ -42,13 +42,13 @@ const staggerContainer = {
 
 // Memoized Icon Wrapper Component
 const IconWrapper = memo(({ children }) => (
-  <motion.div 
-    className="flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 rounded-full p-1"
+  <motion.div
+    className="flex items-center justify-center w-20 h-20 bg-gradient-to-br from-sky-400 via-sky-600 to-indigo-600 rounded-full p-1"
     whileHover={{ rotate: 360, scale: 1.1 }}
     transition={{ duration: 0.6 }}
   >
-    <div className="w-full h-full bg-white rounded-full flex items-center justify-center">
-      <div className="bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 p-2 rounded-full">
+    <div className="w-full h-full bg-white dark:bg-[#1a1f2e] rounded-full flex items-center justify-center">
+      <div className="bg-gradient-to-br from-sky-400 via-sky-600 to-indigo-600 p-2 rounded-full">
         {children}
       </div>
     </div>
@@ -58,7 +58,7 @@ const IconWrapper = memo(({ children }) => (
 // Memoized Feature Card Component
 const FeatureCard = memo(({ icon: Icon, title, description, index }) => (
   <motion.div
-    className="flex flex-col rounded-3xl w-full bg-white dark:bg-[#1a1f2e] shadow-2xl hover:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] transition-shadow duration-200"
+    className="flex flex-col rounded-3xl w-full bg-white dark:bg-[#1a1f2e] ring-1 ring-slate-900/5 dark:ring-white/10 shadow-md hover:shadow-xl transition-shadow duration-200"
     variants={fadeInUp}
     initial="hidden"
     whileInView="visible"
@@ -79,7 +79,7 @@ const FeatureCard = memo(({ icon: Icon, title, description, index }) => (
 // Memoized Platform Feature Card
 const PlatformFeatureCard = memo(({ title, description, index }) => (
   <motion.div 
-    className="flex flex-col w-full bg-white dark:bg-[#1a1f2e] shadow-2xl rounded-3xl hover:shadow-xl transition-shadow"
+    className="flex flex-col w-full bg-white dark:bg-[#1a1f2e] ring-1 ring-slate-900/5 dark:ring-white/10 shadow-sm rounded-3xl hover:shadow-lg transition-shadow"
     variants={scaleIn}
     initial="hidden"
     whileInView="visible"
@@ -107,7 +107,7 @@ const HowItWorksStep = memo(({ step, index }) => (
     transition={{ duration: 0.5, delay: index * 0.15 }}
   >
     <motion.div
-      className="w-full h-44 mt-2 bg-blue-700 dark:bg-[#1a1f2e] rounded-2xl transition-all duration-300 overflow-hidden flex items-center justify-center flex-shrink-0"
+      className="w-full h-44 mt-2 bg-sky-700 dark:bg-[#1a1f2e] rounded-2xl transition-all duration-300 overflow-hidden flex items-center justify-center flex-shrink-0"
       whileHover={{ scale: 1.05, boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.2)" }}
       transition={{ duration: 0.3 }}
     >
@@ -311,7 +311,7 @@ const FAQ_DATA = [
 
 const Section1 = () => {
   return (
-    <div className="flex flex-col min-h-screen bg-gray-300 dark:bg-[#0f1117]">
+    <div className="flex flex-col min-h-screen bg-white dark:bg-[#0f1117]">
       {/* Top 3 Feature Cards */}
       <motion.div 
         className="max-w-[1240px] mx-auto grid md:grid-cols-3 gap-8 mt-16 px-6 mb-6 py-4"

@@ -1,48 +1,123 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
-import { TrendingUp, DollarSign, Calendar, Eye, EyeOff } from 'lucide-react';
+import { TrendingUp, DollarSign, Calendar, Eye, EyeOff, ChevronDown } from 'lucide-react';
+import { useTheme } from '../contexts/ThemeContext';
+// [MOCK] Phase 5 demo chart data; delete this import when the earnings endpoint lands.
+import { getEarningsChartData } from '../data/mockPhase5';
+
+// Small dropdown used by the controls below. Single-use, so kept inline.
+const Dropdown = ({ value, options, onChange }) => {
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [open]);
+
+  const currentLabel = options.find((o) => o.value === value)?.label ?? '';
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        className="flex items-center justify-between gap-2 px-4 py-2 min-w-[8.5rem] rounded-lg font-semibold text-sm bg-white dark:bg-[#1a1f2e] border-2 border-sky-600 text-sky-700 dark:text-blue-400 hover:bg-sky-50 dark:hover:bg-blue-900/20 transition-colors"
+      >
+        <span>{currentLabel}</span>
+        <ChevronDown className={`w-4 h-4 transition-transform ${open ? 'rotate-180' : ''}`} />
+      </button>
+
+      {open && (
+        <ul
+          role="listbox"
+          className="absolute left-0 top-full mt-1 z-50 w-full min-w-full bg-white dark:bg-[#1a1f2e] border border-gray-200 dark:border-[#1e293b] rounded-lg shadow-xl overflow-hidden"
+        >
+          {options.map((opt) => (
+            <li key={opt.value}>
+              <button
+                type="button"
+                role="option"
+                aria-selected={value === opt.value}
+                onClick={() => { onChange(opt.value); setOpen(false); }}
+                className={`w-full text-left px-4 py-2 text-sm transition-colors ${
+                  value === opt.value
+                    ? 'bg-sky-50 dark:bg-blue-900/20 text-sky-700 font-semibold'
+                    : 'text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-[#252b3b]'
+                }`}
+              >
+                {opt.label}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
+
+const TIMEFRAME_OPTIONS = [
+  { value: 'week',  label: 'This Week' },
+  { value: 'month', label: 'This Month' },
+  { value: 'year',  label: 'This Year' },
+];
+
+const CHART_TYPE_OPTIONS = [
+  { value: 'area', label: 'Area' },
+  { value: 'line', label: 'Line' },
+  { value: 'bar',  label: 'Bar' },
+];
 
 // [API] GET /providers/:id/earnings?period=week|month|year
-//   → { data: [{ name: string, earnings: number, jobs: number }], total: number, avg: number }
-const weeklyData = [];
-const monthlyData = [];
-const yearlyData = [];
+//   → { weekly|monthly|yearly: [{ name, earnings, jobs }] }
 
 const EarningsChart = () => {
+  const { isDark } = useTheme();
+  // Earnings series reads as source blue (#2563eb) in dark mode, sky (#0ea5e9) in light.
+  const earningsColor = isDark ? '#2563eb' : '#0ea5e9';
   const [timeframe, setTimeframe] = useState('month');
   const [chartType, setChartType] = useState('area');
   const [showJobs, setShowJobs] = useState(true);
+  // [MOCK] Phase 5 demo chart data; replace with GET /providers/:id/earnings?period={...} when backend lands.
+  const [chartData, setChartData] = useState({ weekly: [], monthly: [], yearly: [] });
+  useEffect(() => { getEarningsChartData().then(setChartData); }, []);
 
   const getDataForTimeframe = () => {
     switch(timeframe) {
       case 'week':
-        return weeklyData;
+        return chartData.weekly;
       case 'month':
-        return monthlyData;
+        return chartData.monthly;
       case 'year':
-        return yearlyData;
+        return chartData.yearly;
       default:
-        return monthlyData;
+        return chartData.monthly;
     }
   };
 
   const data = getDataForTimeframe();
   const totalEarnings = data.reduce((sum, item) => sum + item.earnings, 0);
   const totalJobs = data.reduce((sum, item) => sum + item.jobs, 0);
-  const avgEarnings = (totalEarnings / data.length).toFixed(0);
+  const avgEarnings = data.length ? (totalEarnings / data.length).toFixed(0) : '0';
 
   // Custom tooltip
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-white dark:bg-[#1a1f2e] border-2 border-blue-600 rounded-lg p-3 shadow-xl">
+        <div className="bg-white dark:bg-[#1a1f2e] border-2 border-sky-600 rounded-lg p-3 shadow-xl">
           <p className="font-semibold text-gray-900 dark:text-slate-100 mb-2">{label}</p>
           <div className="space-y-1">
             <p className="text-sm text-green-600 font-semibold">
               Earnings: GH₵{payload[0].value.toLocaleString()}
             </p>
             {showJobs && payload[1] && (
-              <p className="text-sm text-blue-600 font-semibold">
+              <p className="text-sm text-sky-700 font-semibold">
                 Jobs: {payload[1].value}
               </p>
             )}
@@ -56,39 +131,18 @@ const EarningsChart = () => {
   return (
     <div className="space-y-6">
       {/* Controls */}
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        {/* Timeframe Selector */}
-        <div className="flex gap-2">
-          {['week', 'month', 'year'].map((period) => (
-            <button
-              key={period}
-              onClick={() => setTimeframe(period)}
-              className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all ${
-                timeframe === period
-                  ? 'bg-blue-600 text-white shadow-md'
-                  : 'bg-white dark:bg-[#1a1f2e] text-gray-700 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-[#252b3b] border-2 border-gray-200 dark:border-[#2d3748]'
-              }`}
-            >
-              {period === 'week' ? 'This Week' : period === 'month' ? 'This Month' : 'This Year'}
-            </button>
-          ))}
-        </div>
-
-        {/* Chart Type Selector */}
-        <div className="flex gap-2">
-          {['area', 'line', 'bar'].map((type) => (
-            <button
-              key={type}
-              onClick={() => setChartType(type)}
-              className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all capitalize ${
-                chartType === type
-                  ? 'bg-blue-600 text-white shadow-md'
-                  : 'bg-white dark:bg-[#1a1f2e] text-gray-700 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-[#252b3b] border-2 border-gray-200 dark:border-[#2d3748]'
-              }`}
-            >
-              {type}
-            </button>
-          ))}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          <Dropdown
+            value={timeframe}
+            options={TIMEFRAME_OPTIONS}
+            onChange={setTimeframe}
+          />
+          <Dropdown
+            value={chartType}
+            options={CHART_TYPE_OPTIONS}
+            onChange={setChartType}
+          />
         </div>
 
         {/* Toggle Jobs Display */}
@@ -113,10 +167,10 @@ const EarningsChart = () => {
           <p className="text-2xl font-bold text-gray-900 dark:text-slate-100">GH₵{totalEarnings.toLocaleString()}</p>
         </div>
 
-        <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/30 dark:to-blue-900/20 rounded-lg p-4 border-2 border-blue-200 dark:border-blue-800/50">
+        <div className="bg-gradient-to-br from-sky-50 to-sky-100 dark:from-blue-900/30 dark:to-blue-900/20 rounded-lg p-4 border-2 border-sky-200 dark:border-blue-800/50">
           <div className="flex items-center gap-2 mb-2">
-            <Calendar className="w-5 h-5 text-blue-600" />
-            <span className="text-sm font-medium text-blue-600">Total Jobs</span>
+            <Calendar className="w-5 h-5 text-sky-700" />
+            <span className="text-sm font-medium text-sky-700">Total Jobs</span>
           </div>
           <p className="text-2xl font-bold text-gray-900 dark:text-slate-100">{totalJobs}</p>
         </div>
@@ -141,8 +195,8 @@ const EarningsChart = () => {
             <AreaChart data={data}>
               <defs>
                 <linearGradient id="colorEarnings" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#2563eb" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="#2563eb" stopOpacity={0.1}/>
+                  <stop offset="5%" stopColor={earningsColor} stopOpacity={0.8}/>
+                  <stop offset="95%" stopColor={earningsColor} stopOpacity={0.1}/>
                 </linearGradient>
                 <linearGradient id="colorJobs" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#10b981" stopOpacity={0.8}/>
@@ -163,7 +217,7 @@ const EarningsChart = () => {
               <Area
                 type="monotone"
                 dataKey="earnings"
-                stroke="#2563eb"
+                stroke={earningsColor}
                 strokeWidth={3}
                 fillOpacity={1}
                 fill="url(#colorEarnings)"
@@ -195,9 +249,9 @@ const EarningsChart = () => {
               <Line
                 type="monotone"
                 dataKey="earnings"
-                stroke="#2563eb"
+                stroke={earningsColor}
                 strokeWidth={3}
-                dot={{ fill: '#2563eb', r: 5 }}
+                dot={{ fill: earningsColor, r: 5 }}
                 activeDot={{ r: 7 }}
               />
               {showJobs && (
@@ -226,7 +280,7 @@ const EarningsChart = () => {
               <Tooltip content={<CustomTooltip />} />
               <Bar 
                 dataKey="earnings" 
-                fill="#2563eb" 
+                fill={earningsColor}
                 radius={[8, 8, 0, 0]}
                 maxBarSize={60}
               />

@@ -76,18 +76,19 @@ const HeroSection = memo(({ heroUrl, onEditClick }) => (
         transition={{ duration: 1.2 }}
       />
     ) : (
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-blue-400" />
+      <div className="absolute inset-0 bg-gradient-to-br from-sky-600 to-sky-400" />
     )}
     <motion.div
       onClick={onEditClick}
       className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center cursor-pointer"
     >
       <motion.button
+        aria-label="Change profile photo"
         className="opacity-0 group-hover:opacity-100 transform scale-90 group-hover:scale-100 transition-all duration-300 bg-white p-3 rounded-full shadow-lg"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
       >
-        <Camera className="w-6 h-6 text-blue-600" />
+        <Camera className="w-6 h-6 text-sky-700" />
       </motion.button>
     </motion.div>
   </motion.div>
@@ -100,7 +101,7 @@ const ProfileAvatar = memo(({ avatarUrl }) => (
     animate={{ scale: 1, rotate: 0 }}
     transition={{ duration: 0.5, type: "spring" }}
   >
-    <div className="w-24 h-24 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full border-4 border-blue-600 bg-gray-200 flex items-center justify-center overflow-hidden relative">
+    <div className="w-24 h-24 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full border-4 border-sky-600 bg-gray-200 flex items-center justify-center overflow-hidden relative">
       {avatarUrl ? (
         <img src={avatarUrl} alt="profile picture" className="w-full h-full object-cover" loading="lazy" />
       ) : (
@@ -109,7 +110,7 @@ const ProfileAvatar = memo(({ avatarUrl }) => (
       <motion.div
         className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all duration-300 flex items-center justify-center rounded-full cursor-pointer"
       >
-        <Link to="/lucid/account/profile/edit">
+        <Link to="/lucid/account/profile/edit" aria-label="Change profile photo">
           <Camera className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         </Link>
       </motion.div>
@@ -118,20 +119,21 @@ const ProfileAvatar = memo(({ avatarUrl }) => (
 ));
 
 const EditButton = memo(() => (
-  <Link to="/lucid/account/profile/edit">
+  <Link to="/lucid/account/profile/edit" aria-label="Edit profile">
     <motion.button
+      aria-label="Edit profile"
       className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-[#252b3b] transition-all duration-200"
       whileHover={{ y: -2, boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)" }}
       whileTap={{ scale: 0.95 }}
     >
-      <Pencil className="w-5 h-5 text-blue-600" />
+      <Pencil className="w-5 h-5 text-sky-700" />
     </motion.button>
   </Link>
 ));
 
 const SkillBadge = memo(({ skill, index }) => (
   <motion.span
-    className="px-4 py-2 bg-blue-50 text-blue-600 rounded-lg text-sm font-medium"
+    className="px-4 py-2 bg-sky-50 text-sky-700 rounded-lg text-sm font-medium"
     initial={{ opacity: 0, scale: 0.8 }}
     animate={{ opacity: 1, scale: 1 }}
     transition={{ delay: index * 0.1 }}
@@ -153,7 +155,7 @@ const InfoCard = memo(({ title, children, icon: Icon, delay = 0, editable = true
   >
     <div className="flex items-center justify-between mb-4">
       <div className="flex items-center space-x-2">
-        {Icon && <Icon className="w-5 h-5 text-blue-600" />}
+        {Icon && <Icon className="w-5 h-5 text-sky-700" />}
         <h2 className="text-xl text-black dark:text-slate-100 font-bold">{title}</h2>
       </div>
       {editable && <EditButton />}
@@ -173,7 +175,7 @@ const StatsCard = memo(({ icon: Icon, value, label, delay = 0 }) => (
     whileHover={{ y: -5, boxShadow: "0 10px 25px -5px rgba(0,0,0,0.1)" }}
   >
     <div className="text-center">
-      <Icon className="w-8 h-8 text-blue-600 mx-auto mb-2" />
+      <Icon className="w-8 h-8 text-sky-700 mx-auto mb-2" />
       <div className="text-2xl font-bold text-gray-900 dark:text-slate-100">{value}</div>
       <div className="text-sm text-gray-600 dark:text-slate-400">{label}</div>
     </div>
@@ -186,7 +188,7 @@ const InfoItem = memo(({ icon: Icon, text }) => (
     whileHover={{ x: 5 }}
     transition={{ duration: 0.2 }}
   >
-    <Icon className="w-6 h-6 text-blue-600" />
+    <Icon className="w-6 h-6 text-sky-700" />
     <span className="text-gray-700 dark:text-slate-300">{text}</span>
   </motion.div>
 ));
@@ -224,10 +226,10 @@ const RatingBar = memo(({ rating, index }) => (
     transition={{ delay: index * 0.05 }}
   >
     <span className="w-8 text-right">{rating.stars}</span>
-    <Star className="w-4 h-4 fill-blue-600 text-blue-600" />
+    <Star className="w-4 h-4 fill-sky-600 text-sky-700" />
     <div className="flex-1 bg-gray-200 dark:bg-[#252b3b] rounded-full h-2 overflow-hidden">
       <motion.div
-        className="bg-blue-600 h-2 rounded-full"
+        className="bg-sky-700 h-2 rounded-full"
         initial={{ width: 0 }}
         animate={{ width: `${rating.percentage}%` }}
         transition={{ duration: 0.8, delay: index * 0.1 }}
@@ -454,7 +456,7 @@ const UserProfile = () => {
         <div className="text-center">
           <p className="text-gray-600 dark:text-slate-400 mb-4">No profile found</p>
           <Link to="/lucid/account/profile/setup">
-            <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+            <button className="bg-sky-700 text-white px-6 py-2 rounded-lg hover:bg-sky-800 transition-colors">
               Complete Setup
             </button>
           </Link>
@@ -479,11 +481,11 @@ const UserProfile = () => {
       >
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <button onClick={handleBack} className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-lg transition-colors">
+            <button onClick={handleBack} aria-label="Go back" className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-lg transition-colors">
               <ArrowLeft className="w-6 h-6 text-gray-700 dark:text-slate-300" />
             </button>
             <div className="text-sm text-gray-600 dark:text-slate-400">
-              Viewing as: <span className="font-semibold text-blue-600">Service Provider</span>
+              Viewing as: <span className="font-semibold text-sky-700 dark:text-blue-400">Service Provider</span>
             </div>
           </div>
         </div>
@@ -509,22 +511,22 @@ const UserProfile = () => {
             </div>
 
             <div className="flex items-center space-x-2 mb-1">
-              <BriefcaseBusiness className="w-5 h-5 text-blue-600" />
+              <BriefcaseBusiness className="w-5 h-5 text-sky-700" />
               <span className="text-lg text-gray-700 dark:text-slate-300">{profileData.occupation || 'Not specified'}</span>
             </div>
 
             <div className="flex items-center space-x-4 mb-4 flex-wrap gap-2">
               <div className="flex items-center space-x-1">
-                <Star className="w-4 h-4 fill-blue-600 text-blue-600" />
-                <span className="font-semibold text-blue-600">{rating}</span>
-                <span className="text-gray-500 dark:text-slate-500 text-sm">({reviewCount} reviews)</span>
+                <Star className="w-4 h-4 fill-sky-600 text-sky-700" />
+                <span className="font-semibold text-sky-700 dark:text-blue-400">{rating}</span>
+                <span className="text-gray-600 dark:text-slate-400 text-sm">({reviewCount} reviews)</span>
               </div>
               <div className="flex items-center space-x-2 text-gray-600 dark:text-slate-400">
-                <Clock className="w-4 h-4 text-blue-600" />
+                <Clock className="w-4 h-4 text-sky-700" />
                 <span>{profileData.work_experience || 0} years experience</span>
               </div>
               <div className="flex items-center space-x-2 text-gray-600 dark:text-slate-400">
-                <MapPin className="w-4 h-4 text-blue-600" />
+                <MapPin className="w-4 h-4 text-sky-700" />
                 <span>{profileData.location || 'Location not set'}</span>
               </div>
             </div>
@@ -649,7 +651,7 @@ const UserProfile = () => {
         >
           <Link to="/lucid/bookings">
             <motion.button
-              className="w-full bg-blue-600 text-white py-4 rounded-lg flex items-center justify-center space-x-2 hover:bg-blue-700 transition-colors font-semibold"
+              className="w-full bg-sky-700 text-white py-4 rounded-lg flex items-center justify-center space-x-2 hover:bg-sky-800 transition-colors font-semibold"
               whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
             >
               <Calendar className="w-5 h-5" />
@@ -658,7 +660,7 @@ const UserProfile = () => {
           </Link>
           <Link to="/lucid/earnings">
             <motion.button
-              className="w-full bg-white dark:bg-[#1a1f2e] text-blue-600 border-2 border-blue-600 py-4 rounded-lg flex items-center justify-center space-x-2 hover:bg-blue-50 transition-colors font-semibold"
+              className="w-full bg-white dark:bg-[#1a1f2e] text-sky-700 border-2 border-sky-600 py-4 rounded-lg flex items-center justify-center space-x-2 hover:bg-sky-50 transition-colors font-semibold"
               whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
             >
               <DollarSign className="w-5 h-5" />
@@ -667,7 +669,7 @@ const UserProfile = () => {
           </Link>
           <Link to="/lucid/account/profile/edit">
             <motion.button
-              className="w-full bg-white dark:bg-[#1a1f2e] text-blue-600 border-2 border-blue-600 py-4 rounded-lg flex items-center justify-center space-x-2 hover:bg-blue-50 transition-colors font-semibold"
+              className="w-full bg-white dark:bg-[#1a1f2e] text-sky-700 border-2 border-sky-600 py-4 rounded-lg flex items-center justify-center space-x-2 hover:bg-sky-50 transition-colors font-semibold"
               whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
             >
               <Pencil className="w-5 h-5" />
@@ -719,7 +721,7 @@ const UserProfile = () => {
                       <div className="text-5xl font-bold text-gray-900 dark:text-slate-100">Great {rating}</div>
                       <div className="flex justify-center space-x-1 my-2">
                         {[...Array(5)].map((_, i) => (
-                          <Star key={i} className={`w-6 h-6 ${i < Math.floor(rating) ? 'fill-blue-600 text-blue-600' : 'text-gray-300'}`} />
+                          <Star key={i} className={`w-6 h-6 ${i < Math.floor(rating) ? 'fill-sky-600 text-sky-700' : 'text-gray-300'}`} />
                         ))}
                       </div>
                       <div className="text-gray-600 dark:text-slate-400">{reviewCount} reviews</div>
@@ -747,7 +749,7 @@ const UserProfile = () => {
                     <textarea
                       value={replyText}
                       onChange={(e) => setReplyText(e.target.value)}
-                      className="w-full bg-white dark:bg-[#252b3b] text-gray-900 dark:text-slate-200 border dark:border-[#2d3748] rounded-lg p-3 focus:border-2 focus:border-blue-600 focus:outline-none"
+                      className="w-full bg-white dark:bg-[#252b3b] text-gray-900 dark:text-slate-200 border dark:border-[#2d3748] rounded-lg p-3 focus:border-2 focus:border-sky-600 focus:outline-none"
                       rows={3}
                       placeholder="Write your reply..."
                     />
@@ -760,7 +762,7 @@ const UserProfile = () => {
                       </button>
                       <button
                         onClick={handlePostReply}
-                        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                        className="bg-sky-700 text-white px-4 py-2 rounded-lg hover:bg-sky-800 transition-colors"
                       >
                         Post Reply
                       </button>
@@ -780,7 +782,7 @@ const UserProfile = () => {
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -50 }}
-            className="fixed top-24 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white px-6 py-3 rounded-lg shadow-lg z-50"
+            className="fixed top-24 left-1/2 transform -translate-x-1/2 bg-sky-700 text-white px-6 py-3 rounded-lg shadow-lg z-50"
           >
             {notification}
           </motion.div>

@@ -79,7 +79,7 @@ const HeroSection = memo(({ heroUrl }) => (
     {heroUrl ? (
       <img src={heroUrl} alt="Profile banner" className="w-full h-full object-cover" loading="lazy" style={{ minHeight: 240 }} />
     ) : (
-      <div className="w-full bg-gradient-to-br from-blue-600 to-blue-400" style={{ minHeight: 240 }} />
+      <div className="w-full bg-gradient-to-br from-sky-600 to-sky-400" style={{ minHeight: 240 }} />
     )}
   </motion.div>
 ));
@@ -92,11 +92,11 @@ const ProfileAvatar = memo(({ avatarUrl, name }) => (
     animate={{ scale: 1, rotate: 0 }}
     transition={{ duration: 0.5, type: "spring" }}
   >
-    <div className="w-24 h-24 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full border-4 border-blue-600 bg-gray-200 flex items-center justify-center overflow-hidden shadow-lg">
+    <div className="w-24 h-24 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full border-4 border-sky-600 bg-gray-200 flex items-center justify-center overflow-hidden shadow-lg">
       {avatarUrl ? (
         <img src={avatarUrl} alt={name} className="w-full h-full object-cover" loading="lazy" />
       ) : (
-        <div className="w-full h-full bg-blue-600 flex items-center justify-center">
+        <div className="w-full h-full bg-sky-700 flex items-center justify-center">
           <span className="text-white text-2xl font-bold">
             {name?.charAt(0) || 'U'}
           </span>
@@ -109,7 +109,7 @@ const ProfileAvatar = memo(({ avatarUrl, name }) => (
 // Skill Badge
 const SkillBadge = memo(({ skill, index }) => (
   <motion.span
-    className="px-4 py-2 bg-blue-50 dark:bg-primary/10 text-blue-600 rounded-lg text-sm font-medium"
+    className="px-4 py-2 bg-sky-50 dark:bg-primary/10 text-sky-700 dark:text-blue-300 rounded-full text-sm font-medium ring-1 ring-sky-100 dark:ring-blue-900/40"
     initial={{ opacity: 0, scale: 0.8 }}
     animate={{ opacity: 1, scale: 1 }}
     transition={{ delay: index * 0.1 }}
@@ -122,7 +122,7 @@ const SkillBadge = memo(({ skill, index }) => (
 // Info Card
 const InfoCard = memo(({ title, children, icon: Icon, delay = 0 }) => (
   <motion.div
-    className="bg-white dark:bg-[#1a1f2e] rounded-lg shadow p-6 hover:shadow-xl transition-shadow duration-200"
+    className="bg-white dark:bg-[#1a1f2e] rounded-2xl shadow-sm ring-1 ring-slate-900/5 dark:ring-white/10 p-6 hover:shadow-lg transition-shadow duration-200"
     variants={scaleIn}
     initial="hidden"
     whileInView="visible"
@@ -131,7 +131,7 @@ const InfoCard = memo(({ title, children, icon: Icon, delay = 0 }) => (
     whileHover={{ y: -5 }}
   >
     <div className="flex items-center space-x-2 mb-4">
-      {Icon && <Icon className="w-5 h-5 text-blue-600" />}
+      {Icon && <Icon className="w-5 h-5 text-sky-700" />}
       <h2 className="text-xl text-gray-900 dark:text-slate-100 font-bold">{title}</h2>
     </div>
     {children}
@@ -182,7 +182,7 @@ const InfoItem = memo(({ icon: Icon, text }) => (
     whileHover={{ x: 5 }}
     transition={{ duration: 0.2 }}
   >
-    <Icon className="w-6 h-6 text-blue-600" />
+    <Icon className="w-6 h-6 text-sky-700" />
     <span className="text-gray-700 dark:text-slate-300">{text}</span>
   </motion.div>
 ));
@@ -190,10 +190,10 @@ const InfoItem = memo(({ icon: Icon, text }) => (
 // Action Button
 const ActionButton = memo(({ icon: Icon, text, onClick, variant = 'primary' }) => (
   <motion.button
-    className={`py-4 rounded-lg flex items-center justify-center space-x-2 transition-colors font-semibold ${
+    className={`py-4 rounded-xl flex items-center justify-center space-x-2 transition-colors font-semibold ${
       variant === 'primary'
-        ? 'bg-blue-600 text-white hover:bg-blue-700'
-        : 'bg-white dark:bg-[#1a1f2e] text-blue-600 border-2 border-blue-600 hover:bg-blue-50 dark:hover:bg-primary/10'
+        ? 'bg-sky-700 text-white hover:bg-sky-800 shadow-md hover:shadow-glow-blue'
+        : 'bg-white dark:bg-[#1a1f2e] text-sky-700 border-2 border-sky-600 hover:bg-sky-50 dark:hover:bg-primary/10'
     }`}
     whileHover={{ scale: 1.02 }}
     whileTap={{ scale: 0.98 }}
@@ -213,10 +213,10 @@ const RatingBar = memo(({ rating, index }) => (
     transition={{ delay: index * 0.05 }}
   >
     <span className="w-8 text-right">{rating.stars}</span>
-    <Star className="w-4 h-4 fill-blue-600 text-blue-600" />
+    <Star className="w-4 h-4 fill-sky-600 text-sky-700" />
     <div className="flex-1 bg-gray-200 dark:bg-[#252b3b] rounded-full h-2 overflow-hidden">
       <motion.div
-        className="bg-blue-600 h-2 rounded-full"
+        className="bg-sky-700 h-2 rounded-full"
         initial={{ width: 0 }}
         animate={{ width: `${rating.percentage}%` }}
         transition={{ duration: 0.8, delay: index * 0.1 }}
@@ -534,7 +534,7 @@ const GeneralProfile = () => {
           <p className="text-lg text-gray-500 dark:text-slate-400 mb-4">{error || 'Provider profile not available.'}</p>
           <button 
             onClick={() => navigate('/lucid/services')} 
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="px-6 py-3 bg-sky-700 text-white rounded-lg hover:bg-sky-800 transition-colors"
           >
             Browse Services
           </button>
@@ -553,14 +553,14 @@ const GeneralProfile = () => {
       >
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <button onClick={handleBack} className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-lg transition-colors">
+            <button onClick={handleBack} aria-label="Go back" className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-lg transition-colors">
               <ArrowLeft className="w-6 h-6 text-gray-700 dark:text-slate-300" />
             </button>
             <div className="flex gap-2">
-              <button onClick={handleShare} className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-lg transition-colors">
+              <button onClick={handleShare} aria-label="Share profile" className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-lg transition-colors">
                 <Share2 className="w-5 h-5 text-gray-700 dark:text-slate-300" />
               </button>
-              <button onClick={toggleFavoriteHandler} className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-lg transition-colors">
+              <button onClick={toggleFavoriteHandler} aria-label={isFavorite ? 'Remove from favourites' : 'Add to favourites'} aria-pressed={isFavorite} className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-lg transition-colors">
                 <Heart className={`w-5 h-5 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-700 dark:text-slate-300'}`} />
               </button>
             </div>
@@ -574,7 +574,7 @@ const GeneralProfile = () => {
       {/* Profile Card */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 -mt-14">
         <motion.div
-          className="bg-white dark:bg-[#1a1f2e] rounded-lg shadow-lg p-6"
+          className="bg-white dark:bg-[#1a1f2e] rounded-2xl shadow-lg ring-1 ring-slate-900/5 dark:ring-white/10 p-6"
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
@@ -592,18 +592,18 @@ const GeneralProfile = () => {
             </div>
 
             <div className="flex items-center space-x-2 mb-3">
-              <BriefcaseBusiness className="w-5 h-5 text-blue-600" />
+              <BriefcaseBusiness className="w-5 h-5 text-sky-700" />
               <span className="text-lg text-gray-700 dark:text-slate-300">{profileData.occupation}</span>
             </div>
 
             <div className="flex items-center space-x-4 mb-4 flex-wrap gap-2">
               <div className="flex items-center space-x-1">
-                <Star className={`w-4 h-4 ${profileData.rating ? 'fill-blue-600 text-blue-600' : 'text-gray-300 dark:text-slate-600'}`} />
-                <span className="font-semibold text-blue-600">{profileData.rating ?? '—'}</span>
+                <Star className={`w-4 h-4 ${profileData.rating ? 'fill-sky-600 text-sky-700' : 'text-gray-300 dark:text-slate-600'}`} />
+                <span className="font-semibold text-sky-700">{profileData.rating ?? '—'}</span>
                 <span className="text-gray-500 dark:text-slate-500 text-sm">({profileData.reviewCount} reviews)</span>
               </div>
               <div className="flex items-center space-x-2 text-gray-600 dark:text-slate-400">
-                <MapPin className="w-4 h-4 text-blue-600" />
+                <MapPin className="w-4 h-4 text-sky-700" />
                 <span>{profileData.location}</span>
               </div>
             </div>
@@ -644,21 +644,21 @@ const GeneralProfile = () => {
         >
           <InfoCard title="" delay={0}>
             <div className="text-center">
-              <CheckCircle className="w-8 h-8 text-blue-600 mx-auto mb-2" />
+              <CheckCircle className="w-8 h-8 text-sky-700 mx-auto mb-2" />
               <div className="text-2xl font-bold text-gray-900 dark:text-slate-100">{profileData.hiredCount}</div>
               <div className="text-sm text-gray-600 dark:text-slate-400">Jobs Completed</div>
             </div>
           </InfoCard>
           <InfoCard title="" delay={0.1}>
             <div className="text-center">
-              <Award className="w-8 h-8 text-blue-600 mx-auto mb-2" />
+              <Award className="w-8 h-8 text-sky-700 mx-auto mb-2" />
               <div className="text-2xl font-bold text-gray-900 dark:text-slate-100">{profileData.rating ?? '—'}</div>
               <div className="text-sm text-gray-600 dark:text-slate-400">Average Rating</div>
             </div>
           </InfoCard>
           <InfoCard title="" delay={0.2}>
             <div className="text-center">
-              <TrendingUp className="w-8 h-8 text-blue-600 mx-auto mb-2" />
+              <TrendingUp className="w-8 h-8 text-sky-700 mx-auto mb-2" />
               <div className="text-2xl font-bold text-gray-900 dark:text-slate-100">
                 {profileData.successRate != null ? `${profileData.successRate}%` : '—'}
               </div>
@@ -832,7 +832,7 @@ const GeneralProfile = () => {
                             key={i}
                             className={`w-6 h-6 ${
                               i < Math.floor(profileData.rating ?? 0)
-                                ? 'fill-blue-600 text-blue-600'
+                                ? 'fill-sky-600 text-sky-700'
                                 : 'text-gray-300 dark:text-slate-600'
                             }`}
                           />
@@ -869,7 +869,7 @@ const GeneralProfile = () => {
                     <textarea
                       value={replyText}
                       onChange={(e) => setReplyText(e.target.value)}
-                      className="w-full bg-white dark:bg-[#1a1f2e] text-gray-900 dark:text-slate-200 border dark:border-[#2d3748] rounded-lg p-3 focus:border-2 focus:border-blue-600 focus:outline-none"
+                      className="w-full bg-white dark:bg-[#1a1f2e] text-gray-900 dark:text-slate-200 border dark:border-[#2d3748] rounded-lg p-3 focus:border-2 focus:border-sky-600 focus:outline-none"
                       rows={3}
                       placeholder="Write your reply..."
                     />
@@ -882,7 +882,7 @@ const GeneralProfile = () => {
                       </button>
                       <button
                         onClick={handlePostReply}
-                        className="bg-blue-600 text-white px-4 py-2 rounded-lg"
+                        className="bg-sky-700 text-white px-4 py-2 rounded-lg"
                       >
                         Post Reply
                       </button>

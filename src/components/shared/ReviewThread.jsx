@@ -28,7 +28,7 @@ const ReviewThreadComponent = ({ item, depth = 0, onReply }) => {
                     key={i}
                     className={`w-4 h-4 ${
                       i < item.rating
-                        ? "fill-blue-600 text-blue-600"
+                        ? "fill-sky-600 text-sky-700"
                         : "text-gray-300 dark:text-slate-600"
                     }`}
                   />
@@ -39,7 +39,7 @@ const ReviewThreadComponent = ({ item, depth = 0, onReply }) => {
 
           <button
             onClick={() => onReply(item)}
-            className="text-blue-600 text-sm flex items-center gap-1"
+            className="text-sky-700 text-sm flex items-center gap-1"
           >
             <Reply size={14} />
             Reply
@@ -56,7 +56,7 @@ const ReviewThreadComponent = ({ item, depth = 0, onReply }) => {
         {hasReplies && (
           <button
             onClick={() => setExpanded(prev => !prev)}
-            className="mt-3 text-sm text-blue-600 flex items-center gap-1"
+            className="mt-3 text-sm text-sky-700 flex items-center gap-1"
           >
             {expanded ? (
               <>

@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNotification } from '../contexts/NotificationContext';
 import { useNavigateBack } from "../hooks/useNavigateBack.js";
 import Profilepic from '../assets/profile.svg';
-// [MOCK] Replace with real fetch + WebSocket subscription when Phase 7 backend lands; delete this import.
+// [MOCK] Phase 7 demo conversations; delete this import when the conversations endpoint lands.
 import { getConversations } from '../data/mockPhase7';
 
 // Animation variants
@@ -37,7 +37,7 @@ const ConfirmationModal = memo(({ isOpen, onClose, onConfirm, title, message, pr
   if (!isOpen) return null;
 
   const colorClasses = {
-    blue: 'bg-blue-600 hover:bg-blue-700',
+    blue: 'bg-sky-700 hover:bg-sky-800',
     red: 'bg-red-600 hover:bg-red-700'
   };
 
@@ -58,8 +58,8 @@ const ConfirmationModal = memo(({ isOpen, onClose, onConfirm, title, message, pr
           className="bg-white dark:bg-[#1a1f2e] rounded-lg shadow-xl p-6 max-w-md mx-4"
         >
           <div className="flex items-center space-x-3 mb-4">
-            <div className={`${confirmColor === 'red' ? 'bg-red-100 dark:bg-red-900/30' : 'bg-blue-100 dark:bg-blue-900/30'} p-3 rounded-full`}>
-              <Trash2 className={`w-6 h-6 ${confirmColor === 'red' ? 'text-red-600' : 'text-blue-600'}`} />
+            <div className={`${confirmColor === 'red' ? 'bg-red-100 dark:bg-red-900/30' : 'bg-sky-100 dark:bg-blue-900/30'} p-3 rounded-full`}>
+              <Trash2 className={`w-6 h-6 ${confirmColor === 'red' ? 'text-red-600' : 'text-sky-700'}`} />
             </div>
             <h2 className="text-xl font-semibold text-gray-900 dark:text-slate-100">{title}</h2>
           </div>
@@ -100,15 +100,15 @@ const ActionsMenu = memo(({ conversation, onPin, onMute, onArchive, onDelete, on
   >
     <button
       onClick={() => onPin(conversation.id)}
-      className="w-full px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-[#252b3b] text-blue-600 flex items-center space-x-3 text-sm"
+      className="w-full px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-[#252b3b] text-sky-700 flex items-center space-x-3 text-sm"
     >
-      <Pin className={`w-4 h-4 ${conversation.pinned ? 'fill-blue-600' : ''}`} />
+      <Pin className={`w-4 h-4 ${conversation.pinned ? 'fill-sky-600' : ''}`} />
       <span>{conversation.pinned ? 'Unpin' : 'Pin'}</span>
     </button>
 
     <button
       onClick={() => onMute(conversation.id)}
-      className="w-full px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-[#252b3b] text-blue-600 flex items-center space-x-3 text-sm"
+      className="w-full px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-[#252b3b] text-sky-700 flex items-center space-x-3 text-sm"
     >
       {conversation.muted ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
       <span>{conversation.muted ? 'Unmute' : 'Mute'}</span>
@@ -160,7 +160,7 @@ const ConversationItem = memo(({ conversation, onSelect, onShowActions }) => {
 
   const getStatusIcon = () => {
     if (conversation.status === 'read') {
-      return <CheckCheck className="w-4 h-4 text-blue-600" />;
+      return <CheckCheck className="w-4 h-4 text-sky-700" />;
     } else if (conversation.status === 'delivered') {
       return <CheckCheck className="w-4 h-4 text-gray-400" />;
     } else if (conversation.status === 'sent') {
@@ -180,8 +180,8 @@ const ConversationItem = memo(({ conversation, onSelect, onShowActions }) => {
       onTouchEnd={cancelLongPress}
       onClick={() => onSelect(conversation)}
       className={`relative flex items-center gap-4 p-4 border-b border-gray-200 dark:border-[#1e293b] transition-all duration-200 hover:bg-gray-50 dark:hover:bg-[#252b3b] cursor-pointer ${
-        conversation.unreadCount > 0 ? 'bg-blue-50 dark:bg-blue-900/20' : 'bg-white dark:bg-[#1a1f2e]'
-      } ${conversation.pinned ? 'border-l-4 border-l-blue-600' : ''}`}
+        conversation.unreadCount > 0 ? 'bg-sky-50 dark:bg-blue-900/20' : 'bg-white dark:bg-[#1a1f2e]'
+      } ${conversation.pinned ? 'border-l-4 border-l-sky-600' : ''}`}
     >
       {/* Profile Picture */}
       <div className="relative flex-shrink-0">
@@ -198,10 +198,10 @@ const ConversationItem = memo(({ conversation, onSelect, onShowActions }) => {
       {/* Content */}
       <div className="flex-1 min-w-0">
         <div className="flex items-start justify-between gap-2 mb-1">
-          <h3 className="font-semibold text-gray-900 dark:text-slate-100 text-base truncate">
+          <h2 className="font-semibold text-gray-900 dark:text-slate-100 text-base truncate">
             {conversation.name}
-          </h3>
-          <span className="text-xs text-gray-500 dark:text-slate-500 whitespace-nowrap flex-shrink-0">
+          </h2>
+          <span className="text-xs text-gray-600 dark:text-slate-400 whitespace-nowrap flex-shrink-0">
             {conversation.time}
           </span>
         </div>
@@ -220,13 +220,13 @@ const ConversationItem = memo(({ conversation, onSelect, onShowActions }) => {
       {/* [DB] unreadCount aggregated from messages WHERE conversationId = :id AND readAt IS NULL AND senderId != currentUserId */}
       <div className="flex flex-col items-end gap-2 flex-shrink-0">
         {conversation.unreadCount > 0 && (
-          <div className="bg-blue-600 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
+          <div className="bg-sky-700 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
             {conversation.unreadCount > 9 ? '9+' : conversation.unreadCount}
           </div>
         )}
         
         <div className="flex items-center gap-1">
-          {conversation.pinned && <Pin className="w-4 h-4 text-blue-600 fill-blue-600" />}
+          {conversation.pinned && <Pin className="w-4 h-4 text-sky-700 fill-sky-600" />}
           {conversation.muted && <VolumeX className="w-4 h-4 text-gray-400" />}
         </div>
       </div>
@@ -263,13 +263,13 @@ const FilterButton = memo(({ filter, isActive, count, onClick }) => (
     onClick={onClick}
     className={`relative top-2 mb-2 px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-200 ${
       isActive
-        ? 'bg-blue-600 text-white shadow-md'
-        : 'bg-white dark:bg-[#1a1f2e] text-gray-700 dark:text-slate-300 border border-gray-300 dark:border-[#2d3748] hover:border-blue-600'
+        ? 'bg-sky-700 text-white shadow-md'
+        : 'bg-white dark:bg-[#1a1f2e] text-gray-700 dark:text-slate-300 border border-gray-300 dark:border-[#2d3748] hover:border-sky-600'
     }`}
   >
     {filter.label}
     {count > 0 && !isActive && (
-      <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+      <span className="absolute -top-1 -right-1 bg-sky-700 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
         {count > 9 ? '9+' : count}
       </span>
     )}
@@ -284,17 +284,9 @@ const MessagesListPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [confirmDelete, setConfirmDelete] = useState(null);
   const [selectedConversation, setSelectedConversation] = useState(null);
-  // [API] GET /conversations?userId={id}  (sorted by lastMessageAt desc)
-  // [WS] Listen for 'conversation:updated' to bump conversation to top.
-  // [MOCK] Currently fed by getConversations() from mockPhase7.
+  // [MOCK] Phase 7 demo conversations; replace with GET /conversations?userId={id} when backend lands.
   const [conversations, setConversations] = useState([]);
-  useEffect(() => {
-    getConversations().then(list =>
-      // Use the local Profilepic for the first conversation so avatars render
-      // until Phase 7 wires avatar URLs through the API.
-      setConversations(list.map((c, i) => i === 0 ? { ...c, avatar: Profilepic } : c))
-    );
-  }, []);
+  useEffect(() => { getConversations().then(setConversations); }, []);
 
   // Close actions menu on outside click
   useEffect(() => {
@@ -434,6 +426,7 @@ const MessagesListPage = () => {
           <div className="flex items-center justify-between mb-4">
             <motion.button
               onClick={handleBackClick}
+              aria-label="Go back"
               className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-full transition-colors"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
@@ -445,7 +438,8 @@ const MessagesListPage = () => {
             
             <motion.button
               onClick={handleNewMessage}
-              className="p-2 bg-blue-600 hover:bg-blue-700 rounded-full transition-colors"
+              aria-label="New message"
+              className="p-2 bg-sky-700 hover:bg-sky-800 rounded-full transition-colors"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
             >
@@ -461,7 +455,7 @@ const MessagesListPage = () => {
               placeholder="Search conversations..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-full text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-600 transition-all"
+              className="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-full text-gray-700 focus:outline-none focus:ring-2 focus:ring-sky-600 transition-all"
             />
             {searchQuery && (
               <button

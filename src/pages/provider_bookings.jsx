@@ -1,10 +1,13 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigateBack } from '../hooks/useNavigateBack.js';
+import { useModalBackButton } from '../hooks/useModalBackButton.js';
 import { useNotification } from '../contexts/NotificationContext.jsx';
 import { PageHeader, FilterBar, EmptyState } from '../components/ui';
 import { BookingCard, BookingDetailsModal, CancelBookingModal } from '../components/shared';
 import { Search, Calendar, AlertCircle } from 'lucide-react';
+// [MOCK] Phase 5 demo bookings; delete this import when the bookings endpoint lands.
+import { getProviderBookings } from '../data/mockPhase5';
 
 const fadeIn = {
   hidden: { opacity: 0, y: 20 },
@@ -21,8 +24,13 @@ const ProviderBookings = () => {
 
   const handleBackClick = useNavigateBack('/lucid/dashboard', 400);
 
-  // [API] GET /bookings?providerId={authenticatedProviderId}&status={filter}&sort=date&page={n}&limit={n}
-  const bookings = useMemo(() => [], []);
+  // Browser back / mobile gesture closes the modal instead of leaving the page
+  useModalBackButton(!!selectedTask, () => setSelectedTask(null));
+  useModalBackButton(showCancelModal, () => setShowCancelModal(false));
+
+  // [MOCK] Phase 5 demo bookings; replace with GET /bookings?providerId={id}&status={filter}&... when backend lands.
+  const [bookings, setBookings] = useState([]);
+  useEffect(() => { getProviderBookings().then(setBookings); }, []);
 
   // [API] Move status counts to API response metadata: GET /bookings?providerId={id}&countByStatus=true → {counts: {pending, confirmed, ...}}
   const filters = [

@@ -2,19 +2,33 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-/* ── Page background: subtle dot grid ─────────────────────────────────────── */
+/* ── Typography ─────────────────────────────────────────────────────────────── */
+/* Whole UI runs on Plus Jakarta Sans (set via tailwind `sans`). Headings get a   */
+/* touch of negative tracking + balanced wrapping for a tighter display feel.     */
+body {
+  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+h1, h2, h3, h4 {
+  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+/* ── Page background: subtle sky-tinted dot grid ──────────────────────────── */
 /* SVG data URL lets the browser cache this as a GPU image texture.           */
 /* radial-gradient() on body was recalculated by the CPU on every scroll frame */
 body {
-  background-color: #f1f5f9;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22'%3E%3Ccircle cx='1' cy='1' r='1' fill='%23cbd5e1'/%3E%3C/svg%3E");
+  background-color: #f0f9ff;  /* sky-50 — soft sky wash to match the brand */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22'%3E%3Ccircle cx='1' cy='1' r='1' fill='%23bae6fd'/%3E%3C/svg%3E");
   background-repeat: repeat;
 }
 
 .dark body,
 html.dark body {
-  background-color: #0f1117;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22'%3E%3Ccircle cx='1' cy='1' r='1' fill='%231e293b'/%3E%3C/svg%3E");
+  background-color: #0b1220;  /* deep sky-tinted slate */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22'%3E%3Ccircle cx='1' cy='1' r='1' fill='%23172033'/%3E%3C/svg%3E");
 }
 
 /* ── Animations ─────────────────────────────────────────────────────────────── */

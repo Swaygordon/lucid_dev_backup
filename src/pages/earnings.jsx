@@ -1,12 +1,10 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
 import { useNavigateBack } from "../hooks/useNavigateBack.js";
 import EarningsChart from '../components/earnings_chart.jsx';
-// [MOCK] Replace with real fetch calls when Phase 5 backend lands; delete this import.
-import {
-  getProviderEarnings, getProviderTransactions,
-} from '../data/mockPhase5';
+// [MOCK] Phase 5 demo data; delete these imports when the earnings/transactions endpoints land.
+import { getProviderEarnings, getProviderTransactions } from '../data/mockPhase5';
 import {
   ArrowLeft,
   DollarSign,
@@ -94,9 +92,9 @@ const WithdrawModal = ({ onClose, available, paymentMethods }) => {
             </div>
 
             {/* Available balance */}
-            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 mb-6 text-center">
-              <p className="text-sm text-blue-600 dark:text-blue-400 font-medium mb-1">Available to withdraw</p>
-              <p className="text-3xl font-bold text-blue-700 dark:text-blue-300">GH₵{available.toLocaleString()}</p>
+            <div className="bg-sky-50 dark:bg-blue-900/20 rounded-xl p-4 mb-6 text-center">
+              <p className="text-sm text-sky-700 dark:text-blue-400 font-medium mb-1">Available to withdraw</p>
+              <p className="text-3xl font-bold text-sky-700 dark:text-blue-300">GH₵{available.toLocaleString()}</p>
             </div>
 
             {/* Amount input */}
@@ -109,7 +107,7 @@ const WithdrawModal = ({ onClose, available, paymentMethods }) => {
                   value={amount}
                   onChange={e => setAmount(e.target.value)}
                   placeholder="0.00"
-                  className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 dark:border-[#2d3748] bg-white dark:bg-[#252b3b] text-gray-900 dark:text-slate-100 rounded-xl focus:outline-none focus:border-blue-500 text-lg font-semibold"
+                  className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 dark:border-[#2d3748] bg-white dark:bg-[#252b3b] text-gray-900 dark:text-slate-100 rounded-xl focus:outline-none focus:border-sky-500 text-lg font-semibold"
                 />
               </div>
               {numAmount > available && (
@@ -123,7 +121,7 @@ const WithdrawModal = ({ onClose, available, paymentMethods }) => {
                 <button
                   key={pct}
                   onClick={() => handleQuick(pct)}
-                  className="py-2 text-sm font-semibold rounded-lg border-2 border-gray-200 dark:border-[#2d3748] text-gray-700 dark:text-slate-300 hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                  className="py-2 text-sm font-semibold rounded-lg border-2 border-gray-200 dark:border-[#2d3748] text-gray-700 dark:text-slate-300 hover:border-sky-500 hover:text-sky-700 dark:hover:text-blue-400 transition-colors"
                 >
                   {pct === 100 ? 'All' : `${pct}%`}
                 </button>
@@ -144,21 +142,21 @@ const WithdrawModal = ({ onClose, available, paymentMethods }) => {
                       onClick={() => setSelectedMethod(method.id)}
                       className={`w-full flex items-center gap-3 p-3 rounded-xl border-2 transition-all ${
                         isSelected
-                          ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                          ? 'border-sky-500 bg-sky-50 dark:bg-blue-900/20'
                           : 'border-gray-200 dark:border-[#2d3748] hover:border-gray-300 dark:hover:border-[#3d4758]'
                       }`}
                     >
-                      <div className={`p-2 rounded-lg ${isSelected ? 'bg-blue-100 dark:bg-blue-900/40' : 'bg-gray-100 dark:bg-[#252b3b]'}`}>
-                        <Icon className={`w-4 h-4 ${isSelected ? 'text-blue-600' : 'text-gray-500 dark:text-slate-400'}`} />
+                      <div className={`p-2 rounded-lg ${isSelected ? 'bg-sky-100 dark:bg-blue-900/40' : 'bg-gray-100 dark:bg-[#252b3b]'}`}>
+                        <Icon className={`w-4 h-4 ${isSelected ? 'text-sky-700' : 'text-gray-500 dark:text-slate-400'}`} />
                       </div>
                       <div className="flex-1 text-left">
-                        <p className={`text-sm font-semibold ${isSelected ? 'text-blue-700 dark:text-blue-300' : 'text-gray-900 dark:text-slate-100'}`}>
+                        <p className={`text-sm font-semibold ${isSelected ? 'text-sky-700 dark:text-blue-300' : 'text-gray-900 dark:text-slate-100'}`}>
                           {method.name}
                         </p>
                         <p className="text-xs text-gray-500 dark:text-slate-500">{method.number || method.accountNumber}</p>
                       </div>
                       {method.isPrimary && (
-                        <span className="text-xs px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full">Primary</span>
+                        <span className="text-xs px-2 py-0.5 bg-sky-100 dark:bg-blue-900/30 text-sky-700 dark:text-blue-400 rounded-full">Primary</span>
                       )}
                     </button>
                   );
@@ -177,7 +175,7 @@ const WithdrawModal = ({ onClose, available, paymentMethods }) => {
               <button
                 onClick={handleConfirm}
                 disabled={!isValid || confirming}
-                className="flex-1 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                className="flex-1 py-3 rounded-xl bg-sky-700 text-white font-semibold hover:bg-sky-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
               >
                 {confirming ? (
                   <>
@@ -230,7 +228,7 @@ const GHANA_BANKS = [
   { code: '070100', name: 'Bank of Africa Ghana'         },
 ];
 
-const selectClass = 'w-full px-4 py-3 border-2 border-gray-200 dark:border-[#2d3748] bg-white dark:bg-[#252b3b] text-gray-900 dark:text-slate-100 rounded-xl focus:outline-none focus:border-blue-500 transition-colors appearance-none cursor-pointer';
+const selectClass = 'w-full px-4 py-3 border-2 border-gray-200 dark:border-[#2d3748] bg-white dark:bg-[#252b3b] text-gray-900 dark:text-slate-100 rounded-xl focus:outline-none focus:border-sky-500 transition-colors appearance-none cursor-pointer';
 
 const PaymentMethodModal = ({ method = null, onClose, onSave }) => {
   const isEdit = !!method;
@@ -302,12 +300,12 @@ const PaymentMethodModal = ({ method = null, onClose, onSave }) => {
                   onClick={() => handleTypeChange(value)}
                   className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 transition-all ${
                     selected
-                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                      ? 'border-sky-500 bg-sky-50 dark:bg-blue-900/20'
                       : 'border-gray-200 dark:border-[#2d3748] hover:border-gray-300 dark:hover:border-[#3d4758]'
                   }`}
                 >
-                  <Icon className={`w-5 h-5 ${selected ? 'text-blue-600' : 'text-gray-400 dark:text-slate-500'}`} />
-                  <span className={`text-xs font-semibold ${selected ? 'text-blue-700 dark:text-blue-300' : 'text-gray-600 dark:text-slate-400'}`}>
+                  <Icon className={`w-5 h-5 ${selected ? 'text-sky-700' : 'text-gray-400 dark:text-slate-500'}`} />
+                  <span className={`text-xs font-semibold ${selected ? 'text-sky-700 dark:text-blue-300' : 'text-gray-600 dark:text-slate-400'}`}>
                     {label}
                   </span>
                 </button>
@@ -343,20 +341,25 @@ const PaymentMethodModal = ({ method = null, onClose, onSave }) => {
             value={form.number}
             onChange={e => { setForm(f => ({ ...f, number: e.target.value })); setError(''); }}
             placeholder={numberPlaceholder}
-            className="w-full px-4 py-3 border-2 border-gray-200 dark:border-[#2d3748] bg-white dark:bg-[#252b3b] text-gray-900 dark:text-slate-100 placeholder-gray-400 dark:placeholder-slate-500 rounded-xl focus:outline-none focus:border-blue-500 transition-colors"
+            className="w-full px-4 py-3 border-2 border-gray-200 dark:border-[#2d3748] bg-white dark:bg-[#252b3b] text-gray-900 dark:text-slate-100 placeholder-gray-400 dark:placeholder-slate-500 rounded-xl focus:outline-none focus:border-sky-500 transition-colors"
           />
         </div>
 
         {/* Set as primary */}
-        <label className="flex items-center gap-3 mb-6 cursor-pointer select-none">
+        <button
+          type="button"
+          role="switch"
+          aria-checked={form.isPrimary}
+          onClick={() => setForm(f => ({ ...f, isPrimary: !f.isPrimary }))}
+          className="flex items-center gap-3 mb-6 cursor-pointer select-none w-full text-left rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
+        >
           <div
-            onClick={() => setForm(f => ({ ...f, isPrimary: !f.isPrimary }))}
-            className={`w-10 h-6 rounded-full transition-colors flex-shrink-0 ${form.isPrimary ? 'bg-blue-600' : 'bg-gray-300 dark:bg-[#2d3748]'}`}
+            className={`w-10 h-6 rounded-full transition-colors flex-shrink-0 ${form.isPrimary ? 'bg-sky-700' : 'bg-gray-300 dark:bg-[#2d3748]'}`}
           >
             <div className={`w-4 h-4 bg-white rounded-full mt-1 shadow transition-transform ${form.isPrimary ? 'translate-x-5' : 'translate-x-1'}`} />
           </div>
           <span className="text-sm font-medium text-gray-700 dark:text-slate-300">Set as primary payment method</span>
-        </label>
+        </button>
 
         {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
 
@@ -370,7 +373,7 @@ const PaymentMethodModal = ({ method = null, onClose, onSave }) => {
           </button>
           <button
             onClick={handleSave}
-            className="flex-1 py-3 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors"
+            className="flex-1 py-3 rounded-xl bg-sky-700 text-white font-semibold hover:bg-sky-800 transition-colors"
           >
             {isEdit ? 'Save Changes' : 'Add Method'}
           </button>
@@ -399,7 +402,7 @@ const RemovePaymentModal = ({ method, onClose, onConfirm }) => {
           </div>
           <h2 className="text-lg font-bold text-gray-900 dark:text-slate-100 mb-2">Remove Payment Method</h2>
           <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-[#252b3b] rounded-xl mb-3">
-            <Icon className="w-4 h-4 text-blue-600 flex-shrink-0" />
+            <Icon className="w-4 h-4 text-sky-700 flex-shrink-0" />
             <div className="text-left">
               <p className="text-sm font-semibold text-gray-900 dark:text-slate-100">{method.name}</p>
               <p className="text-xs text-gray-500 dark:text-slate-400">{method.number}</p>
@@ -451,9 +454,9 @@ const StatCard = ({ icon: Icon, title, amount, change, trend, subtitle }) => (
         </div>
       )}
     </div>
-    <h3 className="text-gray-600 dark:text-slate-400 text-sm font-medium mb-1">{title}</h3>
+    <h2 className="text-gray-600 dark:text-slate-400 text-sm font-medium mb-1">{title}</h2>
     <p className="text-3xl font-bold text-gray-900 dark:text-slate-100">GH₵{amount.toLocaleString()}</p>
-    {subtitle && <p className="text-sm text-gray-500 dark:text-slate-500 mt-1">{subtitle}</p>}
+    {subtitle && <p className="text-sm text-gray-600 dark:text-slate-400 mt-1">{subtitle}</p>}
   </motion.div>
 );
 
@@ -514,11 +517,22 @@ const EarningsPayments = () => {
   const [addModalOpen, setAddModalOpen] = useState(false);
   const [editingMethod, setEditingMethod] = useState(null);
   const [removingMethod, setRemovingMethod] = useState(null);
-  const [pendingAutoMethod, setPendingAutoMethod] = useState(null);
+  const [pendingAutoMethod, setPendingAutoMethod] = useState(() => {
+    // [MOCK] Replace with phone from auth context or GET /users/:id/profile
+    const userPhone = '024 123 4567';
+    const carrier = detectCarrier(userPhone);
+    if (!carrier) return null;
+    return {
+      type: 'mobile-money',
+      bankCode: carrier.code,
+      name: carrier.name,
+      number: userPhone,
+      isPrimary: true,
+    };
+  });
 
 
-  // [API] GET /providers/:id/earnings?period={week|month|year}
-  // [MOCK] Currently fed by getProviderEarnings() from mockPhase5.
+  // [MOCK] Phase 5 demo earnings; replace with GET /providers/:id/earnings?period={...} when backend lands.
   const [earningsData, setEarningsData] = useState({
     thisWeek: 0, lastWeek: 0,
     thisMonth: 0, lastMonth: 0,
@@ -530,14 +544,14 @@ const EarningsPayments = () => {
   });
   useEffect(() => { getProviderEarnings().then(setEarningsData); }, []);
 
-  // [API] GET /providers/:id/transactions?page={n}
-  // [MOCK] Currently fed by getProviderTransactions() from mockPhase5.
+  // [MOCK] Phase 5 demo transactions; replace with GET /providers/:id/transactions?page={n} when backend lands.
   const [transactions, setTransactions] = useState([]);
   useEffect(() => { getProviderTransactions().then(setTransactions); }, []);
 
-  // [API] GET /users/:id/payment-methods — kept empty in demo to showcase the
-  // auto-detect banner that suggests the sign-up phone as a payout account.
-  // Backend will seed this from the API response on mount.
+  // [MOCK] paymentMethods — replace with GET /users/:id/payment-methods — [{id, type, name, number, isPrimary}]
+  // Start with an empty list to trigger auto-detect on first visit; real app seeds from API response
+  // [MOCK] Start empty to simulate a new provider with no saved methods yet.
+  // Replace with data from GET /users/:id/payment-methods on mount.
   const [paymentMethods, setPaymentMethods] = useState([]);
 
   const handleAddMethod = (newMethod) => {
@@ -562,31 +576,15 @@ const EarningsPayments = () => {
     setPaymentMethods(prev => prev.filter(m => m.id !== id));
   };
 
-  // Auto-detect payment method from sign-up phone number when no methods exist
-  useEffect(() => {
-    if (paymentMethods.length > 0) return;
-    // [MOCK] Replace with phone from auth context or GET /users/:id/profile
-    const userPhone = '024 123 4567';
-    const carrier = detectCarrier(userPhone);
-    if (carrier) {
-      setPendingAutoMethod({
-        type: 'mobile-money',
-        bankCode: carrier.code,
-        name: carrier.name,
-        number: userPhone,
-        isPrimary: true,
-      });
-    }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
   const handleConfirmAutoMethod = () => {
     handleAddMethod(pendingAutoMethod);
     setPendingAutoMethod(null);
   };
 
-  const weekChange = ((earningsData.thisWeek - earningsData.lastWeek) / earningsData.lastWeek * 100).toFixed(1);
-  const monthChange = ((earningsData.thisMonth - earningsData.lastMonth) / earningsData.lastMonth * 100).toFixed(1);
-  const yearChange = ((earningsData.thisYear - earningsData.lastYear) / earningsData.lastYear * 100).toFixed(1);
+  const pctChange = (curr, prev) => prev ? ((curr - prev) / prev * 100).toFixed(1) : '0.0';
+  const weekChange = pctChange(earningsData.thisWeek, earningsData.lastWeek);
+  const monthChange = pctChange(earningsData.thisMonth, earningsData.lastMonth);
+  const yearChange = pctChange(earningsData.thisYear, earningsData.lastYear);
 
   const exportTransactions = () => {
     const headers = ['Date', 'Description', 'Amount (GH₵)', 'Type', 'Status', 'Method', 'Job Type'];
@@ -653,6 +651,7 @@ const EarningsPayments = () => {
           <div className="flex items-center gap-4">
             <button
               onClick={handleBackClick}
+              aria-label="Go back"
               className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-lg transition-colors"
             >
               <ArrowLeft className="w-6 h-6 text-gray-700 dark:text-slate-300" />
@@ -672,12 +671,12 @@ const EarningsPayments = () => {
             initial={{ opacity: 0, y: -12 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
-            className="bg-blue-50 dark:bg-blue-900/20 border-b border-blue-200 dark:border-blue-800/50"
+            className="bg-sky-50 dark:bg-blue-900/20 border-b border-sky-200 dark:border-blue-800/50"
           >
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center gap-4 flex-wrap">
               <div className="flex items-center gap-2 flex-1 min-w-0">
-                <Smartphone className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0" />
-                <p className="text-sm text-blue-800 dark:text-blue-200">
+                <Smartphone className="w-5 h-5 text-sky-700 dark:text-blue-400 flex-shrink-0" />
+                <p className="text-sm text-sky-800 dark:text-blue-200">
                   We detected{' '}
                   <span className="font-bold">{pendingAutoMethod.name} ({pendingAutoMethod.number})</span>
                   {' '}from your sign-up number. Set this as your payout account?
@@ -686,19 +685,19 @@ const EarningsPayments = () => {
               <div className="flex items-center gap-2 flex-shrink-0">
                 <button
                   onClick={handleConfirmAutoMethod}
-                  className="px-4 py-1.5 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors"
+                  className="px-4 py-1.5 bg-sky-700 text-white text-sm font-semibold rounded-lg hover:bg-sky-800 transition-colors"
                 >
                   Confirm
                 </button>
                 <button
                   onClick={() => { setPendingAutoMethod(null); setAddModalOpen(true); }}
-                  className="px-4 py-1.5 border-2 border-blue-400 text-blue-700 dark:text-blue-300 text-sm font-semibold rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors"
+                  className="px-4 py-1.5 border-2 border-sky-400 text-sky-700 dark:text-blue-300 text-sm font-semibold rounded-lg hover:bg-sky-100 dark:hover:bg-blue-900/30 transition-colors"
                 >
                   Change
                 </button>
                 <button
                   onClick={() => setPendingAutoMethod(null)}
-                  className="p-1.5 text-blue-500 hover:text-blue-700 dark:hover:text-blue-300 rounded transition-colors"
+                  className="p-1.5 text-sky-700 hover:text-sky-700 dark:hover:text-blue-300 rounded transition-colors"
                   title="Dismiss"
                 >
                   <X className="w-4 h-4" />
@@ -760,7 +759,7 @@ const EarningsPayments = () => {
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100">Earnings Overview</h2>
             {/* [API] GET /providers/:id/earnings/report?period={week|month|year} — detailed breakdown export */}
-            <button className="px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg font-semibold transition-colors">
+            <button className="px-4 py-2 text-sky-700 dark:text-blue-400 hover:bg-sky-50 dark:hover:bg-blue-900/20 rounded-lg font-semibold transition-colors">
               View Detailed Report
             </button>
           </div>
@@ -781,7 +780,7 @@ const EarningsPayments = () => {
                   <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100">Recent Transactions</h2>
                   <Link
                     to="/lucid/transactions"
-                    className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
+                    className="text-sm text-sky-700 hover:text-sky-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
                   >
                     View all →
                   </Link>
@@ -804,14 +803,14 @@ const EarningsPayments = () => {
 
             {/* Withdraw Section */}
             {/* [API] POST /providers/:id/payouts — {amount, bankDetails} → {payoutId, status, estimatedArrival} */}
-            <div className="bg-gradient-to-br from-blue-600 to-purple-600 text-white rounded-xl p-6 shadow-md">
+            <div className="bg-gradient-to-br from-sky-600 to-purple-600 text-white rounded-xl p-6 shadow-md">
               <h3 className="text-2xl font-bold mb-2">Ready to withdraw?</h3>
-              <p className="text-blue-100 mb-6">
+              <p className="text-sky-100 mb-6">
                 You have GH₵{earningsData.available.toLocaleString()} available for withdrawal
               </p>
               <button
                 onClick={() => setShowWithdrawModal(true)}
-                className="px-6 py-3 bg-white text-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-semibold flex items-center gap-2"
+                className="px-6 py-3 bg-white text-sky-700 rounded-lg hover:bg-sky-50 transition-colors font-semibold flex items-center gap-2"
               >
                 <Wallet className="w-5 h-5" />
                 Withdraw Funds
@@ -833,7 +832,7 @@ const EarningsPayments = () => {
                 {/* [API] POST /users/:id/payment-methods */}
                 <button
                   onClick={() => setAddModalOpen(true)}
-                  className="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  className="p-2 bg-sky-700 text-white rounded-lg hover:bg-sky-800 transition-colors"
                   title="Add payment method"
                 >
                   <Plus className="w-4 h-4" />
@@ -845,15 +844,15 @@ const EarningsPayments = () => {
                   const Icon = icons[method.type] || Wallet;
                   return (
                     <div key={method.id} className="flex items-center gap-3 py-2 border-b border-gray-100 dark:border-[#1e293b] last:border-0">
-                      <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg flex-shrink-0">
-                        <Icon className="w-4 h-4 text-blue-600" />
+                      <div className="p-2 bg-sky-50 dark:bg-blue-900/20 rounded-lg flex-shrink-0">
+                        <Icon className="w-4 h-4 text-sky-700" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-semibold text-gray-900 dark:text-slate-100 truncate">{method.name}</p>
                         <p className="text-xs text-gray-500 dark:text-slate-500">{method.number || method.accountNumber}</p>
                       </div>
                       {method.isPrimary && (
-                        <span className="text-xs px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full font-medium flex-shrink-0">
+                        <span className="text-xs px-2 py-0.5 bg-sky-100 dark:bg-blue-900/30 text-sky-700 dark:text-blue-400 rounded-full font-medium flex-shrink-0">
                           Primary
                         </span>
                       )}

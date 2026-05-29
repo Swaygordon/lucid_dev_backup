@@ -19,7 +19,7 @@ const vp = { once: true, margin: '-60px' };
 // ── Reusable section heading ──────────────────────────────────────────────────
 const SectionHeading = ({ label, title, sub }) => (
   <motion.div initial="hidden" whileInView="visible" viewport={vp} variants={fadeUp} className="text-center mb-16">
-    {label && <p className="text-blue-600 font-semibold text-sm uppercase tracking-widest mb-3">{label}</p>}
+    {label && <p className="text-sky-700 font-semibold text-sm uppercase tracking-widest mb-3">{label}</p>}
     <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-slate-100 mb-4">{title}</h2>
     {sub && <p className="text-gray-500 dark:text-slate-400 text-lg max-w-2xl mx-auto">{sub}</p>}
   </motion.div>
@@ -29,7 +29,7 @@ const SectionHeading = ({ label, title, sub }) => (
 const FEATURES = [
   {
     icon: FileText,
-    color: 'from-blue-500 to-blue-700',
+    color: 'from-sky-500 to-sky-700',
     title: 'Smart Booking System',
     desc: 'A structured 5-stage workflow guides every job from start to finish: Request → Quote → Confirm → Complete → Pay. Clients submit detailed job requests with photos, preferred dates, and location. Providers respond with a custom quote. Once both sides agree, the booking is locked in.',
   },
@@ -77,7 +77,7 @@ const FEATURES = [
   },
   {
     icon: Bell,
-    color: 'from-indigo-500 to-blue-700',
+    color: 'from-indigo-500 to-sky-700',
     title: 'Smart Notifications',
     desc: 'Instant alerts keep everyone in the loop: new booking requests, quote responses, payment confirmations, review reminders, and chat messages. The notification centre logs every event with timestamps, and granular settings let users control exactly what they hear about.',
   },
@@ -97,7 +97,7 @@ const PLATFORM_STATS = [
 ];
 
 const VALUES = [
-  { icon: Shield,     title: 'Trust & Safety',   desc: 'Every provider is verified and background-checked. Secure payment escrow protects clients.',                           color: 'from-blue-500 to-blue-700' },
+  { icon: Shield,     title: 'Trust & Safety',   desc: 'Every provider is verified and background-checked. Secure payment escrow protects clients.',                           color: 'from-sky-500 to-sky-700' },
   { icon: Zap,        title: 'Speed',            desc: 'Instant quote requests reach available providers immediately. Most jobs get a response within 30 minutes.',            color: 'from-orange-500 to-amber-600' },
   { icon: Heart,      title: 'Community First',  desc: 'We create economic opportunity for skilled tradespeople while making quality services accessible to every household.', color: 'from-violet-500 to-purple-700' },
   { icon: TrendingUp, title: 'Transparency',     desc: 'Upfront pricing, no hidden fees, and clear cancellation policies. What you agree to is what you pay.',                color: 'from-teal-500 to-emerald-700' },
@@ -115,10 +115,10 @@ const About = () => (
   <div className="min-h-screen overflow-hidden dark:bg-[#0f1117]">
 
     {/* Hero */}
-    <section className="relative bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900 text-white overflow-hidden">
+    <section className="relative bg-gradient-to-br from-sky-700 via-sky-800 to-indigo-900 text-white overflow-hidden">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div animate={{ y: [0,-30,0], x: [0,20,0] }} transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute -top-32 -right-32 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl" />
+          className="absolute -top-32 -right-32 w-96 h-96 bg-sky-400/20 rounded-full blur-3xl" />
         <motion.div animate={{ y: [0,25,0], x: [0,-15,0] }} transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
           className="absolute -bottom-32 -left-32 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl" />
         <motion.div animate={{ y: [0,-18,0] }} transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
@@ -155,7 +155,7 @@ const About = () => (
         >
           <Link to="/lucid/services">
             <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}
-              className="flex items-center gap-2 bg-white text-blue-700 px-8 py-4 rounded-xl font-bold shadow-xl hover:shadow-2xl transition-shadow"
+              className="flex items-center gap-2 bg-white text-sky-700 px-8 py-4 rounded-xl font-bold shadow-xl hover:shadow-2xl transition-shadow"
             >
               Explore Services <ArrowRight className="w-5 h-5" />
             </motion.button>
@@ -189,7 +189,7 @@ const About = () => (
               <motion.div key={i} variants={scaleIn} whileHover={{ y: -4 }}
                 className="flex flex-col items-center gap-3 bg-white dark:bg-[#1a1f2e] rounded-2xl p-6 shadow-md border border-gray-100 dark:border-[#1e293b]"
               >
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-md">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-sky-500 to-sky-700 flex items-center justify-center shadow-md">
                   <Icon className="w-7 h-7 text-white" />
                 </div>
                 <p className="text-4xl font-extrabold text-gray-900 dark:text-slate-100">{s.number}</p>
@@ -206,7 +206,7 @@ const About = () => (
       <div className="max-w-6xl mx-auto px-4">
         <div className="grid md:grid-cols-2 gap-16 items-center">
           <motion.div initial="hidden" whileInView="visible" viewport={vp} variants={fadeUp} className="space-y-6">
-            <p className="text-blue-600 font-semibold text-sm uppercase tracking-widest">Our story</p>
+            <p className="text-sky-700 font-semibold text-sm uppercase tracking-widest">Our story</p>
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-slate-100">Why we built Lucid</h2>
             <p className="text-gray-600 dark:text-slate-400 text-lg leading-relaxed">
               Finding a reliable plumber, electrician, or cleaner in Accra meant asking around, hoping for referrals, and praying the person who showed up was trustworthy. Skilled tradespeople had the opposite problem — inconsistent work and no way to build a reputation.
@@ -216,7 +216,7 @@ const About = () => (
             </p>
             <div className="flex flex-wrap gap-4 pt-2">
               {['Verified Workers', 'Structured Booking', 'Secure Payments', 'Honest Reviews'].map(t => (
-                <div key={t} className="flex items-center gap-2 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 px-4 py-2 rounded-full">
+                <div key={t} className="flex items-center gap-2 bg-sky-50 dark:bg-blue-900/20 text-sky-700 dark:text-blue-400 px-4 py-2 rounded-full">
                   <CheckCircle className="w-4 h-4" />
                   <span className="text-sm font-semibold">{t}</span>
                 </div>
@@ -227,10 +227,10 @@ const About = () => (
           <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={vp} transition={{ duration: 0.6 }}
             className="relative"
           >
-            <div className="absolute -inset-4 bg-gradient-to-r from-blue-500 to-purple-500 rounded-3xl blur-lg opacity-15" />
+            <div className="absolute -inset-4 bg-gradient-to-r from-sky-500 to-purple-500 rounded-3xl blur-lg opacity-15" />
             <div className="relative grid grid-cols-2 gap-4">
               {[
-                { label: 'Avg. Response Time', value: '28 min',  color: 'from-blue-500 to-blue-700' },
+                { label: 'Avg. Response Time', value: '28 min',  color: 'from-sky-500 to-sky-700' },
                 { label: 'Repeat Clients',     value: '67%',     color: 'from-violet-500 to-purple-700' },
                 { label: 'Provider Rating',    value: '4.8 ★',   color: 'from-orange-500 to-amber-600' },
                 { label: 'Jobs This Month',    value: '4,200+',  color: 'from-emerald-500 to-green-700' },
@@ -310,7 +310,7 @@ const About = () => (
         <SectionHeading label="Our journey" title="From Accra to West Africa" sub="A platform built incrementally, shaped by real feedback from providers and clients." />
 
         <div className="relative">
-          <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-600 to-purple-600" />
+          <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-sky-600 to-purple-600" />
           {TIMELINE.map((item, i) => {
             const Icon  = item.icon;
             const isEven = i % 2 === 0;
@@ -319,14 +319,14 @@ const About = () => (
                 transition={{ duration: 0.5, delay: i * 0.1 }}
                 className="relative mb-14"
               >
-                <div className="absolute left-8 md:left-1/2 -translate-x-1/2 w-14 h-14 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-500/30 z-10">
+                <div className="absolute left-8 md:left-1/2 -translate-x-1/2 w-14 h-14 rounded-full bg-gradient-to-br from-sky-600 to-purple-600 flex items-center justify-center shadow-lg shadow-sky-500/30 z-10">
                   <Icon className="w-7 h-7 text-white" />
                 </div>
                 <div className={`ml-24 md:ml-0 ${isEven ? 'md:mr-[52%]' : 'md:ml-[52%]'}`}>
                   <motion.div whileHover={{ y: -3 }}
-                    className="bg-white dark:bg-[#1a1f2e] rounded-2xl p-6 shadow-md border-l-4 border-blue-600"
+                    className="bg-white dark:bg-[#1a1f2e] rounded-2xl p-6 shadow-md border-l-4 border-sky-600"
                   >
-                    <span className="inline-block bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-1 rounded-full text-sm font-bold mb-3">
+                    <span className="inline-block bg-gradient-to-r from-sky-600 to-purple-600 text-white px-4 py-1 rounded-full text-sm font-bold mb-3">
                       {item.year}
                     </span>
                     <h3 className="text-xl font-bold text-gray-900 dark:text-slate-100 mb-2">{item.title}</h3>
@@ -341,7 +341,7 @@ const About = () => (
     </section>
 
     {/* CTA */}
-    <section className="py-24 bg-gradient-to-br from-blue-700 to-indigo-900 text-white relative overflow-hidden">
+    <section className="py-24 bg-gradient-to-br from-sky-700 to-indigo-900 text-white relative overflow-hidden">
       <div className="absolute inset-0 opacity-[0.04]"
         style={{ backgroundImage: 'linear-gradient(white 1px,transparent 1px),linear-gradient(90deg,white 1px,transparent 1px)', backgroundSize: '40px 40px' }} />
       <div className="relative max-w-4xl mx-auto px-4 text-center space-y-8">
@@ -360,7 +360,7 @@ const About = () => (
         >
           <Link to="/lucid/services">
             <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}
-              className="flex items-center gap-2 bg-white text-blue-700 px-8 py-4 rounded-xl font-bold shadow-xl"
+              className="flex items-center gap-2 bg-white text-sky-700 px-8 py-4 rounded-xl font-bold shadow-xl"
             >
               Browse Services <ArrowRight className="w-5 h-5" />
             </motion.button>

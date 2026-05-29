@@ -120,7 +120,7 @@ const Toast = ({ message, type, onClose }) => {
     success: 'bg-green-600',
     error: 'bg-red-600',
     warning: 'bg-yellow-600',
-    info: 'bg-blue-600',
+    info: 'bg-sky-700',
   };
 
   const icons = {
@@ -158,10 +158,10 @@ export const Button = ({
   const baseStyles = 'font-semibold transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed';
   
   const variants = {
-    primary: 'bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg',
+    primary: 'bg-sky-700 hover:bg-sky-800 text-white shadow-md hover:shadow-lg',
     secondary: 'bg-orange-600 hover:bg-orange-700 text-white shadow-md hover:shadow-lg',
-    outline: 'border-2 border-blue-600 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20',
-    ghost: 'text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20',
+    outline: 'border-2 border-sky-600 text-sky-700 hover:bg-sky-50 dark:hover:bg-blue-900/20',
+    ghost: 'text-sky-700 hover:bg-sky-50 dark:hover:bg-blue-900/20',
     danger: 'bg-red-600 hover:bg-red-700 text-white shadow-md hover:shadow-lg',
   };
 
@@ -217,7 +217,7 @@ export const Input = ({
         className={`
           px-4 py-3 border-2 rounded-lg text-base
           transition-all duration-200
-          focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100
+          focus:outline-none focus:border-sky-600 focus:ring-2 focus:ring-sky-100
           disabled:bg-gray-100 dark:disabled:bg-[#252b3b] disabled:cursor-not-allowed
           bg-white dark:bg-[#252b3b] text-gray-900 dark:text-slate-200
           placeholder:text-gray-400 dark:placeholder:text-slate-500
@@ -327,7 +327,7 @@ export const Avatar = ({
   };
 
   return (
-    <div className={`${sizes[size]} rounded-full overflow-hidden bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold ${className}`}>
+    <div className={`${sizes[size]} rounded-full overflow-hidden bg-gradient-to-br from-sky-500 to-purple-600 flex items-center justify-center text-white font-bold ${className}`}>
       {src ? (
         <img src={src} alt={alt} className="w-full h-full object-cover" />
       ) : (

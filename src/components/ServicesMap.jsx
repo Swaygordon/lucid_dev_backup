@@ -15,6 +15,7 @@ import {
   Award
 } from 'lucide-react';
 import 'leaflet/dist/leaflet.css';
+import { useTheme } from '../contexts/ThemeContext';
 
 // [API] GET /providers/nearby?lat={userLat}&lng={userLng}&radius=5
 // Parent fetches nearby providers and passes them via the `providers` prop.
@@ -41,8 +42,11 @@ const calculateDistance = (lat1, lon1, lat2, lon2) => {
 };
 
 // Custom marker icons
-const createCustomIcon = (available, isUser = false) => {
-  const color = isUser ? '#dc2626' : (available ? '#2563eb' : '#9ca3af');
+const createCustomIcon = (available, isUser = false, isDark = false) => {
+  // Available-provider marker reads as source blue (#2563eb) in dark mode,
+  // sky azure (#0277bd) in light mode.
+  const availableColor = isDark ? '#2563eb' : '#0277bd';
+  const color = isUser ? '#dc2626' : (available ? availableColor : '#9ca3af');
   const size = isUser ? 16 : 40;
   
   return L.divIcon({
@@ -153,7 +157,7 @@ const ProviderInfoWindow = ({ provider, distance, onClose, onBookNow }) => {
 
       {/* Header */}
       <div className="flex items-start gap-3 mb-3">
-        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-sky-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
           {provider.fullName.split(' ').map(n => n[0]).join('')}
         </div>
 
@@ -167,7 +171,7 @@ const ProviderInfoWindow = ({ provider, distance, onClose, onBookNow }) => {
 
           <div className="flex items-center gap-2 mt-1">
             <div className="flex items-center gap-1">
-              <Star className="w-3 h-3 fill-blue-600 text-blue-600" />
+              <Star className="w-3 h-3 fill-sky-600 text-sky-700" />
               <span className="text-xs font-semibold text-gray-900 dark:text-slate-100">
                 {provider.rating.overall}
               </span>
@@ -186,7 +190,7 @@ const ProviderInfoWindow = ({ provider, distance, onClose, onBookNow }) => {
           {provider.skills.slice(0, 3).map((skill, idx) => (
             <span
               key={idx}
-              className="px-2 py-1 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded text-xs font-medium"
+              className="px-2 py-1 bg-sky-50 dark:bg-blue-900/20 text-sky-700 dark:text-blue-300 rounded text-xs font-medium"
             >
               {skill}
             </span>
@@ -225,7 +229,7 @@ const ProviderInfoWindow = ({ provider, distance, onClose, onBookNow }) => {
       <div className="flex gap-2">
         <a
           href={`tel:${provider.phone}`}
-          className="flex-1 py-2 px-3 border-2 border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors font-semibold text-xs flex items-center justify-center gap-2"
+          className="flex-1 py-2 px-3 border-2 border-sky-600 text-sky-700 rounded-lg hover:bg-sky-50 dark:hover:bg-blue-900/20 transition-colors font-semibold text-xs flex items-center justify-center gap-2"
         >
           <Phone className="w-3 h-3" />
           Call
@@ -236,7 +240,7 @@ const ProviderInfoWindow = ({ provider, distance, onClose, onBookNow }) => {
           disabled={!isAvailable}
           className={`flex-1 py-2 px-3 rounded-lg font-semibold text-xs transition-colors ${
             isAvailable
-              ? 'bg-blue-600 text-white hover:bg-blue-700'
+              ? 'bg-sky-700 text-white hover:bg-sky-800'
               : 'bg-gray-300 dark:bg-[#252b3b] text-gray-500 dark:text-slate-500 cursor-not-allowed'
           }`}
         >
@@ -249,6 +253,7 @@ const ProviderInfoWindow = ({ provider, distance, onClose, onBookNow }) => {
 
 // Main Services Map Component
 const ServicesMap = ({ providers = [], userLocation = [5.6037, -0.1870] }) => {
+  const { isDark } = useTheme();
   const mapRef = useRef();
   const [selectedProvider, setSelectedProvider] = useState(null);
 
@@ -312,7 +317,9 @@ const ServicesMap = ({ providers = [], userLocation = [5.6037, -0.1870] }) => {
           <Marker
             key={provider.id}
             position={provider.position}
-            icon={createCustomIcon(provider.availability?.status === 'available')}
+            icon={createCustomIcon(provider.availability?.status === 'available', false, isDark)}
+            alt={provider.fullName}
+            title={provider.fullName}
             eventHandlers={{
               click: () => handleMarkerClick(provider),
             }}
@@ -332,6 +339,8 @@ const ServicesMap = ({ providers = [], userLocation = [5.6037, -0.1870] }) => {
         <Marker
           position={userLocation}
           icon={createCustomIcon(false, true)}
+          alt="Your location"
+          title="Your location"
         >
           <Popup>
             <div className="p-2 text-center">
@@ -371,7 +380,7 @@ const ServicesMap = ({ providers = [], userLocation = [5.6037, -0.1870] }) => {
       <div className="absolute bottom-4 left-4 bg-white dark:bg-[#1a1f2e] rounded-lg shadow-lg p-3 z-[1000]">
         <div className="flex items-center gap-4 text-sm">
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-blue-600"></div>
+            <div className="w-3 h-3 rounded-full bg-sky-700"></div>
             <span className="text-gray-700 dark:text-slate-300">Available</span>
           </div>
           <div className="flex items-center gap-2">
@@ -388,7 +397,7 @@ const ServicesMap = ({ providers = [], userLocation = [5.6037, -0.1870] }) => {
       {/* Provider count badge */}
       <div className="absolute top-4 left-4 bg-white dark:bg-[#1a1f2e] rounded-lg shadow-lg px-4 py-2 z-[1000]">
         <div className="flex items-center gap-2">
-          <MapPin className="w-4 h-4 text-blue-600" />
+          <MapPin className="w-4 h-4 text-sky-700" />
           <span className="text-sm font-semibold text-gray-900 dark:text-slate-100">
             {availableCount} available • {mappedProviders.length} total
           </span>

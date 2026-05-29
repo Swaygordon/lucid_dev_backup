@@ -53,7 +53,7 @@ const CityPicker = ({ value, onChange }) => {
                 value={query}
                 onChange={e => setQuery(e.target.value)}
                 placeholder="Search locations..."
-                className="w-full px-3 py-1.5 text-sm text-gray-700 dark:text-slate-200 bg-gray-50 dark:bg-[#252b3b] border border-gray-200 dark:border-[#2d3748] rounded-lg focus:outline-none focus:border-blue-400 dark:placeholder-slate-500"
+                className="w-full px-3 py-1.5 text-sm text-gray-700 dark:text-slate-200 bg-gray-50 dark:bg-[#252b3b] border border-gray-200 dark:border-[#2d3748] rounded-lg focus:outline-none focus:border-sky-400 dark:placeholder-slate-500"
               />
             </div>
             <div className="max-h-52 overflow-y-auto">
@@ -69,7 +69,7 @@ const CityPicker = ({ value, onChange }) => {
                       onClick={() => { onChange(area); setOpen(false); setQuery(''); }}
                       className={`w-full text-left px-4 py-2 text-sm transition-colors hover:bg-gray-50 dark:hover:bg-[#252b3b] ${
                         value === area
-                          ? 'text-blue-600 font-semibold bg-blue-50 dark:bg-blue-900/20'
+                          ? 'text-sky-700 font-semibold bg-sky-50 dark:bg-blue-900/20'
                           : 'text-gray-700 dark:text-slate-300'
                       }`}
                     >
@@ -270,7 +270,7 @@ const Signup = () => {
                         value="client"
                         checked={formData.role === 'client'}
                         onChange={handleChange}
-                        className="accent-blue-600 w-4 h-4"
+                        className="accent-sky-600 w-4 h-4"
                       />
                       <span className="text-gray-900 dark:text-slate-200 font-medium">Client</span>
                     </label>
@@ -281,7 +281,7 @@ const Signup = () => {
                         value="service_provider"
                         checked={formData.role === 'service_provider'}
                         onChange={handleChange}
-                        className="accent-blue-600 w-4 h-4"
+                        className="accent-sky-600 w-4 h-4"
                       />
                       <span className="text-gray-900 dark:text-slate-200 font-medium">Service Provider</span>
                     </label>
@@ -360,7 +360,7 @@ const Signup = () => {
 
           <div className="mb-6 mt-2 text-gray-900 dark:text-slate-300">
             Already have an account?
-            <Link to="/lucid/signin" className="text-blue-700 dark:text-blue-400 hover:text-secondary underline ml-2">
+            <Link to="/lucid/signin" className="text-sky-700 dark:text-blue-400 hover:text-secondary underline ml-2">
               Log in
             </Link>
           </div>

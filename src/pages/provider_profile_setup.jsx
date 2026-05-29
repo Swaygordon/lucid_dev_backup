@@ -11,6 +11,7 @@ import { ALL_CATEGORIES } from '../data/categories';
 import { ImageUploadModal } from '../components/shared';
 import { motion } from 'framer-motion';
 import { Button, Input } from '../components/ui';
+import { onActivateKey } from '../utils/a11y';
 
 // ─── Profile setup completion helper ─────────────────────────────────────────
 // Key shared with ProfileSetupBanner and sign_in so they all read the same flag.
@@ -130,28 +131,31 @@ const InputField = memo(({ label, ...props }) => (
 const CounterInput = memo(({ label, value, onChange, icon: Icon, min = 0 }) => (
   <div>
     <div className="flex justify-between items-center mb-3">
-      <span className="font-medium text-gray-900 dark:text-slate-100">{label}</span>
-      {Icon && <Icon size={20} className="text-blue-600" />}
+      <span id={`counter-${label.replace(/\s+/g, '-').toLowerCase()}`} className="font-medium text-gray-900 dark:text-slate-100">{label}</span>
+      {Icon && <Icon size={20} className="text-sky-700" />}
     </div>
     <div className="flex items-center max-w-[120px]">
       <button
         type="button"
+        aria-label={`Decrease ${label}`}
         onClick={() => onChange(Math.max(min, value - 1))}
-        className="px-3 py-2 border-2 border-gray-300 dark:border-[#2d3748] bg-white dark:bg-[#252b3b] hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-l-md transition-all focus:outline-none focus:border-blue-600"
+        className="px-3 py-2 border-2 border-gray-300 dark:border-[#2d3748] bg-white dark:bg-[#252b3b] hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-l-md transition-all focus:outline-none focus:border-sky-600"
       >
-        <Minus size={20} className="text-blue-600" />
+        <Minus size={20} className="text-sky-700" />
       </button>
       <input
         type="number" value={value} min={min}
+        aria-labelledby={`counter-${label.replace(/\s+/g, '-').toLowerCase()}`}
         onChange={(e) => onChange(Math.max(min, parseInt(e.target.value) || min))}
-        className="w-16 px-2 py-2 border-t-2 border-b-2 border-gray-300 dark:border-[#2d3748] text-center bg-white dark:bg-[#252b3b] text-gray-900 dark:text-slate-200 focus:outline-none focus:border-blue-600 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+        className="w-16 px-2 py-2 border-t-2 border-b-2 border-gray-300 dark:border-[#2d3748] text-center bg-white dark:bg-[#252b3b] text-gray-900 dark:text-slate-200 focus:outline-none focus:border-sky-600 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
       />
       <button
         type="button"
+        aria-label={`Increase ${label}`}
         onClick={() => onChange(value + 1)}
-        className="px-3 py-2 border-2 border-gray-300 dark:border-[#2d3748] bg-white dark:bg-[#252b3b] hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-r-md transition-all focus:outline-none focus:border-blue-600"
+        className="px-3 py-2 border-2 border-gray-300 dark:border-[#2d3748] bg-white dark:bg-[#252b3b] hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-r-md transition-all focus:outline-none focus:border-sky-600"
       >
-        <Plus size={20} className="text-blue-600" />
+        <Plus size={20} className="text-sky-700" />
       </button>
     </div>
   </div>
@@ -159,14 +163,18 @@ const CounterInput = memo(({ label, value, onChange, icon: Icon, min = 0 }) => (
 
 const DayCard = memo(({ selected, label, description, onClick }) => (
   <div
+    role="button"
+    tabIndex={0}
+    aria-pressed={selected}
     onClick={onClick}
-    className={`cursor-pointer rounded-xl p-5 border-2 transition-all duration-300 ${
-      selected ? 'border-blue-600 bg-blue-50 shadow-lg scale-105' : 'border-gray-300 dark:border-[#2d3748] bg-white dark:bg-[#1a1f2e] hover:border-blue-400 hover:shadow-md'
+    onKeyDown={onActivateKey(onClick)}
+    className={`cursor-pointer rounded-xl p-5 border-2 transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 ${
+      selected ? 'border-sky-600 bg-sky-50 shadow-lg scale-105' : 'border-gray-300 dark:border-[#2d3748] bg-white dark:bg-[#1a1f2e] hover:border-sky-400 hover:shadow-md'
     }`}
   >
     <div className="flex items-center justify-between mb-2">
       <span className="font-semibold text-gray-900 dark:text-slate-100">{label}</span>
-      <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${selected ? 'border-blue-600 bg-blue-600' : 'border-gray-300'}`}>
+      <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${selected ? 'border-sky-600 bg-sky-700' : 'border-gray-300'}`}>
         {selected && <CheckCircle size={16} className="text-white" />}
       </div>
     </div>
@@ -189,12 +197,12 @@ const ArrayInputSection = memo(({ title, items, onAdd, onRemove, icon: Icon, pla
   return (
     <div className="animate-fade-in">
       <div className="flex items-center gap-2 mb-4">
-        {Icon && <Icon className="w-5 h-5 text-blue-600" />}
+        {Icon && <Icon className="w-5 h-5 text-sky-700" />}
         <h3 className="text-gray-900 dark:text-slate-100 text-base font-semibold">{title}</h3>
       </div>
       <div className="space-y-3">
         {items.map((item, index) => (
-          <div key={index} className="flex items-center gap-2 bg-blue-100 dark:bg-blue-900/30 px-4 py-2.5 rounded-lg group hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors">
+          <div key={index} className="flex items-center gap-2 bg-sky-100 dark:bg-blue-900/30 px-4 py-2.5 rounded-lg group hover:bg-sky-50 dark:hover:bg-blue-900/20 transition-colors">
             <span className="flex-1 text-gray-900 dark:text-slate-100">{item}</span>
             <button type="button" onClick={() => onRemove(index)} className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-red-100 rounded">
               <Trash2 size={16} className="text-red-600" />
@@ -207,9 +215,9 @@ const ArrayInputSection = memo(({ title, items, onAdd, onRemove, icon: Icon, pla
             onChange={(e) => setNewItem(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleAdd()}
             placeholder={placeholder}
-            className="flex-1 px-3 py-2.5 border-2 border-gray-300 dark:border-[#2d3748] rounded-md text-sm focus:outline-none bg-white dark:bg-[#252b3b] text-gray-900 dark:text-slate-200 placeholder:dark:text-slate-500 focus:border-blue-600 transition-all"
+            className="flex-1 px-3 py-2.5 border-2 border-gray-300 dark:border-[#2d3748] rounded-md text-sm focus:outline-none bg-white dark:bg-[#252b3b] text-gray-900 dark:text-slate-200 placeholder:dark:text-slate-500 focus:border-sky-600 transition-all"
           />
-          <button type="button" onClick={handleAdd} className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors font-medium">
+          <button type="button" onClick={handleAdd} className="px-4 py-2 bg-sky-700 text-white rounded-md hover:bg-sky-800 transition-colors font-medium">
             Add
           </button>
         </div>
@@ -227,8 +235,8 @@ const CategoryChipSelector = memo(({ selectedCategories, onChange }) => {
   };
   return (
     <div className="animate-fade-in">
-      <h3 className="text-gray-900 dark:text-slate-100 text-base font-semibold mb-1">Service Categories</h3>
-      <p className="text-sm text-gray-500 dark:text-slate-500 mb-4">Select all categories that match your work.</p>
+      <h2 className="text-gray-900 dark:text-slate-100 text-base font-semibold mb-1">Service Categories</h2>
+      <p className="text-sm text-gray-600 dark:text-slate-400 mb-4">Select all categories that match your work.</p>
       <div className="flex flex-wrap gap-2">
         {ALL_CATEGORIES.map(({ name, icon: Icon }) => {
           const selected = selectedCategories.includes(name);
@@ -236,7 +244,7 @@ const CategoryChipSelector = memo(({ selectedCategories, onChange }) => {
             <button
               key={name} type="button" onClick={() => toggle(name)}
               className={`flex items-center gap-2 px-3 py-2 rounded-full border-2 text-sm font-medium transition-all ${
-                selected ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-gray-300 dark:border-[#2d3748] bg-white dark:bg-[#252b3b] text-gray-700 dark:text-slate-300 hover:border-blue-400'
+                selected ? 'border-sky-600 bg-sky-50 text-sky-700' : 'border-gray-300 dark:border-[#2d3748] bg-white dark:bg-[#252b3b] text-gray-700 dark:text-slate-300 hover:border-sky-400'
               }`}
             >
               <Icon size={14} /> {name}
@@ -270,10 +278,10 @@ const WorkingHoursSection = memo(({ profile, onDaySelect, onTimeChange, onCustom
         </div>
 
         {profile.selectedDays.custom && (
-          <div className="mb-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border-2 border-blue-200">
+          <div className="mb-6 bg-gradient-to-br from-sky-50 to-indigo-50 rounded-xl p-6 border-2 border-sky-200">
             <div className="flex items-center justify-between mb-4">
               <h4 className="text-base font-semibold text-gray-800 dark:text-slate-200">Select Custom Days</h4>
-              <button onClick={onToggleCustom} className="text-blue-600 hover:text-blue-700 font-medium text-sm flex items-center gap-1">
+              <button onClick={onToggleCustom} className="text-sky-700 hover:text-sky-700 font-medium text-sm flex items-center gap-1">
                 {profile.showCustomDays ? 'Hide' : 'Show'} Days
                 {profile.showCustomDays ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
               </button>
@@ -283,13 +291,18 @@ const WorkingHoursSection = memo(({ profile, onDaySelect, onTimeChange, onCustom
                 {daysOfWeek.map(day => (
                   <div
                     key={day}
+                    role="checkbox"
+                    tabIndex={0}
+                    aria-checked={profile.customDays[day].selected}
+                    aria-label={dayLabels[day]}
                     onClick={() => onCustomDayChange(day, 'selected', !profile.customDays[day].selected)}
-                    className={`cursor-pointer rounded-lg p-3 border-2 transition-all ${
-                      profile.customDays[day].selected ? 'border-blue-600 bg-blue-100 shadow-md' : 'border-gray-300 dark:border-[#2d3748] bg-white dark:bg-[#252b3b] hover:border-blue-400'
+                    onKeyDown={onActivateKey(() => onCustomDayChange(day, 'selected', !profile.customDays[day].selected))}
+                    className={`cursor-pointer rounded-lg p-3 border-2 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 ${
+                      profile.customDays[day].selected ? 'border-sky-600 bg-sky-100 shadow-md' : 'border-gray-300 dark:border-[#2d3748] bg-white dark:bg-[#252b3b] hover:border-sky-400'
                     }`}
                   >
                     <div className="flex items-center gap-2">
-                      <div className={`w-5 h-5 rounded border-2 flex items-center justify-center ${profile.customDays[day].selected ? 'border-blue-600 bg-blue-600' : 'border-gray-300'}`}>
+                      <div className={`w-5 h-5 rounded border-2 flex items-center justify-center ${profile.customDays[day].selected ? 'border-sky-600 bg-sky-700' : 'border-gray-300'}`}>
                         {profile.customDays[day].selected && <CheckCircle size={14} className="text-white" />}
                       </div>
                       <span className="text-sm font-medium text-gray-900 dark:text-slate-100">{dayLabels[day]}</span>
@@ -305,9 +318,9 @@ const WorkingHoursSection = memo(({ profile, onDaySelect, onTimeChange, onCustom
           <h4 className="text-base font-semibold mb-4 text-gray-800 dark:text-slate-200">Set Working Hours</h4>
           <div className="space-y-4">
             {profile.selectedDays.weekdays && (
-              <div className="bg-white dark:bg-[#1a1f2e] rounded-xl p-5 border-2 border-blue-200 dark:border-blue-900/50 shadow-sm">
+              <div className="bg-white dark:bg-[#1a1f2e] rounded-xl p-5 border-2 border-sky-200 dark:border-blue-900/50 shadow-sm">
                 <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-blue-600" /><h5 className="font-semibold text-gray-900 dark:text-slate-100">Weekdays Hours</h5></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-sky-700" /><h5 className="font-semibold text-gray-900 dark:text-slate-100">Weekdays Hours</h5></div>
                   <span className="text-sm text-gray-600 dark:text-slate-400">Mon - Fri</span>
                 </div>
                 <div className="flex gap-4">
@@ -317,9 +330,9 @@ const WorkingHoursSection = memo(({ profile, onDaySelect, onTimeChange, onCustom
               </div>
             )}
             {profile.selectedDays.weekend && (
-              <div className="bg-white dark:bg-[#1a1f2e] rounded-xl p-5 border-2 border-blue-200 dark:border-blue-900/50 shadow-sm">
+              <div className="bg-white dark:bg-[#1a1f2e] rounded-xl p-5 border-2 border-sky-200 dark:border-blue-900/50 shadow-sm">
                 <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-blue-600" /><h5 className="font-semibold text-gray-900 dark:text-slate-100">Weekend Hours</h5></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-sky-700" /><h5 className="font-semibold text-gray-900 dark:text-slate-100">Weekend Hours</h5></div>
                   <span className="text-sm text-gray-600 dark:text-slate-400">Sat - Sun</span>
                 </div>
                 <div className="flex gap-4">
@@ -329,12 +342,12 @@ const WorkingHoursSection = memo(({ profile, onDaySelect, onTimeChange, onCustom
               </div>
             )}
             {profile.selectedDays.custom && hasCustomDaysSelected && (
-              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-5 border-2 border-blue-200">
-                <h5 className="font-semibold text-gray-900 dark:text-slate-100 mb-4 flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-blue-600" /> Custom Days Hours</h5>
+              <div className="bg-gradient-to-br from-sky-50 to-indigo-50 rounded-xl p-5 border-2 border-sky-200">
+                <h5 className="font-semibold text-gray-900 dark:text-slate-100 mb-4 flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-sky-700" /> Custom Days Hours</h5>
                 <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
                   {daysOfWeek.map(day => profile.customDays[day].selected && (
-                    <div key={day} className="bg-white dark:bg-[#1a1f2e] rounded-lg p-4 border border-blue-200 dark:border-blue-900/50 shadow-sm">
-                      <div className="font-medium text-gray-900 dark:text-slate-100 mb-3 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-blue-600" />{dayLabels[day]}</div>
+                    <div key={day} className="bg-white dark:bg-[#1a1f2e] rounded-lg p-4 border border-sky-200 dark:border-blue-900/50 shadow-sm">
+                      <div className="font-medium text-gray-900 dark:text-slate-100 mb-3 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-sky-700" />{dayLabels[day]}</div>
                       <div className="flex gap-3">
                         <TimeInput label="Start" value={profile.customDays[day].start} onChange={(v) => onCustomDayChange(day, 'start', v)} />
                         <TimeInput label="End"   value={profile.customDays[day].end}   onChange={(v) => onCustomDayChange(day, 'end',   v)} />
@@ -518,7 +531,7 @@ const ProviderProfileSetup = () => {
   if (loadingData) {
     return (
       <div className="min-h-screen flex items-center justify-center dark:bg-[#0f1117]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sky-600"></div>
       </div>
     );
   }
@@ -532,14 +545,14 @@ const ProviderProfileSetup = () => {
 
       {/* ── Onboarding Header ── */}
       <div className="bg-white dark:bg-[#1a1f2e] border-b border-gray-200 dark:border-[#1e293b] px-4 py-5 text-center">
-        <p className="text-sm text-blue-600 font-semibold tracking-wide uppercase mb-1">Step 2 of 2</p>
+        <p className="text-sm text-sky-700 dark:text-blue-400 font-semibold tracking-wide uppercase mb-1">Step 2 of 2</p>
         <h1 className="text-2xl font-bold text-gray-900 dark:text-slate-100">Set Up Your Provider Profile</h1>
-        <p className="text-gray-500 dark:text-slate-500 text-sm mt-1 max-w-md mx-auto">
+        <p className="text-gray-600 dark:text-slate-400 text-sm mt-1 max-w-md mx-auto">
           Help clients find and trust you. You can always update this later.
         </p>
         <button
           onClick={handleSkip}
-          className="mt-3 text-sm text-gray-400 dark:text-slate-500 hover:text-gray-600 dark:hover:text-slate-300 underline underline-offset-2 transition-colors"
+          className="mt-3 text-sm text-gray-600 dark:text-slate-400 hover:text-gray-800 dark:hover:text-slate-200 underline underline-offset-2 transition-colors"
         >
           Skip for now
         </button>
@@ -550,7 +563,7 @@ const ProviderProfileSetup = () => {
         {heroUrl ? (
           <img src={heroUrl} alt="Profile banner" className="w-full h-full object-cover" loading="lazy" />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-blue-600 to-blue-400" />
+          <div className="w-full h-full bg-gradient-to-br from-sky-600 to-sky-400" />
         )}
         <div className="absolute inset-0 bg-black/30 flex items-center justify-center gap-3">
           <button
@@ -591,7 +604,7 @@ const ProviderProfileSetup = () => {
           <div className="flex gap-2">
             <button
               onClick={() => openUpload('avatar')}
-              className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium px-4 py-2 rounded-lg shadow transition-colors"
+              className="bg-sky-700 hover:bg-sky-800 text-white text-xs font-medium px-4 py-2 rounded-lg shadow transition-colors"
             >
               {avatarUrl ? 'Change picture' : 'Add picture'}
             </button>
@@ -622,13 +635,14 @@ const ProviderProfileSetup = () => {
 
           <div className="animate-fade-in">
             <div className="flex items-center gap-2 mb-2">
-              <MapPin className="w-5 h-5 text-blue-600" />
-              <label className="font-medium text-gray-700 dark:text-slate-300">Location</label>
+              <MapPin className="w-5 h-5 text-sky-700" />
+              <label htmlFor="setup-location" className="font-medium text-gray-700 dark:text-slate-300">Location</label>
             </div>
             <select
+              id="setup-location"
               value={formMethods.profile.location}
               onChange={(e) => formMethods.handleInputChange('location', e.target.value)}
-              className="w-full px-3 py-2.5 border-2 border-gray-300 dark:border-[#2d3748] rounded-md text-sm bg-white dark:bg-[#252b3b] text-gray-900 dark:text-slate-200 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/40 transition-all"
+              className="w-full px-3 py-2.5 border-2 border-gray-300 dark:border-[#2d3748] rounded-md text-sm bg-white dark:bg-[#252b3b] text-gray-900 dark:text-slate-200 focus:outline-none focus:border-sky-600 focus:ring-2 focus:ring-sky-100 dark:focus:ring-blue-900/40 transition-all"
             >
               <option value="">Select your area</option>
               {GHANA_LOCATIONS.map(group => (
@@ -655,7 +669,7 @@ const ProviderProfileSetup = () => {
                   placeholder="Write a brief description about yourself..."
                   value={formMethods.profile.description}
                   onChange={(e) => formMethods.handleInputChange('description', e.target.value)}
-                  className="w-full px-3 py-3 border-2 border-gray-300 dark:border-[#2d3748] rounded-md text-sm resize-y min-h-[120px] bg-white dark:bg-[#252b3b] text-gray-900 dark:text-slate-200 placeholder:dark:text-slate-500 focus:outline-none focus:border-blue-600"
+                  className="w-full px-3 py-3 border-2 border-gray-300 dark:border-[#2d3748] rounded-md text-sm resize-y min-h-[120px] bg-white dark:bg-[#252b3b] text-gray-900 dark:text-slate-200 placeholder:dark:text-slate-500 focus:outline-none focus:border-sky-600"
                   rows="4"
                 />
               </div>
@@ -672,7 +686,7 @@ const ProviderProfileSetup = () => {
 
               <div>
                 <h3 className="text-gray-900 dark:text-slate-100 mb-1 text-base font-semibold">Payment Methods</h3>
-                <p className="text-gray-500 dark:text-slate-500 text-sm mb-4">Select all that apply</p>
+                <p className="text-gray-600 dark:text-slate-400 text-sm mb-4">Select all that apply</p>
                 <div className="flex flex-col gap-3">
                   {[{ key: 'mobile', label: 'Mobile Money' }, { key: 'bank', label: 'Bank Transfer' }].map(({ key, label }) => (
                     <label key={key} className="flex items-center gap-3 cursor-pointer py-2">
@@ -680,7 +694,7 @@ const ProviderProfileSetup = () => {
                         type="checkbox"
                         checked={formMethods.profile.paymentMethods.includes(key)}
                         onChange={() => formMethods.handlePaymentToggle(key)}
-                        className="accent-blue-600 w-4 h-4"
+                        className="accent-sky-600 w-4 h-4"
                       />
                       <span className="text-gray-900 dark:text-slate-100">{label}</span>
                     </label>
@@ -699,10 +713,14 @@ const ProviderProfileSetup = () => {
                 <h3 className="text-gray-900 dark:text-slate-100 mb-2 text-base font-semibold">Portfolio Projects</h3>
                 <p className="text-gray-600 dark:text-slate-400 text-sm mb-4">Upload pictures of previous work done</p>
                 <div
+                  role="button"
+                  tabIndex={0}
+                  aria-label="Upload portfolio images"
                   onClick={() => openUpload('portfolio')}
-                  className="border-2 border-dashed border-gray-300 dark:border-[#2d3748] rounded-lg p-10 bg-white dark:bg-[#252b3b] hover:border-blue-600 transition-colors flex justify-center cursor-pointer"
+                  onKeyDown={onActivateKey(() => openUpload('portfolio'))}
+                  className="border-2 border-dashed border-gray-300 dark:border-[#2d3748] rounded-lg p-10 bg-white dark:bg-[#252b3b] hover:border-sky-600 transition-colors flex justify-center cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
                 >
-                  <SquarePlus size={38} className="text-gray-400 hover:text-blue-600 transition-colors" />
+                  <SquarePlus size={38} className="text-gray-400 hover:text-sky-700 transition-colors" />
                 </div>
               </div>
             </div>

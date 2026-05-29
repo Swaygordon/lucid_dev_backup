@@ -6,16 +6,14 @@ import {
 import { useNavigateBack } from "../hooks/useNavigateBack.js";
 import BackToBottom from '../components/back_to_bottom_btn.jsx';
 import Profilepic from '../assets/profile.svg';
-// [MOCK] Replace with real fetch + WebSocket subscription when Phase 7 backend lands; delete this import.
+// [MOCK] Phase 7 demo messages; delete this import when the messaging endpoint lands.
 import { getMessagesForConversation } from '../data/mockPhase7';
 
 export default function ChatMessagingPage() {
   const [message, setMessage] = useState('');
-  // [API] GET /conversations/:id/messages?page={n}
-  // [WS] Subscribe to ws://…/conversations/:id for new message events.
-  // [MOCK] Currently fed by getMessagesForConversation() from mockPhase7.
+  // [MOCK] Phase 7 demo messages; replace with GET /conversations/:id/messages?page={n} when backend lands.
   const [messages, setMessages] = useState([]);
-  useEffect(() => { getMessagesForConversation('current').then(setMessages); }, []);
+  useEffect(() => { getMessagesForConversation().then(setMessages); }, []);
   const messagesContainerRef = useRef(null);
   const handleBackClick = useNavigateBack('/lucid/messages', 400);
   // UI state
@@ -337,6 +335,7 @@ export default function ChatMessagingPage() {
         <div className="flex items-center space-x-4">
           <button
             onClick={handleBackClick}
+            aria-label="Go back"
             className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-full transition-colors"
           >
             <ArrowLeft className="w-6 h-6 text-gray-700 dark:text-slate-300" />
@@ -362,6 +361,7 @@ export default function ChatMessagingPage() {
         <div className="flex items-center space-x-2">
           <button
             onClick={() => handleCall('voice')}
+            aria-label="Voice call"
             className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-full transition-colors"
           >
             <Phone className="w-6 h-6 text-orange-500" />
@@ -369,6 +369,7 @@ export default function ChatMessagingPage() {
 
           <button
             onClick={() => handleCall('video')}
+            aria-label="Video call"
             className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-full transition-colors"
           >
             <Video className="w-6 h-6 text-orange-500" />
@@ -377,6 +378,8 @@ export default function ChatMessagingPage() {
           <div className="relative">
             <button
               onClick={() => setShowMoreMenu(prev => !prev)}
+              aria-label="More options"
+              aria-expanded={showMoreMenu}
               className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-full transition-colors header-more-btn"
             >
               <MoreVertical className="w-6 h-6 text-orange-500" />
@@ -390,7 +393,7 @@ export default function ChatMessagingPage() {
                     showNotification(isMuted ? 'Notifications enabled' : 'Notifications muted');
                     setShowMoreMenu(false);
                   }}
-                  className="w-full px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-[#2d3748] text-blue-600 flex items-center space-x-3"
+                  className="w-full px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-[#2d3748] text-sky-700 flex items-center space-x-3"
                 >
                   {isMuted ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
                   <span>{isMuted ? 'Unmute' : 'Mute'} Notifications</span>
@@ -400,7 +403,7 @@ export default function ChatMessagingPage() {
                     setConfirmClearChat(true);
                     setShowMoreMenu(false);
                   }}
-                  className="w-full px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-[#2d3748] text-blue-600 flex items-center space-x-3"
+                  className="w-full px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-[#2d3748] text-sky-700 flex items-center space-x-3"
                 >
                   <Trash2 className="w-5 h-5" />
                   <span>Clear Chat</span>
@@ -424,14 +427,14 @@ export default function ChatMessagingPage() {
 
       {/* Notification Toast */}
       {notification && (
-        <div className="absolute top-20 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+        <div className="absolute top-20 left-1/2 transform -translate-x-1/2 bg-sky-700 text-white px-6 py-3 rounded-lg shadow-lg z-50">
           {notification}
         </div>
       )}
 
       {/* Copied Notification */}
       {showCopied && (
-        <div className="absolute top-20 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+        <div className="absolute top-20 left-1/2 transform -translate-x-1/2 bg-sky-700 text-white px-6 py-3 rounded-lg shadow-lg z-50">
           Message copied!
         </div>
       )}
@@ -497,8 +500,8 @@ export default function ChatMessagingPage() {
         <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white dark:bg-[#1a1f2e] rounded-lg shadow-xl p-6 max-w-md mx-4">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="bg-blue-100 dark:bg-blue-900/20 p-3 rounded-full">
-                <Edit2 className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+              <div className="bg-sky-100 dark:bg-blue-900/20 p-3 rounded-full">
+                <Edit2 className="w-6 h-6 text-sky-700 dark:text-blue-400" />
               </div>
               <h2 className="text-xl font-semibold text-gray-900 dark:text-slate-100">Edit Message?</h2>
             </div>
@@ -516,7 +519,7 @@ export default function ChatMessagingPage() {
               </button>
               <button
                 onClick={confirmEditAction}
-                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                className="flex-1 px-4 py-2 bg-sky-700 text-white rounded-lg hover:bg-sky-800 transition-colors font-medium"
               >
                 Edit
               </button>
@@ -530,8 +533,8 @@ export default function ChatMessagingPage() {
         <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white dark:bg-[#1a1f2e] rounded-lg shadow-xl p-6 max-w-md mx-4">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="bg-blue-100 dark:bg-blue-900/20 p-3 rounded-full">
-                <Trash2 className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+              <div className="bg-sky-100 dark:bg-blue-900/20 p-3 rounded-full">
+                <Trash2 className="w-6 h-6 text-sky-700 dark:text-blue-400" />
               </div>
               <h2 className="text-xl font-semibold text-gray-900 dark:text-slate-100">Clear Chat?</h2>
             </div>
@@ -549,7 +552,7 @@ export default function ChatMessagingPage() {
               </button>
               <button
                 onClick={confirmClearChatAction}
-                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                className="flex-1 px-4 py-2 bg-sky-700 text-white rounded-lg hover:bg-sky-800 transition-colors font-medium"
               >
                 Clear
               </button>
@@ -640,7 +643,7 @@ export default function ChatMessagingPage() {
                         msg.sender === 'user'
                           ? 'bg-orange-500 text-white rounded-br-sm hover:bg-orange-600'
                           : 'bg-gray-200 dark:bg-[#252b3b] text-gray-900 dark:text-slate-200 rounded-bl-sm'
-                      } ${selectedMessage === msg.id ? 'ring-2 ring-blue-500' : ''}`}
+                      } ${selectedMessage === msg.id ? 'ring-2 ring-sky-500' : ''}`}
                     >
                       <p className="text-base">{msg.text}</p>
                       {msg.edited && <p className="text-xs opacity-70 mt-1">Edited</p>}
@@ -651,14 +654,14 @@ export default function ChatMessagingPage() {
                       <div className="absolute right-0 mt-2 bg-white dark:bg-[#252b3b] rounded-lg shadow-lg border border-gray-200 dark:border-[#1e293b] overflow-hidden z-10 min-w-32 message-actions-menu">
                         <button
                           onClick={() => handleEditMessage(msg)}
-                          className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-[#2d3748] text-blue-600 flex items-center space-x-2 text-sm"
+                          className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-[#2d3748] text-sky-700 flex items-center space-x-2 text-sm"
                         >
                           <Edit2 className="w-4 h-4" />
                           <span>Edit</span>
                         </button>
                         <button
                           onClick={() => handleCopyMessage(msg)}
-                          className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-[#2d3748] text-blue-600 flex items-center space-x-2 text-sm"
+                          className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-[#2d3748] text-sky-700 flex items-center space-x-2 text-sm"
                         >
                           <Copy className="w-4 h-4" />
                           <span>Copy</span>
@@ -693,14 +696,14 @@ export default function ChatMessagingPage() {
 
       {/* Editing Indicator */}
       {editingMessage && (
-        <div className="bg-blue-50 dark:bg-blue-900/20 px-4 py-2 border-t border-blue-200 dark:border-blue-700/40 flex items-center justify-between">
+        <div className="bg-sky-50 dark:bg-blue-900/20 px-4 py-2 border-t border-sky-200 dark:border-blue-700/40 flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <Edit2 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-            <span className="text-sm text-blue-600 dark:text-blue-400">Editing message...</span>
+            <Edit2 className="w-4 h-4 text-sky-700 dark:text-blue-400" />
+            <span className="text-sm text-sky-700 dark:text-blue-400">Editing message...</span>
           </div>
           <button
             onClick={cancelEdit}
-            className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 flex items-center space-x-1"
+            className="text-sm text-sky-700 dark:text-blue-400 hover:text-sky-800 dark:hover:text-blue-300 flex items-center space-x-1"
           >
             <X className="w-4 h-4" />
             <span>Cancel</span>
@@ -730,7 +733,7 @@ export default function ChatMessagingPage() {
       <div className="bg-white dark:bg-[#1a1f2e] px-4 py-4 border-t border-gray-200 dark:border-[#1e293b]">
         <div className="relative w-full">
           <div className="flex items-center space-x-3 w-full overflow-hidden">
-            <div className="flex-1 flex items-center bg-blue-700 rounded-full px-3 py-2 min-w-0">
+            <div className="flex-1 flex items-center bg-sky-700 rounded-full px-3 py-2 min-w-0">
               {/* Paperclip and menu are visually inside this area, but the menu DOM is rendered after the blue bar
                   and positioned absolutely relative to the outer wrapper (so it floats above) */}
               <div className="flex items-center">
@@ -739,7 +742,7 @@ export default function ChatMessagingPage() {
                   onClick={() => setShowAttachmentMenu(prev => !prev)}
                   aria-expanded={showAttachmentMenu}
                   aria-haspopup="menu"
-                  className="p-1 hover:bg-blue-600 rounded-full transition-colors mr-2"
+                  className="p-1 hover:bg-sky-700 rounded-full transition-colors mr-2"
                 >
                   <Paperclip className="w-5 h-5 text-white" />
                 </button>
@@ -752,13 +755,13 @@ export default function ChatMessagingPage() {
                 onKeyDown={handleKeyDown}
                 placeholder="Type your message here..."
                 rows={1}
-                className="flex-1 bg-transparent text-white placeholder-blue-200 outline-none min-w-0 resize-none overflow-hidden"
+                className="flex-1 bg-transparent text-white placeholder-sky-200 outline-none min-w-0 resize-none overflow-hidden"
               />
 
               <button
                 ref={emojiBtnRef}
                 onClick={() => setShowEmojiPicker(prev => !prev)}
-                className="p-1 hover:bg-blue-600 rounded-full transition-colors ml-2"
+                className="p-1 hover:bg-sky-700 rounded-full transition-colors ml-2"
               >
                 <Smile className="w-5 h-5 text-white" />
               </button>
@@ -766,7 +769,7 @@ export default function ChatMessagingPage() {
               {!message.trim() && (
                 <button
                   onClick={() => handleAttachment('image')}
-                  className="p-1 hover:bg-blue-600 rounded-full transition-colors ml-2"
+                  className="p-1 hover:bg-sky-700 rounded-full transition-colors ml-2"
                 >
                   <Camera className="w-5 h-5 text-white" />
                 </button>
@@ -775,7 +778,8 @@ export default function ChatMessagingPage() {
 
             <button
               onClick={message.trim() ? handleSendMessage : startRecording}
-              className="bg-blue-700 p-4 rounded-full hover:bg-blue-800 transition-colors"
+              aria-label={message.trim() ? 'Send message' : 'Record voice message'}
+              className="bg-sky-700 p-4 rounded-full hover:bg-sky-800 transition-colors"
             >
               {message.trim() ? (
                 <SendHorizontal className="w-6 h-6 text-white" />
@@ -807,7 +811,7 @@ export default function ChatMessagingPage() {
                 onClick={() => { handleAttachment('image'); setShowAttachmentMenu(false); }}
                 className="w-full px-3 py-2 text-left hover:bg-gray-50 dark:hover:bg-[#2d3748] rounded-md flex items-center space-x-3"
               >
-                <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full bg-sky-700 flex items-center justify-center">
                   <Image className="w-4 h-4 text-white" />
                 </div>
                 <span className="text-sm text-gray-700 dark:text-slate-300">Photo</span>

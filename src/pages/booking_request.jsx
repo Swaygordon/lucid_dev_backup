@@ -67,7 +67,7 @@ const LocationDropdown = ({ value, onChange }) => {
         type="button"
         onClick={() => setOpen(prev => !prev)}
         className={`w-full flex items-center justify-between px-3 py-2.5 border-2 rounded-lg bg-white dark:bg-[#252b3b] text-sm transition-all duration-200 ${
-          open ? 'border-blue-500' : 'border-gray-200 dark:border-[#2d3748] hover:border-gray-300'
+          open ? 'border-sky-500' : 'border-gray-200 dark:border-[#2d3748] hover:border-gray-300'
         }`}
       >
         <span className={value ? 'text-gray-700 dark:text-slate-300' : 'text-gray-400 dark:text-slate-500'}>
@@ -85,7 +85,7 @@ const LocationDropdown = ({ value, onChange }) => {
               onChange={e => setQuery(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && e.preventDefault()}
               placeholder="Search locations..."
-              className="w-full px-3 py-1.5 text-sm text-gray-700 dark:text-slate-300 bg-gray-50 dark:bg-[#1a1f2e] border border-gray-200 dark:border-[#2d3748] rounded-lg focus:outline-none focus:border-blue-400"
+              className="w-full px-3 py-1.5 text-sm text-gray-700 dark:text-slate-300 bg-gray-50 dark:bg-[#1a1f2e] border border-gray-200 dark:border-[#2d3748] rounded-lg focus:outline-none focus:border-sky-400"
               autoFocus
             />
           </div>
@@ -104,7 +104,7 @@ const LocationDropdown = ({ value, onChange }) => {
                       type="button"
                       onClick={() => handleSelect(area, group.region)}
                       className={`w-full text-left px-4 py-2 text-sm transition-colors hover:bg-gray-50 dark:hover:bg-[#1a1f2e] ${
-                        value === area ? 'text-blue-600 font-semibold bg-blue-50 dark:bg-primary/10' : 'text-gray-700 dark:text-slate-300'
+                        value === area ? 'text-sky-700 font-semibold bg-sky-50 dark:bg-primary/10' : 'text-gray-700 dark:text-slate-300'
                       }`}
                     >
                       {area}
@@ -453,6 +453,7 @@ const BookingRequest = () => {
           <div className="flex items-center gap-4">
             <button
               onClick={handleBackClick}
+              aria-label="Go back"
               className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-lg transition-colors"
             >
               <ArrowLeft className="w-6 h-6 text-gray-700 dark:text-slate-300" />
@@ -542,8 +543,8 @@ const BookingRequest = () => {
                             onClick={() => setFormData(prev => ({ ...prev, serviceType: service }))}
                             className={`p-4 rounded-lg border-2 transition-all text-left ${
                               formData.serviceType === service
-                                ? 'border-blue-600 bg-blue-50 dark:bg-primary/10'
-                                : 'border-gray-200 dark:border-[#2d3748] hover:border-blue-300'
+                                ? 'border-sky-600 bg-sky-50 dark:bg-primary/10'
+                                : 'border-gray-200 dark:border-[#2d3748] hover:border-sky-300'
                             }`}
                           >
                             <span className="text-gray-700 dark:text-slate-300 font-medium">{service}</span>
@@ -572,7 +573,7 @@ const BookingRequest = () => {
                         value={formData.description}
                         onChange={handleChange}
                         rows="6"
-                        className="w-full px-4 py-3 text-gray-700 dark:text-slate-200 bg-white dark:bg-[#252b3b] border-2 border-gray-300 dark:border-[#2d3748] rounded-lg focus:border-blue-600 focus:outline-none"
+                        className="w-full px-4 py-3 text-gray-700 dark:text-slate-200 bg-white dark:bg-[#252b3b] border-2 border-gray-300 dark:border-[#2d3748] rounded-lg focus:border-sky-600 focus:outline-none"
                         placeholder="Please provide detailed description of the work needed, any specific requirements, materials needed, etc."
                         required
                       />
@@ -590,8 +591,8 @@ const BookingRequest = () => {
                             onClick={() => setFormData(prev => ({ ...prev, urgency: level.value }))}
                             className={`w-full p-4 rounded-lg border-2 transition-all text-left ${
                               formData.urgency === level.value
-                                ? 'border-blue-600 bg-blue-50 dark:bg-primary/10'
-                                : 'border-gray-200 dark:border-[#2d3748] hover:border-blue-300'
+                                ? 'border-sky-600 bg-sky-50 dark:bg-primary/10'
+                                : 'border-gray-200 dark:border-[#2d3748] hover:border-sky-300'
                             }`}
                           >
                             <div className="flex items-center justify-between">
@@ -614,7 +615,7 @@ const BookingRequest = () => {
                       <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-3">
                         Upload Images (Optional, max 5)
                       </label>
-                      <div className="border-2 border-dashed border-gray-300 dark:border-[#2d3748] hover:border-blue-600 transition-colors rounded-lg p-6">
+                      <div className="border-2 border-dashed border-gray-300 dark:border-[#2d3748] hover:border-sky-600 transition-colors rounded-lg p-6">
                         <input
                           type="file"
                           multiple
@@ -674,10 +675,10 @@ const BookingRequest = () => {
                   <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100 mb-6">Schedule</h2>
 
                   <div className="space-y-6">
-                    <div className="bg-blue-50 dark:bg-primary/10 border border-blue-200 dark:border-blue-700/40 rounded-lg p-4">
+                    <div className="bg-sky-50 dark:bg-primary/10 border border-sky-200 dark:border-blue-700/40 rounded-lg p-4">
                       <div className="flex gap-3">
-                        <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                        <div className="text-sm text-blue-900 dark:text-blue-300">
+                        <AlertCircle className="w-5 h-5 text-sky-700 flex-shrink-0 mt-0.5" />
+                        <div className="text-sm text-sky-900 dark:text-blue-300">
                           <p className="font-semibold mb-1">Important</p>
                           <p>The service provider will confirm availability after reviewing your request. You can provide alternate dates to increase chances of quick confirmation.</p>
                         </div>
@@ -864,7 +865,7 @@ const BookingRequest = () => {
                         value={formData.additionalNotes}
                         onChange={handleChange}
                         rows="4"
-                        className="w-full px-4 py-3 text-gray-700 dark:text-slate-200 bg-white dark:bg-[#252b3b] border-2 border-gray-300 dark:border-[#2d3748] rounded-lg focus:border-blue-600 focus:outline-none"
+                        className="w-full px-4 py-3 text-gray-700 dark:text-slate-200 bg-white dark:bg-[#252b3b] border-2 border-gray-300 dark:border-[#2d3748] rounded-lg focus:border-sky-600 focus:outline-none"
                         placeholder="Any other information the service provider should know..."
                       />
                     </div>

@@ -36,8 +36,8 @@ export const Avatar = ({
     <div 
       className={`
         ${sizes[size]} 
-        rounded-full overflow-hidden 
-        bg-gradient-to-br from-primary to-purple-600 
+        rounded-full overflow-hidden
+        bg-gradient-to-br from-sky-400 to-primary
         flex items-center justify-center 
         text-white font-bold 
         ${className}

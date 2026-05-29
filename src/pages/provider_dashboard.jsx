@@ -1,27 +1,21 @@
-import React, { useState, useMemo, useEffect, useRef } from 'react';
+import React, { useState, useMemo, useEffect, useRef, lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useNavigateBack } from '../hooks/useNavigateBack.js';
 import { useNotification } from '../contexts/NotificationContext';
 import { Avatar, StatCard } from '../components/ui';
-import EarningsDashboard from '../components/earningsDashboard.jsx';
 import { BookingDetailsModal } from '../components/shared';
-import EarningsChart from '../components/earnings_chart.jsx';
 import { supabase } from '../lib/supabaseClient';
-// [MOCK] Replace with real fetch calls when Phase 5 backend lands; delete this import.
-import {
-  getProviderBookings, getProviderStats, getProviderActivityFeed, getBadgeCounts,
-} from '../data/mockPhase5';
+// [MOCK] Phase 5 demo data; delete this import when the dashboard endpoints land.
+import { getProviderBookings, getProviderStats } from '../data/mockPhase5';
 import {
   ArrowLeft, TrendingUp, Calendar, DollarSign, Star, Clock,
   CheckCircle, Award, Briefcase, MapPin, MessageSquare, Bell,
   ChevronRight, ChevronDown, Activity, Users, Eye, User
 } from 'lucide-react';
 
-// Maps the string iconName from the mock activity feed to a lucide component.
-// When backend lands, drop this — the server can send the icon key directly or
-// the page can derive the icon from `activity.type`.
-const ACTIVITY_ICONS = { CheckCircle, MessageSquare, Star, Calendar };
+// Lazy-load the recharts-based chart so it doesn't block the dashboard's first paint.
+const EarningsChart = lazy(() => import('../components/earnings_chart.jsx'));
 
 const PERIODS = [
   { value: 'week',  label: 'This Week'  },
@@ -106,7 +100,7 @@ const ActivityItem = ({ icon: Icon, title, description, time, status, to }) => {
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
             <div className="flex-1">
-              <h4 className="font-semibold text-gray-900 dark:text-slate-100 mb-1">{title}</h4>
+              <h3 className="font-semibold text-gray-900 dark:text-slate-100 mb-1">{title}</h3>
               <p className="text-sm text-gray-600 dark:text-slate-400">{description}</p>
             </div>
             {status && (
@@ -115,7 +109,7 @@ const ActivityItem = ({ icon: Icon, title, description, time, status, to }) => {
               </span>
             )}
           </div>
-          <p className="text-xs text-gray-500 dark:text-slate-500 mt-2 flex items-center gap-1">
+          <p className="text-xs text-gray-600 dark:text-slate-400 mt-2 flex items-center gap-1">
             <Clock className="w-3 h-3" />
             {time}
           </p>
@@ -140,7 +134,7 @@ const DashboardBookingCard = ({ booking, onViewDetails }) => {
         <div className="flex items-center gap-3">
           <Avatar name={clientName} size="md" />
           <div>
-            <h4 className="font-semibold text-gray-900 dark:text-slate-100">{clientName}</h4>
+            <h3 className="font-semibold text-gray-900 dark:text-slate-100">{clientName}</h3>
             <p className="text-sm text-gray-600 dark:text-slate-400">{booking.title}</p>
           </div>
         </div>
@@ -209,19 +203,13 @@ const ProviderDashboard = () => {
 
   const [timeframe, setTimeframe] = useState('week');
   const [selectedBooking, setSelectedBooking] = useState(null);
-  // [API] GET /notifications/count, /messages/unread-count, /bookings/new-count
+  // [API] GET /notifications/count?userId={id}&read=false → { count: number }
   // [WS] Subscribe to WebSocket 'notification' events on this provider's channel.
-  // [MOCK] Currently fed by getBadgeCounts() from mockPhase5.
-  const [notificationCount, setNotificationCount] = useState(0);
-  const [unreadMessages, setUnreadMessages]       = useState(0);
-  const [unreadBookings, setUnreadBookings]       = useState(0);
-  useEffect(() => {
-    getBadgeCounts().then(c => {
-      setNotificationCount(c.notifications);
-      setUnreadMessages(c.unreadMessages);
-      setUnreadBookings(c.unreadBookings);
-    });
-  }, []);
+  const [notificationCount, setNotificationCount] = useState(5);
+  // [API] GET /messages/unread-count?userId={id} → { count: number }
+  const [unreadMessages] = useState(3);
+  // [API] GET /bookings/new-count?providerId={id} — new booking requests not yet reviewed
+  const [unreadBookings] = useState(5);
 
   const handleBackClick = useNavigateBack('/lucid/', 200);
   const { showNotification } = useNotification();
@@ -265,61 +253,40 @@ const ProviderDashboard = () => {
     showNotification('Price adjustment request sent to client.', 'success');
   };
 
-  // [API] GET /bookings?providerId={authenticatedProviderId}&status=pending,confirmed,in-progress
-  // [MOCK] Currently fed by getProviderBookings() + getProviderStats() from mockPhase5.
+  // [MOCK] Phase 5 demo bookings; replace with GET /bookings?providerId={id}&status=... when backend lands.
   const [allBookings, setAllBookings] = useState([]);
-  const [bookingStats, setBookingStats] = useState({
-    total: 0, completed: 0, pending: 0, confirmed: 0, inProgress: 0, cancelled: 0,
-    totalEarnings: 0, avgRating: 'N/A', active: 0, totalRevenue: 0, completionRate: 0,
-  });
-  useEffect(() => {
-    Promise.all([getProviderBookings(), getProviderStats()]).then(([bookings, stats]) => {
-      setAllBookings(bookings);
-      setBookingStats({
-        total: stats.totalJobs,
-        completed: bookings.filter(b => b.status === 'completed').length,
-        pending:    bookings.filter(b => b.status === 'pending').length,
-        confirmed:  bookings.filter(b => b.status === 'confirmed').length,
-        inProgress: bookings.filter(b => b.status === 'in-progress').length,
-        cancelled:  bookings.filter(b => b.status === 'cancelled').length,
-        totalEarnings: stats.totalEarnings,
-        avgRating: stats.avgRating,
-        active: bookings.filter(b => ['pending','confirmed','in-progress'].includes(b.status)).length,
-        totalRevenue: stats.totalEarnings,
-        completionRate: 0,
-      });
-    });
-  }, []);
+  useEffect(() => { getProviderBookings().then(setAllBookings); }, []);
 
   const activeBookings = useMemo(() =>
     allBookings.filter(b => ['pending', 'confirmed', 'in-progress'].includes(b.status)),
     [allBookings]
   );
 
-  // [API] GET /providers/:id/stats?period={timeframe}
-  // → { totalJobs, totalEarnings, avgRating, totalClients, weekOverWeekChange: {...} }
-  // 'Clients: 34' and all change/trend values are hardcoded placeholders — replace with real stats.
+  // [MOCK] Phase 5 demo stats; replace with GET /providers/:id/stats?period={timeframe} when backend lands.
+  // change/trend values remain placeholders until the API returns weekOverWeekChange.
+  const [providerStats, setProviderStats] = useState({ totalJobs: 0, totalEarnings: 0, avgRating: 'N/A', totalClients: 0 });
+  useEffect(() => { getProviderStats().then(setProviderStats); }, []);
   const stats = useMemo(() => [
-    { icon: Briefcase, title: 'Total Jobs', value: bookingStats.total.toString(), change: '+12%', trend: 'up', color: 'blue' },
-    { icon: DollarSign, title: 'Earnings', value: `GH₵${bookingStats.totalEarnings}`, change: '+8%', trend: 'up', color: 'green' },
-    { icon: Star, title: 'Rating', value: bookingStats.avgRating, change: '+0.2', trend: 'up', color: 'orange' },
-    // [DB] COUNT DISTINCT client_id from bookings WHERE provider_id = ? AND status = 'completed'
-    { icon: Users, title: 'Clients', value: '34', change: '+5', trend: 'up', color: 'purple' }
-  ], [bookingStats]);
+    { icon: Briefcase, title: 'Total Jobs', value: providerStats.totalJobs.toString(), change: '+12%', trend: 'up', color: 'blue' },
+    { icon: DollarSign, title: 'Earnings', value: `GH₵${providerStats.totalEarnings.toLocaleString()}`, change: '+8%', trend: 'up', color: 'green' },
+    { icon: Star, title: 'Rating', value: providerStats.avgRating.toString(), change: '+0.2', trend: 'up', color: 'orange' },
+    { icon: Users, title: 'Clients', value: providerStats.totalClients.toString(), change: '+5', trend: 'up', color: 'purple' }
+  ], [providerStats]);
 
-  // [API] GET /activity-feed?userId={id}&limit=4
-  // [MOCK] Currently fed by getProviderActivityFeed() from mockPhase5.
-  const [recentActivities, setRecentActivities] = useState([]);
-  useEffect(() => {
-    getProviderActivityFeed().then(items => {
-      setRecentActivities(items.map(a => ({ ...a, icon: ACTIVITY_ICONS[a.iconName] })));
-    });
-  }, []);
+  // [MOCK] Replace with: GET /activity-feed?userId={id}&limit=4
+  // → [{ type: 'job_completed'|'new_message'|'new_review'|'booking_confirmed',
+  //       title, description, timestamp, relatedId, relatedRoute, status }]
+  const recentActivities = [
+    { icon: CheckCircle, title: 'Job Completed', description: 'Electrical service at Spintex', time: '2 hours ago', status: 'completed', to: '/lucid/bookings' },
+    { icon: MessageSquare, title: 'New Message', description: 'Client inquiry about electrical work', time: '4 hours ago', status: 'new', to: '/lucid/messages' },
+    { icon: Star, title: 'New Review', description: 'Nana Kofi left a 5-star review', time: '1 day ago', status: 'new', to: '/lucid/providers/me' },
+    { icon: Calendar, title: 'Booking Confirmed', description: 'Security lights job scheduled for next week', time: '2 days ago', status: 'pending', to: '/lucid/bookings' }
+  ];
 
   const bookings = useMemo(() => activeBookings.slice(0, 3), [activeBookings]);
 
   const quickActions = [
-    { icon: Calendar, label: 'Schedule', to: '/lucid/bookings', badgeCount: unreadBookings },
+    { icon: Calendar, label: 'Tasks', to: '/lucid/bookings', badgeCount: unreadBookings },
     { icon: MessageSquare, label: 'Messages', to: '/lucid/messages', badgeCount: unreadMessages },
     { icon: User, label: 'Account', to: '/lucid/account' },
     { icon: Activity, label: 'Analytics', to: '/lucid/earnings' }
@@ -335,12 +302,12 @@ const ProviderDashboard = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <button onClick={handleBackClick} className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-lg transition-colors">
+              <button onClick={handleBackClick} aria-label="Go back" className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-lg transition-colors">
                 <ArrowLeft className="w-5 h-5 text-gray-700 dark:text-slate-300" />
               </button>
-              <div>
+              <div className="min-w-0">
                 <h1 className="text-xl font-bold text-gray-900 dark:text-slate-100">Dashboard</h1>
-                <p className="text-sm text-gray-500 dark:text-slate-500">Welcome back, {currentUserName}!</p>
+                <p className="text-sm text-gray-600 dark:text-slate-400 truncate">Welcome back, {currentUserName}!</p>
               </div>
             </div>
             <div className="flex items-center gap-4">
@@ -391,7 +358,7 @@ const ProviderDashboard = () => {
             <section className="lg:col-span-2">
               <motion.div variants={itemVariants} className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100">Upcoming Bookings</h2>
-                <Link to="/lucid/bookings" className="flex items-center gap-2 text-primary hover:text-primary-hover font-semibold">
+                <Link to="/lucid/bookings" className="flex items-center gap-2 text-sky-700 dark:text-blue-400 hover:text-primary-hover font-semibold">
                   View All
                   <ChevronRight className="w-4 h-4" />
                 </Link>
@@ -418,19 +385,19 @@ const ProviderDashboard = () => {
                    The '95%' satisfaction rate and 'top 10%' badge are currently hardcoded. */}
               <motion.div
                 variants={itemVariants}
-                className="mt-6 bg-gradient-to-br from-primary to-purple-600 rounded-xl p-6 text-white"
+                className="mt-6 bg-gradient-to-br from-primary to-indigo-700 rounded-xl p-6 text-white"
               >
                 <div className="flex items-center gap-3 mb-4">
                   <Award className="w-8 h-8" />
                   <h3 className="text-xl font-bold">Top Performer!</h3>
                 </div>
-                <p className="text-blue-100 mb-4">
+                <p className="text-sky-100 mb-4">
                   You're in the top 10% of service providers this month!
                 </p>
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-2xl font-bold">95%</p>
-                    <p className="text-sm text-blue-100">Satisfaction Rate</p>
+                    <p className="text-sm text-sky-100">Satisfaction Rate</p>
                   </div>
                   <Eye className="w-12 h-12 opacity-20" />
                 </div>
@@ -438,7 +405,9 @@ const ProviderDashboard = () => {
             </section>
           </div>
 
-          <EarningsChart />
+          <Suspense fallback={<div className="h-[480px] bg-white dark:bg-[#1a1f2e] rounded-xl shadow-md animate-pulse" />}>
+            <EarningsChart />
+          </Suspense>
         </motion.div>
       </main>
 

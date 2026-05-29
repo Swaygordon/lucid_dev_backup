@@ -154,6 +154,100 @@ export function BookingsSkeleton() {
   );
 }
 
+export function DashboardSkeleton() {
+  return (
+    <div className={`${baseShell} bg-gray-50`}>
+      <div className="bg-white dark:bg-[#1a1f2e] border-b dark:border-[#1e293b] px-6 py-5 flex items-center justify-between">
+        <div className="space-y-2">
+          <div className={`h-6 w-44 ${block} rounded-lg`} />
+          <div className={`h-4 w-64 ${block} rounded-lg`} />
+        </div>
+        <div className={`w-10 h-10 rounded-full ${block}`} />
+      </div>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {[1, 2, 3, 4].map(i => (
+            <div key={i} className="bg-white dark:bg-[#1a1f2e] rounded-2xl p-5 border dark:border-[#1e293b] h-28 flex flex-col justify-between">
+              <div className={`h-4 w-3/4 ${block}`} />
+              <div className={`h-7 w-1/2 ${block}`} />
+            </div>
+          ))}
+        </div>
+        <div className="grid md:grid-cols-2 gap-4">
+          <div className="bg-white dark:bg-[#1a1f2e] rounded-2xl border dark:border-[#1e293b] p-5 space-y-3 h-64">
+            <div className={`h-5 w-36 ${block}`} />
+            {[1, 2, 3].map(i => (
+              <div key={i} className={`h-14 ${block} rounded-xl`} />
+            ))}
+          </div>
+          <div className="bg-white dark:bg-[#1a1f2e] rounded-2xl border dark:border-[#1e293b] p-5 h-64">
+            <div className={`h-5 w-28 ${block} mb-4`} />
+            <div className={`h-48 ${block} rounded-xl`} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function MessagesListSkeleton() {
+  return (
+    <div className={`${baseShell} bg-gray-50`}>
+      <div className="bg-white dark:bg-[#1a1f2e] border-b dark:border-[#1e293b] px-6 py-5 flex items-center gap-4">
+        <div className={`w-8 h-8 rounded-lg ${block}`} />
+        <div className={`h-6 w-32 ${block} rounded-lg`} />
+      </div>
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-4 space-y-2">
+        <div className={`h-11 w-full ${block} rounded-lg mb-4`} />
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div key={i} className="bg-white dark:bg-[#1a1f2e] rounded-xl border dark:border-[#1e293b] p-4 flex gap-3 items-center">
+            <div className={`w-12 h-12 rounded-full ${block} flex-shrink-0`} />
+            <div className="flex-1 space-y-2">
+              <div className="flex justify-between">
+                <div className={`h-4 w-32 ${block}`} />
+                <div className={`h-3 w-12 ${block}`} />
+              </div>
+              <div className={`h-3 w-2/3 ${block}`} />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function ChatSkeleton() {
+  return (
+    <div className={`${baseShell} bg-gray-50 flex flex-col`}>
+      <div className="bg-white dark:bg-[#1a1f2e] border-b dark:border-[#1e293b] px-4 py-3 flex items-center gap-3">
+        <div className={`w-8 h-8 rounded-lg ${block}`} />
+        <div className={`w-10 h-10 rounded-full ${block}`} />
+        <div className="flex-1 space-y-2">
+          <div className={`h-4 w-32 ${block}`} />
+          <div className={`h-3 w-16 ${block}`} />
+        </div>
+      </div>
+      <div className="flex-1 max-w-3xl w-full mx-auto px-4 py-6 space-y-4">
+        {[
+          { side: 'left',  w: 'w-56' },
+          { side: 'right', w: 'w-40' },
+          { side: 'left',  w: 'w-64' },
+          { side: 'right', w: 'w-32' },
+          { side: 'left',  w: 'w-48' },
+        ].map((m, i) => (
+          <div key={i} className={`flex ${m.side === 'right' ? 'justify-end' : 'justify-start'}`}>
+            <div className={`h-12 ${m.w} ${block} rounded-2xl`} />
+          </div>
+        ))}
+      </div>
+      <div className="bg-white dark:bg-[#1a1f2e] border-t dark:border-[#1e293b] px-4 py-3 flex gap-2">
+        <div className={`flex-1 h-11 ${block} rounded-full`} />
+        <div className={`w-11 h-11 ${block} rounded-full`} />
+      </div>
+    </div>
+  );
+}
+
 export function ContentPageSkeleton() {
   return (
     <div className={baseShell}>

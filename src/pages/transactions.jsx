@@ -1,8 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigateBack } from '../hooks/useNavigateBack.js';
-// [MOCK] Replace with real fetch call when Phase 5 backend lands; delete this import.
-import { getProviderTransactions } from '../data/mockPhase5';
 import {
   ArrowLeft,
   DollarSign,
@@ -14,6 +12,8 @@ import {
   Search,
   Filter,
 } from 'lucide-react';
+// [MOCK] Phase 5 demo transactions; delete this import when the transactions endpoint lands.
+import { getProviderTransactions } from '../data/mockPhase5';
 
 const STATUS_FILTERS = ['All', 'Completed', 'Pending', 'Failed'];
 const TYPE_FILTERS   = ['All', 'Payments', 'Withdrawals'];
@@ -23,14 +23,12 @@ const TransactionsPage = () => {
   const [search, setSearch]       = useState('');
   const [statusFilter, setStatus] = useState('All');
   const [typeFilter, setType]     = useState('All');
-
-  // [API] GET /providers/:id/transactions?page={n}&status={}&type={}
-  // [MOCK] Currently fed by getProviderTransactions() from mockPhase5.
-  const [allTransactions, setAllTransactions] = useState([]);
-  useEffect(() => { getProviderTransactions().then(setAllTransactions); }, []);
+  // [MOCK] Phase 5 demo transactions; replace with GET /providers/:id/transactions?... when backend lands.
+  const [transactions, setTransactions] = useState([]);
+  useEffect(() => { getProviderTransactions().then(setTransactions); }, []);
 
   const filtered = useMemo(() => {
-    return allTransactions.filter(t => {
+    return transactions.filter(t => {
       const matchesSearch = !search ||
         t.description.toLowerCase().includes(search.toLowerCase()) ||
         t.method.toLowerCase().includes(search.toLowerCase()) ||
@@ -46,7 +44,7 @@ const TransactionsPage = () => {
 
       return matchesSearch && matchesStatus && matchesType;
     });
-  }, [allTransactions, search, statusFilter, typeFilter]);
+  }, [transactions, search, statusFilter, typeFilter]);
 
   const exportToCSV = () => {
     const headers = ['Date', 'Description', 'Amount (GH₵)', 'Type', 'Status', 'Method', 'Job Type'];
@@ -90,6 +88,7 @@ const TransactionsPage = () => {
             <div className="flex items-center gap-4">
               <button
                 onClick={handleBackClick}
+                aria-label="Go back"
                 className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-lg transition-colors"
               >
                 <ArrowLeft className="w-6 h-6 text-gray-700 dark:text-slate-300" />
@@ -119,7 +118,7 @@ const TransactionsPage = () => {
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Search by name, method, or job type..."
-            className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 dark:border-[#2d3748] bg-white dark:bg-[#1a1f2e] text-gray-900 dark:text-slate-100 placeholder-gray-400 dark:placeholder-slate-500 rounded-xl focus:outline-none focus:border-blue-500 transition-colors"
+            className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 dark:border-[#2d3748] bg-white dark:bg-[#1a1f2e] text-gray-900 dark:text-slate-100 placeholder-gray-400 dark:placeholder-slate-500 rounded-xl focus:outline-none focus:border-sky-500 transition-colors"
           />
         </div>
 
@@ -134,8 +133,8 @@ const TransactionsPage = () => {
                   onClick={() => setType(f)}
                   className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
                     typeFilter === f
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-white dark:bg-[#1a1f2e] text-gray-600 dark:text-slate-400 border-2 border-gray-200 dark:border-[#2d3748] hover:border-blue-400'
+                      ? 'bg-sky-700 text-white'
+                      : 'bg-white dark:bg-[#1a1f2e] text-gray-600 dark:text-slate-400 border-2 border-gray-200 dark:border-[#2d3748] hover:border-sky-400'
                   }`}
                 >
                   {f}
@@ -151,8 +150,8 @@ const TransactionsPage = () => {
                 onClick={() => setStatus(f)}
                 className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
                   statusFilter === f
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-white dark:bg-[#1a1f2e] text-gray-600 dark:text-slate-400 border-2 border-gray-200 dark:border-[#2d3748] hover:border-blue-400'
+                    ? 'bg-sky-700 text-white'
+                    : 'bg-white dark:bg-[#1a1f2e] text-gray-600 dark:text-slate-400 border-2 border-gray-200 dark:border-[#2d3748] hover:border-sky-400'
                 }`}
               >
                 {f}
@@ -168,7 +167,7 @@ const TransactionsPage = () => {
           className="bg-white dark:bg-[#1a1f2e] rounded-xl shadow-md overflow-hidden"
         >
           {filtered.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 text-gray-400 dark:text-slate-500">
+            <div className="flex flex-col items-center justify-center py-16 text-gray-600 dark:text-slate-400">
               <DollarSign className="w-10 h-10 mb-3 opacity-40" />
               <p className="font-medium">No transactions found</p>
               <p className="text-sm mt-1">Try adjusting your filters</p>

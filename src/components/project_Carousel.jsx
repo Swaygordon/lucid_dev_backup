@@ -100,7 +100,7 @@ export default function ProjectCarousel({ projects }) {
                 onClick={() => setCurrentProject(index)}
                 className={`transition-all duration-300 rounded-full ${
                   index === currentProject
-                    ? "bg-blue-600 w-8 h-2.5"
+                    ? "bg-sky-700 w-8 h-2.5"
                     : "bg-gray-300 dark:bg-slate-600 hover:bg-gray-400 dark:hover:bg-slate-500 w-2.5 h-2.5"
                 }`}
                 aria-label={`Go to project ${index + 1}`}

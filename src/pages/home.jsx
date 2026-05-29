@@ -9,8 +9,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ALL_CATEGORIES } from '../data/categories';
 import Section1 from "./home_sections.jsx";
 import LocationPicker from '../components/LocationPicker.jsx';
+import SearchAutocomplete from '../components/SearchAutocomplete.jsx';
 import BackToTop from '../components/back_the_top_btn';
 import { useTheme } from '../contexts/ThemeContext';
+import { resolveSearch } from '../utils/search.js';
+import { onActivateKey } from '../utils/a11y';
 
 // Animation variants
 const fadeInUp = {
@@ -49,19 +52,23 @@ const ServiceIcon = memo(
         whileHover={{ scale: 1.05 }}
       >
         <div
-          className="relative w-16 h-16 cursor-pointer"
+          role="button"
+          tabIndex={0}
+          aria-label={name}
+          className="relative w-16 h-16 cursor-pointer rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
           onClick={() => navigate(to)}
+          onKeyDown={onActivateKey(() => navigate(to))}
         >
-          <div className="absolute top-0 left-6 right-2 w-12 h-12 rounded-lg bg-blue-300" />
+          <div className="absolute top-0 left-6 right-2 w-12 h-12 rounded-lg bg-sky-300" />
           <motion.div
-            className="absolute top-3 left-3 w-12 h-12 rounded-lg flex items-center justify-center bg-blue-700 hover:bg-blue-300"
+            className="absolute top-3 left-3 w-12 h-12 rounded-lg flex items-center justify-center bg-sky-700 hover:bg-sky-600"
             whileHover={{ rotate: 5, scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
             <IconComponent size={20} className="text-white" />
           </motion.div>
         </div>
-        <p className={`text-center text-xs mt-1 whitespace-nowrap ${isMore ? 'text-black dark:text-slate-200' : 'text-blue-700 dark:text-blue-300'}`}>
+        <p className={`text-center text-xs mt-1 whitespace-nowrap ${isMore ? 'text-black dark:text-slate-200' : 'text-sky-700 dark:text-blue-300'}`}>
           {name}
         </p>
       </motion.div>
@@ -70,12 +77,8 @@ const ServiceIcon = memo(
 );
 
 // Search Bar Component
-const SearchBar = ({ onSearch, isLoading }) => {
+const SearchBar = ({ onSearch, onSelect, isLoading }) => {
   const [searchTerm, setSearchTerm] = useState('');
-
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter') onSearch(searchTerm);
-  };
 
   return (
     <motion.div
@@ -85,15 +88,22 @@ const SearchBar = ({ onSearch, isLoading }) => {
       animate="visible"
       transition={{ duration: 0.6, delay: 0.4 }}
     >
-      <div className="flex w-full max-w-2xl bg-white dark:bg-white/10 dark:backdrop-blur-md border border-gray-300 dark:border-white/20 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-200">
-        <input
-          type="text"
+      <div className="relative flex w-full max-w-2xl bg-white dark:bg-white/10 dark:backdrop-blur-md border border-gray-300 dark:border-white/20 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-200 focus-within:ring-2 focus-within:ring-sky-500">
+        <SearchAutocomplete
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="What service do you need?"
-          className="flex-1 px-5 py-3 text-sm sm:text-base text-gray-800 dark:text-slate-200 placeholder-gray-400 dark:placeholder-slate-500 bg-transparent focus:outline-none rounded-l-xl"
-        />
+          onChange={setSearchTerm}
+          onSelect={onSelect}
+          onSubmit={onSearch}
+        >
+          {(inputProps) => (
+            <input
+              {...inputProps}
+              type="text"
+              placeholder="What service do you need?"
+              className="w-full px-5 py-3 text-sm sm:text-base text-gray-800 dark:text-slate-200 placeholder-gray-400 dark:placeholder-slate-500 bg-transparent focus:outline-none rounded-l-xl"
+            />
+          )}
+        </SearchAutocomplete>
         {/* Divider + inline location picker */}
         <div className="flex items-center border-l border-gray-200 dark:border-[#2d3748]">
           <LocationPicker inline />
@@ -101,7 +111,7 @@ const SearchBar = ({ onSearch, isLoading }) => {
         {/* Search button */}
         <motion.button
           aria-label="Search"
-          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 sm:px-7 py-3 rounded-r-xl flex-shrink-0 flex items-center gap-2 transition-colors"
+          className="bg-sky-700 hover:bg-sky-800 text-white font-semibold px-5 sm:px-7 py-3 rounded-r-xl flex-shrink-0 flex items-center gap-2 transition-colors"
           whileTap={{ scale: 0.97 }}
           onClick={() => onSearch(searchTerm)}
         >
@@ -167,7 +177,7 @@ const CyclingBadge = () => {
   }, []);
 
   return (
-    <div className="inline-flex items-center gap-2 bg-blue-600/90 backdrop-blur-sm px-5 py-2 rounded-full mb-6 shadow-lg">
+    <div className="inline-flex items-center gap-2 bg-sky-700/90 backdrop-blur-sm px-5 py-2 rounded-full mb-6 shadow-lg">
       <MapPin className="w-4 h-4 text-orange-300 flex-shrink-0" />
       <span className="text-white text-sm font-medium">Find trusted</span>
       <div className="overflow-hidden h-5 flex items-center">
@@ -198,14 +208,14 @@ const PROVIDER_PERKS = [
 ];
 
 const PROVIDER_STATS = [
-  { label: 'Avg. Monthly Earnings', value: 'GH₵3,200', icon: CreditCard, color: 'from-blue-500 to-blue-700' },
+  { label: 'Avg. Monthly Earnings', value: 'GH₵3,200', icon: CreditCard, color: 'from-sky-500 to-sky-700' },
   { label: 'Jobs per Provider',     value: '25 / mo',  icon: Briefcase,  color: 'from-violet-500 to-purple-700' },
   { label: 'Payout Speed',          value: '24 hrs',   icon: Zap,        color: 'from-orange-500 to-amber-600' },
   { label: 'Platform Fee',          value: 'Only 18%', icon: Shield,     color: 'from-emerald-500 to-green-700' },
 ];
 
 const ProviderCTA = () => (
-  <section className="py-20 bg-gradient-to-br from-blue-700 to-indigo-900 relative overflow-hidden">
+  <section className="py-20 bg-gradient-to-br from-sky-700 to-indigo-900 relative overflow-hidden">
     <div
       className="absolute inset-0 opacity-[0.04] pointer-events-none"
       style={{
@@ -291,21 +301,26 @@ function Home() {
 
   const handleSearch = (searchTerm) => {
     if (!searchTerm.trim()) return;
-    navigate(`/lucid/search?q=${encodeURIComponent(searchTerm.trim())}`);
+    // Try to resolve directly to a category/service page before falling back
+    // to the Services search-handoff route.
+    const resolved = resolveSearch(searchTerm);
+    navigate(resolved ?? `/lucid/search?q=${encodeURIComponent(searchTerm.trim())}`);
   };
+
+  const handleSelectSuggestion = (item) => navigate(item.to);
 
   return (
     <>
       <div className="flex flex-col min-h-screen bg-white dark:bg-[#0f1117]">
         <div
-          className="flex flex-col items-center justify-center flex-1 w-full relative z-10 transition-colors duration-700"
+          className="flex flex-col items-center justify-start lg:justify-center flex-1 w-full relative z-10 transition-colors duration-700 pt-8 lg:pt-0"
           style={{
             background: isDark ? [
-              'radial-gradient(ellipse at 62% 18%, rgba(29, 78, 216, 0.55) 0%, transparent 52%)',
-              'radial-gradient(ellipse at 12% 88%, rgba(234, 88, 12, 0.30) 0%, transparent 48%)',
-              'radial-gradient(ellipse at 85% 75%, rgba(109, 40, 217, 0.20) 0%, transparent 40%)',
+              'radial-gradient(ellipse at 62% 18%, rgba(14, 165, 233, 0.50) 0%, transparent 52%)',
+              'radial-gradient(ellipse at 12% 88%, rgba(249, 115, 22, 0.28) 0%, transparent 48%)',
+              'radial-gradient(ellipse at 85% 75%, rgba(2, 132, 199, 0.20) 0%, transparent 40%)',
               'linear-gradient(145deg, #050b18 0%, #07101f 45%, #060c1c 100%)',
-            ].join(', ') : 'linear-gradient(135deg, #ffffff 0%, #eff6ff 100%)',
+            ].join(', ') : 'linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%)',
           }}
         >
           {/* Decorative layer — overflow-hidden scoped so dropdown can escape */}
@@ -318,7 +333,7 @@ function Home() {
                   animate={{ y: [0, -28, 0], x: [0, 18, 0] }}
                   transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
                   style={{ willChange: 'transform' }}
-                  className="absolute -top-20 -right-20 w-[480px] h-[480px] rounded-full blur-3xl bg-blue-500/50"
+                  className="absolute -top-20 -right-20 w-[480px] h-[480px] rounded-full blur-3xl bg-sky-500/50"
                 />
                 <motion.div
                   animate={{ y: [0, 22, 0], x: [0, -14, 0] }}
@@ -336,7 +351,7 @@ function Home() {
                   animate={{ scale: [1, 1.08, 1], opacity: [0.6, 0.8, 0.6] }}
                   transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
                   style={{ willChange: 'transform, opacity' }}
-                  className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-64 bg-blue-700/25 blur-[80px] rounded-full"
+                  className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-64 bg-sky-700/25 blur-[80px] rounded-full"
                 />
               </>
             )}
@@ -365,7 +380,7 @@ function Home() {
                 transition={{ duration: 0.6 }}
               >
                 Trusted help,{' '}
-                <span className="text-blue-600 dark:text-blue-400">when and how</span>{' '}
+                <span className="text-sky-700 dark:text-blue-400">when and how</span>{' '}
                 you need it.
               </motion.h1>
 
@@ -384,7 +399,7 @@ function Home() {
               </motion.p>
 
               {/* Search Bar */}
-              <SearchBar onSearch={handleSearch} isLoading={searchLoading} />
+              <SearchBar onSearch={handleSearch} onSelect={handleSelectSuggestion} isLoading={searchLoading} />
 
               {/* Desktop/Tablet Category Grid */}
               <div className="hidden md:block mt-14 pb-6 w-full">

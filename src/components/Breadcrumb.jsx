@@ -13,7 +13,7 @@ const Breadcrumb = ({ crumbs }) => (
         {crumb.href ? (
           <Link
             to={crumb.href}
-            className="hover:text-blue-600 transition-colors whitespace-nowrap flex-shrink-0"
+            className="hover:text-sky-700 transition-colors whitespace-nowrap flex-shrink-0"
           >
             {crumb.label}
           </Link>

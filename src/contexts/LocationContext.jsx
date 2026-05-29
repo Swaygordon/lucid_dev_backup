@@ -277,7 +277,7 @@ export function getLocationBackground(searchLocation) {
 
 export function buildBackgroundStyle(bgValue) {
   return {
-    backgroundImage: `url(${bgValue}), linear-gradient(135deg, #1e3a5f 0%, #1d4ed8 45%, #2563eb 100%)`,
+    backgroundImage: `url(${bgValue}), linear-gradient(135deg, #075985 0%, #0369a1 45%, #0ea5e9 100%)`,
     backgroundSize: 'cover',
     backgroundPosition: 'center',
   };

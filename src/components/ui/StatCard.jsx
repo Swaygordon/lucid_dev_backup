@@ -4,8 +4,14 @@ import { TrendingUp, TrendingDown } from 'lucide-react';
 
 const COLOR_MAP = {
   blue: {
-    gradient: 'from-blue-500 to-blue-700',
+    gradient: 'from-sky-500 to-sky-700',
     glow: 'hover:shadow-glow-blue',
+    icon: 'bg-white/20',
+    badge: 'bg-white/20 text-white',
+  },
+  sky: {
+    gradient: 'from-sky-400 to-primary',
+    glow: 'hover:shadow-glow-sky',
     icon: 'bg-white/20',
     badge: 'bg-white/20 text-white',
   },

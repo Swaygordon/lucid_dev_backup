@@ -16,8 +16,8 @@ const slides = [
       "Whether you have short-term projects or seasonal demands, our automated on-demand staffing platform enables you to effortlessly find workers within minutes.",
     image: efficient,
     buttonText: "Find Workers",
-    gradient: "from-blue-600 via-blue-700 to-indigo-800",
-    category1:"/Service",
+    gradient: "from-sky-600 via-sky-700 to-indigo-800",
+    category1:"/lucid/services",
   },
   {
     id: 2,
@@ -28,7 +28,7 @@ const slides = [
     image: hired,
     buttonText: "Join Now",
     gradient: "from-purple-600 via-purple-700 to-pink-700",
-    category1:"/signup",
+    category1:"/lucid/signup",
   },
   {
     id: 3,
@@ -38,8 +38,8 @@ const slides = [
       "Build your dream team with our intuitive platform. Connect with skilled professionals and manage projects effortlessly.",
     image: Collaborate,
     buttonText: "Get Started",
-    gradient: "from-teal-600 via-cyan-700 to-blue-800",
-    category1:"/signup",
+    gradient: "from-teal-600 via-cyan-700 to-sky-800",
+    category1:"/lucid/signup",
   },
   {
     id: 4,
@@ -50,7 +50,7 @@ const slides = [
     image: unlock,
     buttonText: "Explore Jobs",
     gradient: "from-orange-600 via-red-600 to-pink-700",
-    category1:"/signup",
+    category1:"/lucid/signup",
   },
   {
     id: 5,
@@ -61,7 +61,7 @@ const slides = [
     image: futurework,
     buttonText: "About Lucid",
     gradient: "from-indigo-600 via-violet-700 to-purple-800",
-    category1:"/about",
+    category1:"/lucid/about",
   },
 ];
 
@@ -121,11 +121,12 @@ export default function Carousel() {
                 {slide.description}
               </p>
 
-             <Link to={slide.category1}> 
-              <button className="group mt-4 py-3.5 px-8 rounded-full bg-white text-gray-900 font-semibold shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-300 flex items-center gap-2">
+             <Link
+                to={slide.category1}
+                className="group mt-4 py-3.5 px-8 rounded-full bg-white text-gray-900 font-semibold shadow-2xl hover:shadow-3xl hover:scale-105 transition-all duration-300 inline-flex items-center gap-2 w-fit"
+              >
                 {slide.buttonText}
                 <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </button>
               </Link>
             </div>
 
@@ -136,7 +137,7 @@ export default function Carousel() {
               }`}
             >
               <div className="relative group">
-                <div className="absolute -inset-1 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-1000"></div>
+                <div className="absolute -inset-1 bg-gradient-to-r from-pink-500 via-purple-500 to-sky-500 rounded-2xl blur opacity-30 group-hover:opacity-50 transition duration-1000"></div>
                 <img
                   className="relative w-full max-w-[320px] sm:max-w-[400px] md:max-w-[500px] lg:max-w-[550px] xl:max-w-[600px] rounded-2xl shadow-2xl object-cover aspect-[4/3] group-hover:scale-[1.02] transition-transform duration-500"
                   src={slide.image}

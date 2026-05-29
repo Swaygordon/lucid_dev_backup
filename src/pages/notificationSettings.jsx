@@ -80,11 +80,15 @@ const NotificationSettings = () => {
     showNotification('Notification settings saved successfully!', 'success');
   };
 
-  const ToggleSwitch = ({ enabled, onChange }) => (
+  const ToggleSwitch = ({ enabled, onChange, label }) => (
     <button
+      type="button"
+      role="switch"
+      aria-checked={enabled}
+      aria-label={`${enabled ? 'Disable' : 'Enable'} ${label}`}
       onClick={onChange}
       className={`relative w-12 h-6 rounded-full transition-colors ${
-        enabled ? 'bg-blue-600' : 'bg-gray-300 dark:bg-[#252b3b]'
+        enabled ? 'bg-sky-700' : 'bg-gray-300 dark:bg-[#252b3b]'
       }`}
     >
       <motion.div
@@ -98,17 +102,18 @@ const NotificationSettings = () => {
   const NotificationItem = ({ icon: Icon, title, description, settingKey }) => (
     <div className="flex items-start justify-between py-4 border-b border-gray-200 dark:border-[#1e293b] last:border-0">
       <div className="flex gap-4 flex-1">
-        <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg h-fit">
-          <Icon className="w-5 h-5 text-blue-600" />
+        <div className="p-2 bg-sky-50 dark:bg-blue-900/20 rounded-lg h-fit">
+          <Icon className="w-5 h-5 text-sky-700" />
         </div>
         <div className="flex-1">
-          <h4 className="font-semibold text-gray-900 dark:text-slate-100 mb-1">{title}</h4>
+          <h3 className="font-semibold text-gray-900 dark:text-slate-100 mb-1">{title}</h3>
           <p className="text-sm text-gray-600 dark:text-slate-400">{description}</p>
         </div>
       </div>
       <ToggleSwitch
         enabled={settings[settingKey]}
         onChange={() => handleToggle(settingKey)}
+        label={title}
       />
     </div>
   );
@@ -125,6 +130,7 @@ const NotificationSettings = () => {
           <div className="flex items-center gap-4">
             <button
               onClick={handleBackClick}
+              aria-label="Go back"
               className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-lg transition-colors"
             >
               <ArrowLeft className="w-6 h-6 text-gray-700 dark:text-slate-300" />
@@ -137,7 +143,7 @@ const NotificationSettings = () => {
         </div>
       </motion.header>
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 space-y-6">
         {/* Push Notifications */}
         <motion.div
           initial="hidden"
@@ -146,7 +152,7 @@ const NotificationSettings = () => {
         >
           <Card>
             <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 bg-blue-600 rounded-lg">
+              <div className="p-2 bg-sky-700 rounded-lg">
                 <Bell className="w-6 h-6 text-white" />
               </div>
               <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100">Push Notifications</h2>
@@ -348,6 +354,7 @@ const NotificationSettings = () => {
               <ToggleSwitch
                 enabled={settings.dndEnabled}
                 onChange={() => handleToggle('dndEnabled')}
+                label="Do Not Disturb"
               />
             </div>
             
@@ -365,7 +372,7 @@ const NotificationSettings = () => {
                     type="time"
                     value={settings.dndStart}
                     onChange={(e) => handleTimeChange('dndStart', e.target.value)}
-                    className="w-full px-4 py-3 border-2 border-gray-300 dark:border-[#2d3748] rounded-lg focus:border-blue-600 focus:outline-none bg-white dark:bg-[#252b3b] text-gray-900 dark:text-slate-200"
+                    className="w-full px-4 py-3 border-2 border-gray-300 dark:border-[#2d3748] rounded-lg focus:border-sky-600 focus:outline-none bg-white dark:bg-[#252b3b] text-gray-900 dark:text-slate-200"
                   />
                 </div>
                 <div>
@@ -376,7 +383,7 @@ const NotificationSettings = () => {
                     type="time"
                     value={settings.dndEnd}
                     onChange={(e) => handleTimeChange('dndEnd', e.target.value)}
-                    className="w-full px-4 py-3 border-2 border-gray-300 dark:border-[#2d3748] rounded-lg focus:border-blue-600 focus:outline-none bg-white dark:bg-[#252b3b] text-gray-900 dark:text-slate-200"
+                    className="w-full px-4 py-3 border-2 border-gray-300 dark:border-[#2d3748] rounded-lg focus:border-sky-600 focus:outline-none bg-white dark:bg-[#252b3b] text-gray-900 dark:text-slate-200"
                   />
                 </div>
               </motion.div>
@@ -390,7 +397,6 @@ const NotificationSettings = () => {
           animate="visible"
           variants={fadeIn}
           transition={{ delay: 0.5 }}
-          className="sticky bottom-4"
         >
           <Button
             onClick={handleSaveSettings}

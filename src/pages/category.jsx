@@ -79,7 +79,7 @@ const Category = () => {
       <div className="min-h-screen bg-gray-50 dark:bg-[#0f1117]">
         <div className="max-w-6xl mx-auto px-5 py-20 text-center">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-slate-100 mb-4">Category not found</h1>
-          <Link to="/lucid/services/all" className="text-blue-600 hover:underline">
+          <Link to="/lucid/services/all" className="text-sky-700 hover:underline">
             Browse all categories
           </Link>
         </div>
@@ -99,7 +99,7 @@ const Category = () => {
           alt={cat.name}
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-black bg-opacity-50" />
+        <div className="absolute inset-0 bg-gradient-to-t from-sky-950/80 via-sky-950/50 to-sky-950/30" />
         <div className="absolute inset-0 flex flex-col items-center justify-center text-white px-5 text-center">
           <div className={`w-14 h-14 rounded-2xl bg-white bg-opacity-20 border border-white border-opacity-40 flex items-center justify-center mb-4 backdrop-blur-sm`}>
             <Icon size={28} className="text-white" />
@@ -143,12 +143,12 @@ const Category = () => {
                 <div className="p-4 flex items-center justify-between">
                   <div>
                     <h3 className="font-semibold text-gray-900 dark:text-slate-100">{svc.name}</h3>
-                    <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-slate-500 mt-1">
+                    <div className="flex items-center gap-1 text-xs text-gray-600 dark:text-slate-400 mt-1">
                       <MapPin size={12} />
                       <span>See workers near you</span>
                     </div>
                   </div>
-                  <ChevronRight size={18} className="text-gray-400 dark:text-slate-500 group-hover:text-blue-600 transition-colors" />
+                  <ChevronRight size={18} className="text-gray-400 dark:text-slate-500 group-hover:text-sky-700 transition-colors" />
                 </div>
               </div>
             </Link>

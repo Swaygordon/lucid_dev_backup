@@ -47,7 +47,7 @@ export default function LocationPicker({ inline = false }) {
           type="button"
           onClick={() => setOpen(prev => !prev)}
           title={`Searching in: ${searchLocation.area}`}
-          className="relative flex items-center justify-center w-10 h-full text-gray-400 hover:text-blue-600 transition-colors"
+          className="relative flex items-center justify-center w-10 h-full text-gray-400 hover:text-sky-700 transition-colors"
         >
           <MapPin className="w-5 h-5" />
           {!isDefault && (
@@ -59,9 +59,9 @@ export default function LocationPicker({ inline = false }) {
         <button
           type="button"
           onClick={() => setOpen(prev => !prev)}
-          className="flex items-center gap-1.5 px-3 py-2.5 bg-white dark:bg-[#252b3b] border border-gray-300 dark:border-[#2d3748] rounded-lg text-sm text-gray-700 dark:text-slate-200 hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors shadow-sm whitespace-nowrap"
+          className="flex items-center gap-1.5 px-3 py-2.5 bg-white dark:bg-[#252b3b] border border-gray-300 dark:border-[#2d3748] rounded-lg text-sm text-gray-700 dark:text-slate-200 hover:border-sky-500 hover:bg-sky-50 dark:hover:bg-blue-900/20 transition-colors shadow-sm whitespace-nowrap"
         >
-          <MapPin className="w-4 h-4 text-blue-600 flex-shrink-0" />
+          <MapPin className="w-4 h-4 text-sky-700 flex-shrink-0" />
           <span className="max-w-[110px] truncate font-medium">
             {searchLocation.area || 'Set location'}
           </span>
@@ -82,7 +82,7 @@ export default function LocationPicker({ inline = false }) {
               value={query}
               onChange={e => setQuery(e.target.value)}
               placeholder="Search locations..."
-              className="w-full px-3 py-1.5 text-sm text-gray-700 dark:text-slate-200 bg-gray-50 dark:bg-[#252b3b] border border-gray-200 dark:border-[#2d3748] rounded-lg focus:outline-none focus:border-blue-400 dark:placeholder-slate-500"
+              className="w-full px-3 py-1.5 text-sm text-gray-700 dark:text-slate-200 bg-gray-50 dark:bg-[#252b3b] border border-gray-200 dark:border-[#2d3748] rounded-lg focus:outline-none focus:border-sky-400 dark:placeholder-slate-500"
               autoFocus
             />
           </div>
@@ -91,7 +91,7 @@ export default function LocationPicker({ inline = false }) {
           {!isDefault && (
             <button
               onClick={() => { resetToDefault(); setOpen(false); setQuery(''); }}
-              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 border-b border-gray-100 dark:border-[#1e293b]"
+              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-sky-700 hover:bg-sky-50 dark:hover:bg-blue-900/20 border-b border-gray-100 dark:border-[#1e293b]"
             >
               <RotateCcw className="w-3.5 h-3.5" />
               <span>Back to my location <span className="font-semibold">({defaultLocation.area})</span></span>
@@ -114,7 +114,7 @@ export default function LocationPicker({ inline = false }) {
                       onClick={() => handleSelect(area)}
                       className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-[#252b3b] transition-colors flex items-center justify-between ${
                         searchLocation.area === area
-                          ? 'text-blue-600 font-semibold bg-blue-50 dark:bg-blue-900/20'
+                          ? 'text-sky-700 font-semibold bg-sky-50 dark:bg-blue-900/20'
                           : 'text-gray-700 dark:text-slate-300'
                       }`}
                     >

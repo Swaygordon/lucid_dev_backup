@@ -152,7 +152,7 @@ const ReceiptModalComponent = ({ booking, onClose, userType = 'provider' }) => {
           <div ref={receiptRef} className="p-8">
             {/* Header */}
             <div className="text-center mb-6 pb-5 border-b-2 border-gray-300 dark:border-[#1e293b]">
-              <h1 className="text-2xl font-bold text-blue-600">LUCID SERVICES</h1>
+              <h1 className="text-2xl font-bold text-sky-700">LUCID SERVICES</h1>
               <p className="text-sm text-gray-500 dark:text-slate-400 font-semibold mt-1">Professional Service Receipt</p>
             </div>
 
@@ -181,18 +181,18 @@ const ReceiptModalComponent = ({ booking, onClose, userType = 'provider' }) => {
 
             {/* Parties */}
             <div className="grid grid-cols-2 gap-5 mb-6 pb-6 border-b border-gray-200 dark:border-[#1e293b]">
-              <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+              <div className="bg-sky-50 dark:bg-blue-900/20 p-4 rounded-lg">
                 <p className="font-bold text-gray-900 dark:text-slate-100 mb-3 text-sm">Service Provider</p>
                 <div className="space-y-2 text-xs">
                   <div className="flex items-start gap-2">
-                    <User className="w-3 h-3 text-blue-600 mt-0.5 flex-shrink-0" />
+                    <User className="w-3 h-3 text-sky-700 mt-0.5 flex-shrink-0" />
                     <div>
                       <p className="font-semibold text-gray-900 dark:text-slate-100">{provider.name}</p>
                       <p className="text-gray-500 dark:text-slate-400">{provider.profession}</p>
                     </div>
                   </div>
-                  {provider.phone && <div className="flex items-center gap-2"><Phone className="w-3 h-3 text-blue-600 flex-shrink-0" /><p className="text-gray-700 dark:text-slate-300">{provider.phone}</p></div>}
-                  {provider.email && <div className="flex items-center gap-2"><Mail className="w-3 h-3 text-blue-600 flex-shrink-0" /><p className="text-gray-700 dark:text-slate-300">{provider.email}</p></div>}
+                  {provider.phone && <div className="flex items-center gap-2"><Phone className="w-3 h-3 text-sky-700 flex-shrink-0" /><p className="text-gray-700 dark:text-slate-300">{provider.phone}</p></div>}
+                  {provider.email && <div className="flex items-center gap-2"><Mail className="w-3 h-3 text-sky-700 flex-shrink-0" /><p className="text-gray-700 dark:text-slate-300">{provider.email}</p></div>}
                 </div>
               </div>
               <div className="bg-gray-50 dark:bg-[#252b3b] p-4 rounded-lg">
@@ -220,15 +220,15 @@ const ReceiptModalComponent = ({ booking, onClose, userType = 'provider' }) => {
                 {booking.description && <p className="text-gray-600 dark:text-slate-400 text-xs mb-4">{booking.description}</p>}
                 <div className="grid grid-cols-3 gap-4 text-xs pt-3 border-t border-gray-200 dark:border-[#1e293b]">
                   <div className="flex items-center gap-2">
-                    <Calendar className="w-3 h-3 text-blue-600 flex-shrink-0" />
+                    <Calendar className="w-3 h-3 text-sky-700 flex-shrink-0" />
                     <div><p className="text-gray-500 dark:text-slate-400 mb-0.5">Date</p><p className="font-semibold text-gray-900 dark:text-slate-100">{booking.date}</p></div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Clock className="w-3 h-3 text-blue-600 flex-shrink-0" />
+                    <Clock className="w-3 h-3 text-sky-700 flex-shrink-0" />
                     <div><p className="text-gray-500 dark:text-slate-400 mb-0.5">Time</p><p className="font-semibold text-gray-900 dark:text-slate-100">{booking.time}</p></div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Clock className="w-3 h-3 text-blue-600 flex-shrink-0" />
+                    <Clock className="w-3 h-3 text-sky-700 flex-shrink-0" />
                     <div><p className="text-gray-500 dark:text-slate-400 mb-0.5">Duration</p><p className="font-semibold text-gray-900 dark:text-slate-100">{booking.duration || '—'}</p></div>
                   </div>
                 </div>
@@ -282,7 +282,7 @@ const ReceiptModalComponent = ({ booking, onClose, userType = 'provider' }) => {
                 <div className="flex items-center gap-3 text-xs">
                   <div className="flex gap-0.5">
                     {[...Array(5)].map((_, i) => (
-                      <Star key={i} className={`w-3.5 h-3.5 ${i < booking.rating ? 'fill-blue-600 text-blue-600' : 'text-gray-300 dark:text-slate-600'}`} />
+                      <Star key={i} className={`w-3.5 h-3.5 ${i < booking.rating ? 'fill-sky-600 text-sky-700' : 'text-gray-300 dark:text-slate-600'}`} />
                     ))}
                   </div>
                   <span className="font-bold text-gray-900 dark:text-slate-100">{booking.rating}.0</span>

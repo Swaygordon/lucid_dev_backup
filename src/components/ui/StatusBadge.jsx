@@ -14,9 +14,9 @@ const STATUS_CONFIG = {
     label: 'Confirmed',
   },
   'in-progress': {
-    bg: 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700/40',
-    text: 'text-blue-700 dark:text-blue-400',
-    dot: 'bg-blue-500 animate-pulse-dot',
+    bg: 'bg-sky-50 dark:bg-blue-900/20 border border-sky-200 dark:border-blue-700/40',
+    text: 'text-sky-700 dark:text-blue-400',
+    dot: 'bg-sky-500 animate-pulse-dot',
     label: 'In Progress',
   },
   completed: {
@@ -41,9 +41,9 @@ const STATUS_CONFIG = {
 
 const URGENCY_CONFIG = {
   normal: {
-    bg: 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700/40',
-    text: 'text-blue-700 dark:text-blue-400',
-    dot: 'bg-blue-400',
+    bg: 'bg-sky-50 dark:bg-blue-900/20 border border-sky-200 dark:border-blue-700/40',
+    text: 'text-sky-700 dark:text-blue-400',
+    dot: 'bg-sky-400',
     label: 'Normal',
   },
   urgent: {

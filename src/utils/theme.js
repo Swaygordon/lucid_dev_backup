@@ -1,21 +1,21 @@
 export const theme = {
   colors: {
     primary: {
-      DEFAULT: '#2563eb',
-      hover: '#1d4ed8',
-      light: '#3b82f6',
-      dark: '#1e40af',
+      DEFAULT: '#0277bd',
+      hover: '#0369a1',
+      light: '#0ea5e9',
+      dark: '#075985',
     },
     secondary: {
-      DEFAULT: '#ea580c',
-      hover: '#c2410c',
+      DEFAULT: '#c2410c',
+      hover: '#9a3412',
       light: '#f97316',
-      dark: '#9a3412',
+      dark: '#7c2d12',
     },
     success: '#10b981',
     error: '#ef4444',
     warning: '#f59e0b',
-    info: '#3b82f6',
+    info: '#0ea5e9',
   },
   spacing: {
     xs: '0.5rem',
