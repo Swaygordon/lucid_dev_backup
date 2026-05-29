@@ -301,8 +301,8 @@ const ProviderDashboard = () => {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <button onClick={handleBackClick} aria-label="Go back" className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-lg transition-colors">
+            <div className="flex items-center gap-2 min-w-0 flex-1">
+              <button onClick={handleBackClick} aria-label="Go back" className="p-2 hover:bg-gray-100 dark:hover:bg-[#252b3b] rounded-lg transition-colors flex-shrink-0">
                 <ArrowLeft className="w-5 h-5 text-gray-700 dark:text-slate-300" />
               </button>
               <div className="min-w-0">
@@ -310,7 +310,7 @@ const ProviderDashboard = () => {
                 <p className="text-sm text-gray-600 dark:text-slate-400 truncate">Welcome back, {currentUserName}!</p>
               </div>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
               <Link to="/lucid/notifications" onClick={() => setNotificationCount(0)}>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
