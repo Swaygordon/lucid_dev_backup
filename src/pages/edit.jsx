@@ -12,6 +12,7 @@ import { ImageUploadModal } from "../components/shared";
 import { motion } from "framer-motion";
 import { Button, Input } from '../components/ui';
 import { onActivateKey } from '../utils/a11y';
+import { isProviderProfileComplete, PROFILE_SETUP_KEY } from './provider_profile_setup';
 
 
 // ============================================
@@ -589,9 +590,10 @@ const EditProfile = () => {
         hero_url: heroUrl,
         total_completed_jobs: formMethods.profile.totalCompletedJobs || 0,
         rating_average: formMethods.profile.ratingAverage || 0,
-        is_profile_complete: true,
         updated_at: new Date().toISOString()
       };
+      // Discoverability flag derived from the same completeness rule the banner uses.
+      profileData.is_profile_complete = isProviderProfileComplete(profileData);
 
       const { error } = await supabase
         .from('provider_profiles')
@@ -599,6 +601,7 @@ const EditProfile = () => {
 
       if (error) throw error;
 
+      localStorage.setItem(PROFILE_SETUP_KEY, profileData.is_profile_complete ? 'true' : 'pending');
       showNotification('Profile saved successfully!', 'success');
       navigate('/lucid/account/profile', { replace: true });
     } catch (error) {

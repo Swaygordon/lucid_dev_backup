@@ -19,6 +19,25 @@ export const PROFILE_SETUP_KEY = 'lucid_provider_profile_complete';
 export const markProfileComplete = () =>
   localStorage.setItem(PROFILE_SETUP_KEY, 'true');
 
+// A provider profile is "complete" (i.e. discoverable by clients) once the
+// identity + discovery fields exist: first/last name, occupation, location,
+// at least one service category, and some working-hours info. Single source of
+// truth — reuse wherever completeness/discoverability is judged. Pass a
+// `provider_profiles` row.
+export const isProviderProfileComplete = (p) => !!p
+  && !!String(p.first_name ?? '').trim()
+  && !!String(p.last_name ?? '').trim()
+  && !!String(p.occupation ?? '').trim()
+  && !!String(p.location ?? '').trim()
+  && Array.isArray(p.categories) && p.categories.length > 0
+  && (
+    (Array.isArray(p.selected_days) && p.selected_days.length > 0)
+    || !!p.weekdays_time
+    || !!p.weekend_time
+    || (p.custom_days && typeof p.custom_days === 'object'
+        && Object.values(p.custom_days).some((d) => d && d.selected))
+  );
+
 // ============================================
 // CUSTOM HOOK — same form logic as edit.jsx
 // ============================================
@@ -484,9 +503,10 @@ const ProviderProfileSetup = () => {
         custom_days: formMethods.profile.customDays,
         avatar_url: avatarUrl,
         hero_url: heroUrl,
-        is_profile_complete: true,
         updated_at: new Date().toISOString()
       };
+      // Discoverability flag derived from the same completeness rule the banner uses.
+      profileData.is_profile_complete = isProviderProfileComplete(profileData);
 
       const { error } = await supabase
         .from('provider_profiles')
@@ -494,7 +514,8 @@ const ProviderProfileSetup = () => {
 
       if (error) throw error;
 
-      markProfileComplete();
+      if (profileData.is_profile_complete) markProfileComplete();
+      else localStorage.setItem(PROFILE_SETUP_KEY, 'pending');
       showNotification('Profile saved! Welcome to Lucid.', 'success');
       navigate('/lucid/account/profile', { replace: true });
     } catch (error) {
